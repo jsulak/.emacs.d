@@ -12,7 +12,7 @@
     (load-file "~/.emacs.d/james-linux.el")
   (load-file "~/.emacs.d/james-windows.el"))
 
-
+(load-file "~/.emacs.d/org-mode-settings.el")
 
 
 ;; Move scroll bar to right
@@ -208,22 +208,6 @@
 
 ;;(add-to-list 'kill-buffer-query-functions 'maybe-kill-buffer)
 
-;; Org-mode settings
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-(global-font-lock-mode 1)
-(setq org-hide-leading-stars t)
-;; Make TAB the yas trigger key in the org-mode-hook and turn on flyspell mode
-(add-hook 'org-mode-hook
-          (lambda ()
-            ;; yasnippet
-            (make-variable-buffer-local 'yas/trigger-key)
-            (setq yas/trigger-key [tab])
-            (define-key yas/keymap [tab] 'yas/next-field-group)
-            ;; flyspell mode to spell check everywhere
-            (flyspell-mode 1)))
 
 
 
