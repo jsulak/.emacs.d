@@ -1,36 +1,19 @@
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(bm-highlight-style (quote bm-highlight-only-fringe))
- '(column-number-mode t)
- '(ecb-gzip-setup (quote cons))
- '(ecb-layout-window-sizes (quote (("left8" (0.23863636363636365 . 0.2903225806451613) (0.23863636363636365 . 0.24193548387096775) (0.23863636363636365 . 0.2903225806451613) (0.23863636363636365 . 0.16129032258064516)))))
- '(ecb-mouse-click-destination (quote left-top))
- '(ecb-options-version "2.32")
- '(ecb-tar-setup (quote cons))
- '(ecb-wget-setup (quote cons))
- '(erc-nick "luddite")
- '(erc-user-full-name "luddite")
- '(grep-find-ignored-directories (quote ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "_sgbak")))
- '(js2-basic-offset 3)
- '(js2-highlight-level 3)
- '(js2-indent-on-enter-key t)
- '(nxml-auto-insert-xml-declaration-flag t)
- '(nxml-slash-auto-complete-flag t)
- '(org-agenda-files (quote ("c:/Documents and Settings/jsulak/My Documents/notes/coap.org" "c:/Documents and Settings/jsulak/My Documents/notes/fed_forms.org" "c:/Documents and Settings/jsulak/My Documents/notes/tx_forms.org" "c:/Documents and Settings/jsulak/My Documents/notes/ip.org" "c:/Documents and Settings/jsulak/My Documents/notes/fec.org" "c:/Documents and Settings/jsulak/My Documents/notes/flh-2010.org" "c:/Documents and Settings/jsulak/My Documents/notes/flh.org" "c:/Documents and Settings/jsulak/My Documents/notes/txcvt.org" "c:/Documents and Settings/jsulak/My Documents/notes/fdcvt.org" "c:/Documents and Settings/jsulak/My Documents/notes/coa.org" "c:/Documents and Settings/jsulak/My Documents/notes/todo.org" "c:/Documents and Settings/jsulak/My Documents/notes/codes.org" "c:/Documents and Settings/jsulak/My Documents/notes/codebook_refactoring.org")))
- '(show-paren-mode t)
- '(tabbar-mode t)
- '(tabbar-separator (quote (" | ")))
- '(tool-bar-mode nil)
- '(visual-line-fringe-indicators (quote (nil right-curly-arrow))))
+;; append load path to load my customizations
+(setq load-path
+       (append load-path
+ 	      '("~/.emacs.d/")))
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
 
 ;; Conditionally load os-specific initialization files
 (if (or (eq system-type 'gnu/linux)
 	(eq system-type 'linux))
     (load-file "~/.emacs.d/james-linux.el")
   (load-file "~/.emacs.d/james-windows.el"))
+
+
+
 
 ;; Move scroll bar to right
 (setq scroll-bar-mode-explicit t) 
@@ -125,10 +108,6 @@
 
 (setq inhibit-splash-screen t)
 
-;; append load path to load my customizations
-(setq load-path
-       (append load-path
- 	      '("~/.emacs.d/")))
 
 ;;Add color themes
 (setq load-path (append load-path '("~/.emacs.d/themes/")))
@@ -233,9 +212,20 @@
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
 (global-font-lock-mode 1)
 (setq org-hide-leading-stars t)
-;;(setq org-odd-levels-only t)
+;; Make TAB the yas trigger key in the org-mode-hook and turn on flyspell mode
+(add-hook 'org-mode-hook
+          (lambda ()
+            ;; yasnippet
+            (make-variable-buffer-local 'yas/trigger-key)
+            (setq yas/trigger-key [tab])
+            (define-key yas/keymap [tab] 'yas/next-field-group)
+            ;; flyspell mode to spell check everywhere
+            (flyspell-mode 1)))
+
+
 
 ;;Add smart tab
 ;;(load-file "~/.emacs.d/smart-tab.el")
@@ -367,7 +357,7 @@
 
 
 ;; window frame title
-(setq frame-title-format "%b (%f)")
+(setq frame-title-format "%b (%f) - emacs")
 (setq icon-title-format "emacs [%b]")
 
 
