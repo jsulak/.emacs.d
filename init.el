@@ -13,7 +13,7 @@
   (load-file "~/.emacs.d/james-windows.el"))
 
 (load-file "~/.emacs.d/org-mode-settings.el")
-
+;(load-file "~/.emacs.d/dired+.el")
 
 ;; Move scroll bar to right
 (setq scroll-bar-mode-explicit t) 
@@ -27,6 +27,9 @@
 
 ;; Have typing get rid of the active selection
 (delete-selection-mode t)
+
+;; Make dired mode search filenames only
+(setq dired-isearch-filenames t)
 
 ;;Add js2 mode for javascript
 (autoload 'js2-mode "js2" nil t)
@@ -215,30 +218,6 @@
 ;;(load-file "~/.emacs.d/smart-tab.el")
 
 
-;;Add ruby support
-(require 'ruby-mode)
-(autoload 'ruby-mode "ruby-mode" "Major mode for editing ruby scripts." t)
-(setq auto-mode-alist  (cons '(".rb$" . ruby-mode) auto-mode-alist))
-(setq auto-mode-alist  (cons '(".rhtml$" . html-mode) auto-mode-alist))
-
-(add-hook 'ruby-mode-hook
-          (lambda()
-            (add-hook 'local-write-file-hooks
-                      '(lambda()
-                         (save-excursion
-                           (untabify (point-min) (point-max))
-                           (delete-trailing-whitespace)
-                           )))
-            (set (make-local-variable 'indent-tabs-mode) 'nil)
-            (set (make-local-variable 'tab-width) 2)
-            (imenu-add-to-menubar "IMENU")
-            (define-key ruby-mode-map "C-m" 'newline-and-indent) ;Not sure if this line is 100% right but it works!
-            (require 'ruby-electric)
-            (ruby-electric-mode t)
-            ))
-
-
-
 ;;(defun try-complete-abbrev (old)
 ;;(if (expand-abbrev) t nil))
 ;;(setq hippie-expand-try-functions-list
@@ -312,19 +291,6 @@
 (setq recentf-max-saved-items 500)
 (setq recentf-max-menu-items 60)
 
-(defun xsteve-ido-choose-from-recentf ()
-  "Use ido to select a recently opened file from the `recentf-list'"
-  (interactive)
-  (let ((home (expand-file-name (getenv "HOME"))))
-    (find-file
-     (ido-completing-read "Recentf open: "
-                          (mapcar (lambda (path)
-                                    (replace-regexp-in-string home "~" path))
-                                  recentf-list)
-                          nil t))))
-
-
-
 (setq ibuffer-shrink-to-minimum-size t)
 (setq ibuffer-always-show-last-buffer nil)
 (setq ibuffer-sorting-mode 'recency)
@@ -346,7 +312,7 @@
 
 
 
-;;Add ACL mode mode for javascript
+;;Add ACL mode mode 
 (autoload 'acl-mode "acl-mode")
 (setq auto-mode-alist (append (list (cons "\\.acl\\'" 'acl-mode))
                                auto-mode-alist))
@@ -482,6 +448,7 @@
 (setq auto-revert-interval 2)
 
 
+
 ;; Install smex.  Must be at end of .emacs
 (require 'smex)
 (smex-initialize)
@@ -517,5 +484,11 @@
                               (bm-buffer-save-all)
                               (bm-repository-save)))
 
-
+;; Bind custom dired functions and fix search
+(setq dired-load-hook
+      (lambda (&rest ignore)
+ (define-key dired-mode-map
+   "l" 'dired-launch-command)
+ (define-key dired-mode-map
+   "f" 'dired-show-only)))
 (put 'dired-find-alternate-file 'disabled nil)
