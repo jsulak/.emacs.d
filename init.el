@@ -15,12 +15,23 @@
 (load-file "~/.emacs.d/org-mode-settings.el")
 ;(load-file "~/.emacs.d/dired+.el")
 
+;(add-to-list 'load-path "~/.emacs.d/dvc/")
+;(require 'dvc-autoloads)
+
+(require 'w32-browser)
+(require 'ahg)
+
 ;; Move scroll bar to right
 (setq scroll-bar-mode-explicit t) 
 (set-scroll-bar-mode `right) 
 
+(setq inhibit-splash-screen t)
 ;; Get rid of the menu bar
 (menu-bar-mode 0)
+
+;; window frame title
+(setq frame-title-format "%b (%f) - emacs")
+(setq icon-title-format "emacs [%b]")
 
 ;; Delete files into trash
 (setq delete-by-moving-to-trash t)
@@ -103,13 +114,13 @@
 
 
 ;; recentf stuff
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-menu-items 25)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+;(require 'recentf)
+;(recentf-mode 1)
+;(setq recentf-max-menu-items 25)
+;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 
-(setq inhibit-splash-screen t)
+
 
 
 ;;Add color themes
@@ -306,9 +317,6 @@
 ;;(resize-minibuffer-mode)
 
 
-;; window frame title
-(setq frame-title-format "%b (%f) - emacs")
-(setq icon-title-format "emacs [%b]")
 
 
 
@@ -386,6 +394,7 @@
 
 
 ;; Add nav menu
+(add-to-list 'load-path "~/.emacs.d/nav")
 (require 'nav)
 
 ;;Add grep Buffers
@@ -484,11 +493,3 @@
                               (bm-buffer-save-all)
                               (bm-repository-save)))
 
-;; Bind custom dired functions and fix search
-(setq dired-load-hook
-      (lambda (&rest ignore)
- (define-key dired-mode-map
-   "l" 'dired-launch-command)
- (define-key dired-mode-map
-   "f" 'dired-show-only)))
-(put 'dired-find-alternate-file 'disabled nil)
