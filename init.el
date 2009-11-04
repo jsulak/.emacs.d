@@ -19,7 +19,9 @@
 ;(require 'dvc-autoloads)
 
 (require 'w32-browser)
-(require 'ahg)
+;(require 'ahg)
+;(require 'sunrise-commander)
+(require 'remember)
 
 ;; Move scroll bar to right
 (setq scroll-bar-mode-explicit t) 
@@ -127,10 +129,14 @@
 (setq load-path (append load-path '("~/.emacs.d/themes/")))
 (require 'color-theme)
 (color-theme-initialize)
+(load-file "~/.emacs.d/gentooish.el")
+;;(color-theme-gentooish)
 (load-file "~/.emacs.d/zenburn.el")
 ;;(color-theme-zenburn)
 (load-file "~/.emacs.d/ruby-blue-theme.el")
 (color-theme-ruby-blue)
+
+
 
 ;; Toggle line numbers
 (require 'linum)
@@ -339,7 +345,7 @@
 
 
 ;; Turn on emacs server
-;;(server-start)
+;(server-start)
 
 ;;Prevent backup files from being made
 (setq make-backup-files nil)
@@ -431,14 +437,14 @@
 (global-set-key [(f5)] 'revert-buffer)
 
 ;;Provide short-cut for swap-windows (F8)
-(global-set-key [(f8)] 'swap-windows)
-(global-set-key [(f9)] 'nav)
+(global-set-key [(f6)] 'swap-windows)
+;(global-set-key [(f9)] 'nav)
 
 ;;Set keybinding for functions in efunc.el
 (global-set-key [(meta f10)] 'my-ido-find-tag)
 
-(global-set-key [f11] 'bubble-buffer-next)
-(global-set-key [(shift f11)] 'bubble-buffer-previous)
+;(global-set-key [f11] 'bubble-buffer-next)
+;(global-set-key [(shift f11)] 'bubble-buffer-previous)
 (global-set-key [(meta f11)] 'xsteve-ido-choose-from-recentf)
 
 (global-set-key [(meta f12)] 'recentf-open-files)
@@ -453,19 +459,27 @@
 
 (global-set-key [(C-return)] 'dabbrev-expand)
 
+
+;; Org-mode key bindings
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+
+(global-set-key (kbd "<f11>") 'org-clock-goto)
+(global-set-key (kbd "C-<f11>") 'org-clock-in)
+(global-set-key (kbd "C-M-r") 'org-remember)
+(global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
+(global-set-key (kbd "<f9> b") 'bbdb)
+(global-set-key (kbd "<f9> c") 'calendar)
+(global-set-key (kbd "<f9> f") 'boxquote-insert-file)
+(global-set-key (kbd "<f9> i") (lambda ()
+                                 (interactive)
+                                 (info "~/git/org-mode/doc/org.info")))
+(global-set-key (kbd "<f9> o") 'org-occur)
+(global-set-key (kbd "<f9> r") 'boxquote-region)
+(global-set-key (kbd "<f7>") 'org-agenda)
 ;;Set auto-revert interval to be faster
-(setq auto-revert-interval 2)
-
-
-
-;; Install smex.  Must be at end of .emacs
-(require 'smex)
-(smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-(global-set-key (kbd "C-c M-x") 'smex-update-and-run)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+;;(setq auto-revert-interval 2)
 
 ;; Visible bookmakrs
 (setq bm-restore-repository-on-load t)
@@ -493,3 +507,12 @@
                               (bm-buffer-save-all)
                               (bm-repository-save)))
 
+
+;; Install smex.  Must be at end of .emacs
+(require 'smex)
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(global-set-key (kbd "C-c M-x") 'smex-update-and-run)
+;; This is your old M-x.
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
