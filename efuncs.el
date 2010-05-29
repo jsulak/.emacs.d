@@ -184,5 +184,16 @@ When called twice restore the window configuration before the split."
 (interactive)
 (shell-command (concat "explorer " (replace-regexp-in-string "/" "\\\\" (file-name-directory (buffer-file-name)) t t))))
 
+
+
+;; Formats entire buffer
+(fset 'indent-all
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([24 104 134217848 105 110 100 101 110 116 45 114 101 103 105 111 110 return 21 67108896 21 67108896] 0 "%d")) arg)))
+
+;; Finds all the TODO and NOTE items in source code
+(fset 'find-todo
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217843 111 84 79 68 79 92 124 78 79 84 69 58 left left left left left left left 58 end return] 0 "%d")) arg)))
+
+
 (provide 'efuncs)
 

@@ -2,6 +2,9 @@
 (setq load-path
        (append load-path
  	      '("~/.emacs.d/")))
+(setq load-path
+      (append load-path
+	      '("~/.emacs.d/external")))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
@@ -13,22 +16,58 @@
   (load-file "~/.emacs.d/james-windows.el"))
 
 (load-file "~/.emacs.d/org-mode-settings.el")
-;(load-file "~/.emacs.d/dired+.el")
+
+;; Load custom function
+(require 'efuncs)
 
 
-(require 'w32-browser)
+;; ================================
+;; Appearance 
+;; ================================
 
 ;; Move scroll bar to right
 (setq scroll-bar-mode-explicit t) 
 (set-scroll-bar-mode `right) 
-
 (setq inhibit-splash-screen t)
-;; Get rid of the menu bar
 (menu-bar-mode 0)
 
 ;; window frame title
 (setq frame-title-format "%b (%f) - emacs")
 (setq icon-title-format "emacs [%b]")
+
+;;Add color themes
+(setq load-path (append load-path '("~/.emacs.d/themes/")))
+(require 'color-theme)
+(color-theme-initialize)
+(load-file "~/.emacs.d/external/ruby-blue-theme.el")
+(color-theme-ruby-blue)
+
+(require 'linum)
+
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+(add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
+
+;; Add line highlighting
+(global-hl-line-mode 1)
+(set-face-background 'hl-line "#19293A")
+
+;; Add color to a shell running in emacs 'M-x shell'
+(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+
+;; ================================
+;; Behavior
+;; ================================
+
+(ido-mode 1)
+(setq ido-enable-flex-matching t)
+
+;;auto indent
+(define-key global-map (kbd "RET") 'newline-and-indent)
+
+;;paren highlighting
+(show-paren-mode 1)
 
 ;; Delete files into trash
 (setq delete-by-moving-to-trash t)
@@ -39,49 +78,24 @@
 ;; Make dired mode search filenames only
 (setq dired-isearch-filenames t)
 
-;;Add js2 mode for javascript
-(autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;;http://www.xsteve.at/prg/emacs/power-user-tips.html
+(setq recentf-max-saved-items 500)
+(setq recentf-max-menu-items 60)
+
+(setq ibuffer-shrink-to-minimum-size t)
+(setq ibuffer-always-show-last-buffer nil)
+(setq ibuffer-sorting-mode 'recency)
+(setq ibuffer-use-header-line t)
+
+;;; Make all yes-or-no questions as y-or-n
+(fset 'yes-or-no-p 'y-or-n-p)
+(column-number-mode 1)
 
 ;; recentf stuff
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
-;;(global-set-key "\C-x\ r" 'recentf-open-files)
-
-;;(require 'sr-speedbar)
-;;(global-set-key [(super ?s)] 'sr-speedbar-toggle)
-
-;; Use cperl-mode instead of the default perl-mode
-;;(add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
-;; (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
-;; (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
-;; (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
-
-(defalias 'perl-mode 'cperl-mode)
-(defun pde-perl-mode-hook ()
-  (abbrev-mode t)
-  (add-to-list 'cperl-style-alist
-               '("PDE"
-                 (cperl-auto-newline                         . t)
-                 (cperl-brace-offset                         . 0)
-                 (cperl-close-paren-offset                   . -4)
-                 (cperl-continued-brace-offset               . 0)
-                 (cperl-continued-statement-offset           . 4)
-                ;; (cperl-extra-newline-before-brace           . nil)
-                ;; (cperl-extra-newline-before-brace-multiline . nil)
-                 (cperl-indent-level                         . 4)
-                 (cperl-indent-parens-as-block               . t)
-                 (cperl-label-offset                         . -4)
-                 (cperl-merge-trailing-else                  . t)
-                 (cperl-tab-always-indent                    . t)))
-  (cperl-set-style "PDE"))
-
-(setq cperl-invalid-face nil) 
-;;(setq cperl-electric-keywords t) ;; expands for keywords such as
-                                 ;; foreach, while, etc...
-;; (setq cperl-electric-parens t)
 
 ;; M-SPC not available, window manager take it away
 (global-set-key (kbd "M-'") 'just-one-space)
@@ -109,277 +123,6 @@
 (setq comint-completion-addsuffix '("/" . ""))
 ;;(setq-default indent-tabs-mode nil)
 
-
-;; recentf stuff
-;(require 'recentf)
-;(recentf-mode 1)
-;(setq recentf-max-menu-items 25)
-;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
-
-
-
-
-;;Add color themes
-(setq load-path (append load-path '("~/.emacs.d/themes/")))
-(require 'color-theme)
-(color-theme-initialize)
-(load-file "~/.emacs.d/gentooish.el")
-;;(color-theme-gentooish)
-(load-file "~/.emacs.d/zenburn.el")
-;;(color-theme-zenburn)
-(load-file "~/.emacs.d/ruby-blue-theme.el")
-(color-theme-ruby-blue)
-
-
-;; Toggle line numbers
-(require 'linum)
-;;(global-linum-mode t)
-(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-(add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
-
-;; ido-mode
-(ido-mode 1)
-(setq ido-enable-flex-matching t)
-;(require 'template-simple)
-
-;;Add nxml mode
-(load "~/.emacs.d/nxml-mode/rng-auto.el")
-
-(setq auto-mode-alist
-        (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
-	      auto-mode-alist))
-
-;;auto indent
-(define-key global-map (kbd "RET") 'newline-and-indent)
-
-;;paren highlighting
-(show-paren-mode 1)
-
-;;electric pairs
-;;(pair-mode 1)
-
-;;Add pymacs
-
-;;(autoload 'pymacs-apply "pymacs")
-;;(autoload 'pymacs-call "pymacs")
-;;(autoload 'pymacs-eval "pymacs" nil t)
-;;(autoload 'pymacs-exec "pymacs" nil t)
-;;(autoload 'pymacs-load "pymacs" nil t)
-;;(eval-after-load "pymacs"
-;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
-
-;;add ropemacs
-
-;;(require 'pymacs)
-;;(pymacs-load "ropemacs" "rope-")
-
-
-;;Add ECB stuff
-
-;;(add-to-list 'load-path "~/.emacs.d/eieio-0.17")
-
-;;(add-to-list 'load-path "~/.emacs.d/semantic-1.4.4")
-;;(setq semantic-load-turn-everything-on t)
-;;(require 'semantic-load)
-
-
-;;(add-to-list 'load-path "~/.emacs.d/speedbar-0.14beta4")
-;; (autoload 'speedbar-frame-mode "speedbar" "Popup a speedbar frame" t)
-;; (autoload 'speedbar-get-focus "speedbar" "Jump to speedbar frame" t)
-
-;;(add-to-list 'load-path
-;;                   "~/.emacs.d/ecb-2.32")
-;;(require 'ecb)
-
-
-;;The following is from http://wttools.sourceforge.net/emacs-stuff/emacs.html
-
-;;; Make all yes-or-no questions as y-or-n
-(fset 'yes-or-no-p 'y-or-n-p)
-(column-number-mode 1)
-
-;;; Excellent package for better scrolling in emacs
-;;; should be default package. But now it can be downloaded
-;;; from: http://user.it.uu.se/~mic/pager.el
-(require 'pager)
-     (global-set-key "\C-v"	   'pager-page-down)
-     (global-set-key [next] 	   'pager-page-down)
-     (global-set-key "\ev"	   'pager-page-up)
-     (global-set-key [prior]	   'pager-page-up)
-     (global-set-key '[M-up]    'pager-row-up)
-     (global-set-key '[M-kp-8]  'pager-row-up)
-     (global-set-key '[M-down]  'pager-row-down)
-     (global-set-key '[M-kp-2]  'pager-row-down)
-
-
-;;Add warnings before killing modified buffers
-;;(defun maybe-kill-buffer ()
-;;  (if (and (not buffer-file-name)
-;;           (buffer-modified-p)
-;;	   (not (equal (buffer-name) "*Open Recent*")))
-      ;; buffer is not visiting a file
-;;      (y-or-n-p "This buffer is not visiting a file but has been edited.  Kill it anyway? ")
- ;;   t))
-
-;;(add-to-list 'kill-buffer-query-functions 'maybe-kill-buffer)
-
-
-
-
-;;Add smart tab
-;;(load-file "~/.emacs.d/smart-tab.el")
-
-
-;;(defun try-complete-abbrev (old)
-;;(if (expand-abbrev) t nil))
-;;(setq hippie-expand-try-functions-list
-;;Set ctrl-z to undo
-(global-set-key "\C-z" 'undo)
-
-;;'(try-complete-abbrev
-;;try-complete-file-name
-;;try-expand-dabbrev))
-
-;;Add support for dos batch files
-(require 'dosbat)
-(setq auto-mode-alist
-        (cons '("\\.\\(bat\\|cmd\\)\\'" . bat-mode)
-	      auto-mode-alist))
-
-;;Add support for xquery-mode
-(add-to-list 'load-path "~/.emacs.d/xquery")
-(require 'xquery-mode)
-(setq auto-mode-alist
-      (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode)
-	    auto-mode-alist))
-
-
-;;Add Tab bar
-;(require 'tabbar)
-;(tabbar-mode 1)
-;;(setq tabbar-buffer-groups-function
-;;          (lambda (buffer)
-;;            (list "All buffers")))
-;; (dolist (func '(tabbar-mode tabbar-forward-tab tabbar-forward-group tabbar-backward-tab tabbar-backward-group))
-;;      (autoload func "tabbar" "Tabs at the top of buffers and easy control-tab navigation"))
-;;     
-;;    (defmacro defun-prefix-alt (name on-no-prefix on-prefix &optional do-always)
-;;      `(defun ,name (arg)
-;;         (interactive "P")
-;;         ,do-always
-;;         (if (equal nil arg)
-;;             ,on-no-prefix
-;;           ,on-prefix)))
-;;     
-;;    (defun-prefix-alt shk-tabbar-next (tabbar-forward-tab) (tabbar-forward-group) (tabbar-mode 1))
-;;    (defun-prefix-alt shk-tabbar-prev (tabbar-backward-tab) (tabbar-backward-group) (tabbar-mode 1))
-;;     
-;;    (global-set-key [(control tab)] 'shk-tabbar-next)
-;;    (global-set-key [(control shift tab)] 'shk-tabbar-prev)
-;;
-;;(when (require 'tabbar nil t)
-;;      (setq tabbar-buffer-groups-function
-;;    	(lambda (b) (list "All Buffers")))
-;;      (setq tabbar-buffer-list-function
-;;    	(lambda ()
-;;    	  (remove-if
-;;    	   (lambda(buffer)
-;;    	     (find (aref (buffer-name buffer) 0) " *"))
-;;    	   (buffer-list))))
-;;      (tabbar-mode 1))
-
-
-;; Keyboard macros
-
-;; Formats entire buffer
-(fset 'indent-all
-   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([24 104 134217848 105 110 100 101 110 116 45 114 101 103 105 111 110 return 21 67108896 21 67108896] 0 "%d")) arg)))
-
-;; Finds all the TODO and NOTE items in source code
-(fset 'find-todo
-   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217843 111 84 79 68 79 92 124 78 79 84 69 58 left left left left left left left 58 end return] 0 "%d")) arg)))
-
-
-;;http://www.xsteve.at/prg/emacs/power-user-tips.html
-(setq recentf-max-saved-items 500)
-(setq recentf-max-menu-items 60)
-
-(setq ibuffer-shrink-to-minimum-size t)
-(setq ibuffer-always-show-last-buffer nil)
-(setq ibuffer-sorting-mode 'recency)
-(setq ibuffer-use-header-line t)
-
-
-(require 'bubble-buffer)
-(setq bubble-buffer-omit-regexp "\\(^ .+$\\|\\*Messages\\*\\|*compilation\\*\\|\\*.+output\\*$\\|\\*TeX Help\\*$\\|\\*vc-diff\\*\\|\\*Occur\\*\\|\\*grep\\*\\|\\*cvs-diff\\*\\)")
-
-
-
-;; To use resize-minibuffer-mode, uncomment this and include in your .emacs:
-;;(resize-minibuffer-mode)
-
-
-
-
-
-;;Add ACL mode mode 
-(autoload 'acl-mode "acl-mode")
-(setq auto-mode-alist (append (list (cons "\\.acl\\'" 'acl-mode))
-                               auto-mode-alist))
-
-
-
-;;
-;; This removes unsightly ^M characters that would otherwise
-;; appear in the output of java applications.
-;;
-(add-hook 'comint-output-filter-functions
-          'comint-strip-ctrl-m)
-;; Add color to a shell running in emacs 'M-x shell'
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
-
-;; Turn on emacs server
-;(server-start)
-
-;;Prevent backup files from being made
-(setq make-backup-files nil)
-
-;;Import external functions file
-(require 'efuncs)
-(require 'etags)
-
-(require 'python)
-(require 'yasnippet)
-
-;(autoload 'python-mode "python-mode" "Python Mode." t)
-;(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-;(add-to-list 'interpreter-mode-alist '("python" . python-mode))
-
-
-;;Pymacs
-;(autoload 'pymacs-apply "pymacs")
-;(autoload 'pymacs-call "pymacs")
-;(autoload 'pymacs-eval "pymacs" nil t)
-;(autoload 'pymacs-exec "pymacs" nil t)
-;(autoload 'pymacs-load "pymacs" nil t)
-;;(eval-after-load "pymacs"
-;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
-
-;(pymacs-load "ropemacs" "rope-")
-;(setq ropemacs-enable-autoimport t)
-
-
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/snippets")
-
-;(require 'auto-complete)
-;(global-auto-complete-mode t)
-;(require 'auto-complete-yasnippet)
-;(set-default 'ac-sources '(ac-source-yasnippet ac-source-abbrev ac-source-words-in-buffer ac-source-files-in-current-dir ac-source-symbols))
-
 (defadvice kill-ring-save (before slick-copy activate compile)
   "When called interactively with no active region, copy a single line instead."
   (interactive
@@ -394,27 +137,143 @@
      (list (line-beginning-position)
 	   (line-end-position)))))
 
-
-
-;; Add nav menu
-(add-to-list 'load-path "~/.emacs.d/nav")
-(require 'nav)
-
-;;Add grep Buffers
-(require 'grep-buffers)
-
 ;; Activate winner mode
 (when (fboundp 'winner-mode)
       (winner-mode 1))
 
-;; Add line highlighting
-(global-hl-line-mode 1)
-;;(set-face-background 'hl-line "#1A2B3D")
-(set-face-background 'hl-line "#19293A")
+;;Prevent backup files from being made
+(setq make-backup-files nil)
 
 
-;; Add screencast mode
-;;(auto-load 'screencast "screencast")
+;; ========================
+;; Major modes 
+;; ========================
+
+(defalias 'perl-mode 'cperl-mode)
+(defun pde-perl-mode-hook ()
+  (abbrev-mode t)
+  (add-to-list 'cperl-style-alist
+               '("PDE"
+                 (cperl-auto-newline                         . t)
+                 (cperl-brace-offset                         . 0)
+                 (cperl-close-paren-offset                   . -4)
+                 (cperl-continued-brace-offset               . 0)
+                 (cperl-continued-statement-offset           . 4)
+                ;; (cperl-extra-newline-before-brace           . nil)
+                ;; (cperl-extra-newline-before-brace-multiline . nil)
+                 (cperl-indent-level                         . 4)
+                 (cperl-indent-parens-as-block               . t)
+                 (cperl-label-offset                         . -4)
+                 (cperl-merge-trailing-else                  . t)
+                 (cperl-tab-always-indent                    . t)))
+  (cperl-set-style "PDE"))
+
+(setq cperl-invalid-face nil) 
+
+;;Add nxml mode
+(load "~/.emacs.d/nxml-mode/rng-auto.el")
+(setq auto-mode-alist
+        (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
+	      auto-mode-alist))
+
+;;Add js2 mode for javascript
+(autoload 'js2-mode "js2" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
+;;Add support for dos batch files
+(require 'dosbat)
+(setq auto-mode-alist
+        (cons '("\\.\\(bat\\|cmd\\)\\'" . bat-mode)
+	      auto-mode-alist))
+
+;;Add support for xquery-mode
+(require 'xquery-mode)
+(setq auto-mode-alist
+      (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode)
+	    auto-mode-alist))
+
+;;Add ACL mode mode 
+(autoload 'acl-mode "acl-mode")
+(setq auto-mode-alist (append (list (cons "\\.acl\\'" 'acl-mode))
+                               auto-mode-alist))
+
+
+;; This removes unsightly ^M characters that would otherwise
+;; appear in the output of java applications.
+(add-hook 'comint-output-filter-functions
+          'comint-strip-ctrl-m)
+
+
+
+;; =========================
+;; External packages
+;; =========================
+
+
+;;The following is from http://wttools.sourceforge.net/emacs-stuff/emacs.html
+;;; Excellent package for better scrolling in emacs
+;;; should be default package. But now it can be downloaded
+;;; from: http://user.it.uu.se/~mic/pager.el
+(require 'pager)
+     (global-set-key "\C-v"	   'pager-page-down)
+     (global-set-key [next] 	   'pager-page-down)
+     (global-set-key "\ev"	   'pager-page-up)
+     (global-set-key [prior]	   'pager-page-up)
+     (global-set-key '[M-up]    'pager-row-up)
+     (global-set-key '[M-kp-8]  'pager-row-up)
+     (global-set-key '[M-down]  'pager-row-down)
+     (global-set-key '[M-kp-2]  'pager-row-down)
+
+
+(require 'etags)
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/snippets")
+
+(add-to-list 'load-path "~/.emacs.d/external/nav")
+(require 'nav)
+(require 'grep-buffers)
+(require 'w32-browser)
+
+
+;; Visible bookmakrs
+(setq bm-restore-repository-on-load t)
+(require 'bm)
+(global-set-key (kbd "<M-f2>") 'bm-toggle)
+(global-set-key (kbd "<f2>")   'bm-next)
+(global-set-key (kbd "<S-f2>") 'bm-previous)
+ 
+;; make bookmarks persistent as default
+(setq-default bm-buffer-persistence t)
+ 
+;; Loading the repository from file when on start up.
+(add-hook' after-init-hook 'bm-repository-load)
+ 
+;; Restoring bookmarks when on file find.
+(add-hook 'find-file-hooks 'bm-buffer-restore)
+ 
+;; Saving bookmark data on killing a buffer
+(add-hook 'kill-buffer-hook 'bm-buffer-save)
+ 
+;; Saving the repository to file when on exit.
+;; kill-buffer-hook is not called when emacs is killed, so we
+;; must save all bookmarks first.
+(add-hook 'kill-emacs-hook '(lambda nil
+                              (bm-buffer-save-all)
+                              (bm-repository-save)))
+
+;; Bookmark customizations
+(setq 
+  bookmark-default-file "~/.emacs.d/bookmarks" ;; keep my ~/ clean
+  bookmark-save-flag 1)                        ;; autosave each change)
+
+
+;; =======================
+;; Keybindings
+;; =======================
+
+;;Set ctrl-z to undo
+(global-set-key "\C-z" 'undo)
 
 ;;set up alternate alt key
 (global-set-key "\C-x\C-m" 'execute-extended-command)
@@ -483,37 +342,7 @@
 
 (global-set-key "\M-g" 'goto-line)
 
-;; Bookmark customizations
-(setq 
-  bookmark-default-file "~/.emacs.d/bookmarks" ;; keep my ~/ clean
-  bookmark-save-flag 1)                        ;; autosave each change)
 
-
-;; Visible bookmakrs
-(setq bm-restore-repository-on-load t)
-(require 'bm)
-(global-set-key (kbd "<M-f2>") 'bm-toggle)
-(global-set-key (kbd "<f2>")   'bm-next)
-(global-set-key (kbd "<S-f2>") 'bm-previous)
- 
-;; make bookmarks persistent as default
-(setq-default bm-buffer-persistence t)
- 
-;; Loading the repository from file when on start up.
-(add-hook' after-init-hook 'bm-repository-load)
- 
-;; Restoring bookmarks when on file find.
-(add-hook 'find-file-hooks 'bm-buffer-restore)
- 
-;; Saving bookmark data on killing a buffer
-(add-hook 'kill-buffer-hook 'bm-buffer-save)
- 
-;; Saving the repository to file when on exit.
-;; kill-buffer-hook is not called when emacs is killed, so we
-;; must save all bookmarks first.
-(add-hook 'kill-emacs-hook '(lambda nil
-                              (bm-buffer-save-all)
-                              (bm-repository-save)))
 
 
 ;; Install smex.  Must be at end of .emacs
