@@ -15,13 +15,8 @@
 (load-file "~/.emacs.d/org-mode-settings.el")
 ;(load-file "~/.emacs.d/dired+.el")
 
-;(add-to-list 'load-path "~/.emacs.d/dvc/")
-;(require 'dvc-autoloads)
 
 (require 'w32-browser)
-;(require 'ahg)
-;(require 'sunrise-commander)
-(require 'remember)
 
 ;; Move scroll bar to right
 (setq scroll-bar-mode-explicit t) 
@@ -137,10 +132,11 @@
 (color-theme-ruby-blue)
 
 
-
 ;; Toggle line numbers
 (require 'linum)
 ;;(global-linum-mode t)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+(add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
 
 ;; ido-mode
 (ido-mode 1)
@@ -252,6 +248,7 @@
 	      auto-mode-alist))
 
 ;;Add support for xquery-mode
+(add-to-list 'load-path "~/.emacs.d/xquery")
 (require 'xquery-mode)
 (setq auto-mode-alist
       (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode)
@@ -363,11 +360,11 @@
 
 
 ;;Pymacs
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
+;(autoload 'pymacs-apply "pymacs")
+;(autoload 'pymacs-call "pymacs")
+;(autoload 'pymacs-eval "pymacs" nil t)
+;(autoload 'pymacs-exec "pymacs" nil t)
+;(autoload 'pymacs-load "pymacs" nil t)
 ;;(eval-after-load "pymacs"
 ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
 
@@ -416,6 +413,9 @@
 (set-face-background 'hl-line "#19293A")
 
 
+;; Add screencast mode
+;;(auto-load 'screencast "screencast")
+
 ;;set up alternate alt key
 (global-set-key "\C-x\C-m" 'execute-extended-command)
 (global-set-key "\C-c\C-m" 'execute-extended-command)
@@ -448,7 +448,7 @@
 (global-set-key [(meta f11)] 'xsteve-ido-choose-from-recentf)
 
 (global-set-key [(meta f12)] 'recentf-open-files)
-(global-set-key [(f12)] 'ibuffer)
+(global-set-key [(f7)] 'ibuffer)
 
 (global-set-key [S-left] 'windmove-left)          ; move to left window
 (global-set-key [S-right] 'windmove-right)        ; move to right window
@@ -467,7 +467,7 @@
 
 (global-set-key (kbd "<f11>") 'org-clock-goto)
 (global-set-key (kbd "C-<f11>") 'org-clock-in)
-(global-set-key (kbd "C-M-r") 'org-remember)
+(global-set-key (kbd "<f10>") 'org-remember)
 (global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
 (global-set-key (kbd "<f9> b") 'bbdb)
 (global-set-key (kbd "<f9> c") 'calendar)
@@ -477,9 +477,17 @@
                                  (info "~/git/org-mode/doc/org.info")))
 (global-set-key (kbd "<f9> o") 'org-occur)
 (global-set-key (kbd "<f9> r") 'boxquote-region)
-(global-set-key (kbd "<f7>") 'org-agenda)
+(global-set-key (kbd "<f12>") 'org-agenda)
 ;;Set auto-revert interval to be faster
 ;;(setq auto-revert-interval 2)
+
+(global-set-key "\M-g" 'goto-line)
+
+;; Bookmark customizations
+(setq 
+  bookmark-default-file "~/.emacs.d/bookmarks" ;; keep my ~/ clean
+  bookmark-save-flag 1)                        ;; autosave each change)
+
 
 ;; Visible bookmakrs
 (setq bm-restore-repository-on-load t)

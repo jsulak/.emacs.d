@@ -33,4 +33,24 @@
 (setq explicit-shell-file-name shell-file-name) 
 
 
+;; Bind custom dired functions and fix search
+(setq dired-load-hook
+      (lambda (&rest ignore)
+ (define-key dired-mode-map
+   "l" 'dired-w32-browser)
+ (define-key dired-mode-map
+   "e" 'dired-w32explore)
+ (define-key dired-mode-map
+   "f" 'dired-show-only)))
+(put 'dired-find-alternate-file 'disabled nil)
+
+
+;; Set tramp-default-method 
+(cond  ((eq window-system 'w32)
+      (setq tramp-default-method "sshx"))
+      (t
+      (setq tramp-default-method "pscp")))
+
+
+
 (provide 'james-windows)
