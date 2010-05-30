@@ -28,4 +28,6 @@
 ;	    (when (file-exists-p s-name)
 ;	      (delete-file server-name))))
 
+(require 'james-gui)
+
 (provide 'james-linux)

@@ -51,6 +51,6 @@
       (t
       (setq tramp-default-method "pscp")))
 
-
+(require 'james-gui)
 
 (provide 'james-windows)

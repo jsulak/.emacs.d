@@ -9,12 +9,12 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
-;; Conditionally load os-specific initialization files
-(if (or (eq system-type 'gnu/linux)
-	(eq system-type 'linux))
-    (load-file "~/.emacs.d/james-linux.el")
-  (load-file "~/.emacs.d/james-windows.el"))
-
+(cond ((or (eq system-type 'gnu/linux)
+	  (eq system-type 'linux))
+       (load-file "~/.emacs.d/james-linux.el"))
+      ((eq system-type 'windows-nt)
+       (load-file "~/.emacs.d/james-windows.el")))
+             
 (load-file "~/.emacs.d/org-mode-settings.el")
 
 ;; Load custom function
@@ -25,35 +25,14 @@
 ;; Appearance 
 ;; ================================
 
-;; Move scroll bar to right
-(setq scroll-bar-mode-explicit t) 
-(set-scroll-bar-mode `right) 
 (setq inhibit-splash-screen t)
 (menu-bar-mode 0)
-
-;; window frame title
-(setq frame-title-format "%b (%f) - emacs")
-(setq icon-title-format "emacs [%b]")
-
-;;Add color themes
-(setq load-path (append load-path '("~/.emacs.d/themes/")))
-(require 'color-theme)
-(color-theme-initialize)
-(load-file "~/.emacs.d/external/ruby-blue-theme.el")
-(color-theme-ruby-blue)
 
 (require 'linum)
 
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
 
-;; Add line highlighting
-(global-hl-line-mode 1)
-(set-face-background 'hl-line "#19293A")
-
-;; Add color to a shell running in emacs 'M-x shell'
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 
 ;; ================================
@@ -226,6 +205,7 @@
 
 
 (require 'etags)
+(require 'cl)
 (require 'yasnippet)
 (yas/initialize)
 (yas/load-directory "~/.emacs.d/snippets")
