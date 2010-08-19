@@ -56,6 +56,8 @@
 
 ;; Make dired mode search filenames only
 (setq dired-isearch-filenames t)
+;; Make dired open directories in same buffer
+(put 'dired-find-alternate-file 'disabled nil)
 
 ;;http://www.xsteve.at/prg/emacs/power-user-tips.html
 (setq recentf-max-saved-items 500)
@@ -151,6 +153,7 @@
 
 ;;Add nxml mode
 (load "~/.emacs.d/nxml-mode/rng-auto.el")
+(push "b:/scripts/catalog/emacs-catalog.xml" rng-schema-locating-files-default)
 (setq auto-mode-alist
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
@@ -247,13 +250,16 @@
   bookmark-default-file "~/.emacs.d/bookmarks" ;; keep my ~/ clean
   bookmark-save-flag 1)                        ;; autosave each change)
 
+;; Undo tree
+(require 'undo-tree)
+
 
 ;; =======================
 ;; Keybindings
 ;; =======================
 
 ;;Set ctrl-z to undo
-(global-set-key "\C-z" 'undo)
+;;(global-set-key "\C-z" 'undo)
 
 ;;set up alternate alt key
 (global-set-key "\C-x\C-m" 'execute-extended-command)
