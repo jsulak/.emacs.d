@@ -30,7 +30,8 @@
 ;;
 (setq shell-file-name "bash")
 (setenv "SHELL" shell-file-name) 
-(setq explicit-shell-file-name shell-file-name) 
+(setq explicit-shell-file-name shell-file-name)
+(setq explicit-sh-args '("--login" "-i"))
 
 
 ;; Bind custom dired functions and fix search
@@ -45,11 +46,16 @@
 (put 'dired-find-alternate-file 'disabled nil)
 
 
+(require 'tramp)
+(setq tramp-default-method "ssh")
+(nconc (cadr (assq 'tramp-login-args (assoc "ssh" tramp-methods)))  '(("bash" "-i")))
+(setcdr (assq 'tramp-remote-sh (assoc "ssh" tramp-methods)) '("bash -i"))
+;(setq tramp-default-method "plink")
 ;; Set tramp-default-method 
-(cond  ((eq window-system 'w32)
-      (setq tramp-default-method "sshx"))
-      (t
-      (setq tramp-default-method "pscp")))
+;(cond  ((eq window-system 'w32)
+;      (setq tramp-default-method "sshx"))
+;      (t
+;      (setq tramp-default-method "pscp")))
 
 (require 'james-gui)
 
