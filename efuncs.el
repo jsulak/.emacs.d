@@ -171,11 +171,6 @@ When called twice restore the window configuration before the split."
 
 ;; or choose some better bindings....
 
-;; duplicate a line
-(global-set-key (kbd "C-c y") 'djcb-duplicate-line)
-
-;; duplicate a line and comment the first
-(global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))
 
 ;; Open a windows explorer window at the location of the current buffer
 ;; from http://zhangda.wordpress.com/2010/02/03/open-the-path-of-the-current-buffer-within-emacs/

@@ -191,6 +191,8 @@
 ;; External packages
 ;; =========================
 
+(require 'autopair)
+(autopair-global-mode) ;; enable autopair in all buffers 
 
 ;;The following is from http://wttools.sourceforge.net/emacs-stuff/emacs.html
 ;;; Excellent package for better scrolling in emacs
@@ -252,11 +254,17 @@
 
 ;; Undo tree
 (require 'undo-tree)
-
+(global-undo-tree-mode)
 
 ;; =======================
 ;; Keybindings
 ;; =======================
+
+
+;; duplicate a line
+(global-set-key (kbd "C-c y") 'djcb-duplicate-line)
+;; duplicate a line and comment the first
+(global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))
 
 ;;Set ctrl-z to undo
 ;;(global-set-key "\C-z" 'undo)
