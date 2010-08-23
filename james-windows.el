@@ -33,6 +33,9 @@
 (setq explicit-shell-file-name shell-file-name)
 (setq explicit-sh-args '("--login" "-i"))
 
+;; Set python executable path
+(setq python-python-command "C:\\python26\\python.exe")
+
 
 ;; Bind custom dired functions and fix search
 (setq dired-load-hook

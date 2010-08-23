@@ -17,6 +17,7 @@
              
 (load-file "~/.emacs.d/org-mode-settings.el")
 
+
 ;; Load custom function
 (require 'efuncs)
 
@@ -37,6 +38,9 @@
 ;; ================================
 ;; Behavior
 ;; ================================
+
+(setq cua-enable-cua-keys nil) ;; only for rectangles
+(cua-mode t)
 
 (ido-mode 1)
 (setq ido-enable-flex-matching t)

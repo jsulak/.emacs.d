@@ -20,7 +20,7 @@
 (set-scroll-bar-mode `right) 
 
 ;; window frame title
-(setq frame-title-format "Emacs - %b (%f)")
+(setq frame-title-format "emacs - %b (%f)")
 (setq icon-title-format "emacs [%b]")
 
 (custom-set-faces
