@@ -18,7 +18,7 @@
 (load-file "~/.emacs.d/org-mode-settings.el")
 
 
-;; Load custom function
+;; Load custom functions
 (require 'efuncs)
 
 
@@ -39,6 +39,12 @@
 ;; ================================
 ;; Behavior
 ;; ================================
+
+;; Set initial mode to text-mode
+(setq-default initial-major-mode 'text-mode)
+
+;; do not confirm file creation
+(setq confirm-nonexistent-file-or-buffer nil)
 
 (setq cua-enable-cua-keys nil) ;; only for rectangles
 (cua-mode t)
@@ -128,6 +134,18 @@
 
 ;;Prevent backup files from being made
 (setq make-backup-files nil)
+(setq auto-save-default nil)
+
+;; Send deletions to Recycling Bin
+(setq delete-by-moving-to-trash t)
+
+;; uniquify - make buffer names more unique
+(require 'uniquify)
+(setq
+ uniquify-buffer-name-style 'post-forward
+ uniquify-seperator ":"
+ uniquify-after-kill-buffer-p t
+ uniquify-ignore-buffers-re "^\\*")
 
 
 ;; ========================
@@ -199,8 +217,6 @@
 ;; =========================
 ;; External packages
 ;; =========================
-
-(require 'ack)
 
 (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers 

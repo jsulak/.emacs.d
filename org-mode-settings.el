@@ -3,7 +3,7 @@
 
 ;; Org-mode settings
 
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 (global-font-lock-mode 1)
 (setq org-hide-leading-stars t)
 ;; Make TAB the yas trigger key in the org-mode-hook and turn on flyspell mode
