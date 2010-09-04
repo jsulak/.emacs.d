@@ -3,10 +3,11 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#162433" :foreground "#C7D4E2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "outline" :family "Consolas"))))
+ ;; TODO
+; '(default ((t (:inherit nil :stipple nil :background "#162433" :foreground "#C7D4E2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "outline" :family "Consolas"))))
  '(cperl-array-face ((((class color) (background dark)) (:foreground "yellow"))))
  '(cperl-hash-face ((((class color) (background dark)) (:slant italic :weight bold))))
- '(ido-subdir ((((min-colors 88) (class color)) (:foreground "orange"))))
+; '(ido-subdir ((((min-colors 88) (class color)) (:foreground "orange"))))
  '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil)))
  '(linum ((t (:inherit (shadow default) :foreground "darkgray")))))
 
@@ -23,6 +24,14 @@
 ;;
 (setq exec-path (cons "C:/cygwin/bin" exec-path))
 (setenv "PATH" (concat "C:\\cygwin\\bin;" (getenv "PATH")))
+
+;; Prevent issues with the Windows null device (NUL)
+;; when using cygwin find with rgrep.
+(defadvice grep-compute-defaults (around grep-compute-defaults-advice-null-device)
+  "Use cygwin's /dev/null as the null-device."
+  (let ((null-device "/dev/null"))
+	ad-do-it))
+(ad-activate 'grep-compute-defaults)
 
 ;;
 ;; NT-emacs assumes a Windows command shell, which you change

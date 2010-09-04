@@ -21,18 +21,19 @@
 ;; Load custom function
 (require 'efuncs)
 
+
 ;; ================================
 ;; Appearance 
 ;; ================================
 
 (setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
 (menu-bar-mode 0)
 
 (require 'linum)
 
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
-
 
 
 ;; ================================
@@ -182,6 +183,11 @@
 (setq auto-mode-alist (append (list (cons "\\.acl\\'" 'acl-mode))
                                auto-mode-alist))
 
+(require 'csharp-mode)
+
+(setq auto-mode-alist
+(append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+
 
 ;; This removes unsightly ^M characters that would otherwise
 ;; appear in the output of java applications.
@@ -193,6 +199,8 @@
 ;; =========================
 ;; External packages
 ;; =========================
+
+(require 'ack)
 
 (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers 
@@ -315,6 +323,8 @@
 (global-set-key (kbd "C-c y") 'djcb-duplicate-line)
 ;; duplicate a line and comment the first
 (global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))
+;; Join lines
+(global-set-key "\C-x\C-j" 'join-line)
 
 ;;Set ctrl-z to undo
 (global-set-key "\C-z" 'undo)
@@ -328,6 +338,9 @@
 (global-set-key "\C-x\C-k" 'kill-region)
 (global-set-key "\C-c\C-k" 'kill-region)
 (global-set-key "\C-q" 'backward-kill-word)
+
+;; Use ibuffer instead of normal buffer menu
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;; Run shell command
 (global-set-key (kbd "\C-c s") 'shell-command)
@@ -351,7 +364,7 @@
 (global-set-key [(meta f11)] 'xsteve-ido-choose-from-recentf)
 
 (global-set-key [(meta f12)] 'recentf-open-files)
-(global-set-key [(f7)] 'ibuffer)
+;(global-set-key [(f7)] 'ibuffer)
 
 (global-set-key [S-left] 'windmove-left)          ; move to left window
 (global-set-key [S-right] 'windmove-right)        ; move to right window
@@ -386,10 +399,21 @@
 
 (global-set-key "\M-g" 'goto-line)
 
+(global-set-key (kbd "C-c i") 'indent-all-xml)
 
 
+;; =======================
+;; Server
+;; =======================
 
-;; Install smex.  Must be at end of .emacs
+(require 'server)
+(server-start)
+
+
+;; =======================
+;; Smex.  Must be at end of .emacs
+;; =======================
+
 (require 'smex)
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)

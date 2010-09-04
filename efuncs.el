@@ -189,6 +189,24 @@ When called twice restore the window configuration before the split."
 (fset 'find-todo
    (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217843 111 84 79 68 79 92 124 78 79 84 69 58 left left left left left left left 58 end return] 0 "%d")) arg)))
 
+;; From: http://blog.bookworm.at/2007/03/pretty-print-xml-with-emacs.html
+(defun pretty-print-xml (begin end)
+  "Pretty format XML markup in region. You need to have nxml-mode
+http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
+this.  The function inserts linebreaks to separate tags that have
+nothing but whitespace between them.  It then indents the markup
+by using nxml's indentation rules."
+  (interactive "r")
+  (save-excursion
+      (nxml-mode)
+      (goto-char begin)
+      (while (search-forward-regexp "\>[ \\t]*\<" nil t) 
+        (backward-char) (insert "\n"))
+      (indent-region begin end)))
+
+(fset 'indent-all-xml
+   [?\M-< ?\C-  ?\M-> ?\M-x ?p ?r ?e ?t ?t ?y return])
+
 
 (provide 'efuncs)
 
