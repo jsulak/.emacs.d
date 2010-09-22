@@ -47,6 +47,7 @@
 
 
 ;; Bind custom dired functions and fix search
+(setq w32-browser-wait-time 1)
 (setq dired-load-hook
       (lambda (&rest ignore)
  (define-key dired-mode-map

@@ -3,18 +3,18 @@
 (setq load-path (append load-path '("~/.emacs.d/themes/")))
 (require 'color-theme)
 (color-theme-initialize)
-;;(load-file "~/.emacs.d/external/ruby-blue-theme.el")
-;;(color-theme-ruby-blue)
-(load-file "~/.emacs.d/external/color-theme-tangotango.el")
-(color-theme-tangotango)
+(load-file "~/.emacs.d/external/ruby-blue-theme.el")
+(color-theme-ruby-blue)
+;;(load-file "~/.emacs.d/external/color-theme-tangotango.el")
+;;(color-theme-tangotango)
 
 ;; Add line highlighting
 (global-hl-line-mode 1)
 
 ;; TODO
-;;(set-face-background 'hl-line "#19293A")
+(set-face-background 'hl-line "#19293A")
 ;;(set-face-background 'hl-line "#222626")
-(set-face-background 'hl-line "#2B3030")
+;;(set-face-background 'hl-line "#2B3030")
 
 ;; Add color to a shell running in emacs 'M-x shell'
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
