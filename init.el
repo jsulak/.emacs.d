@@ -147,10 +147,15 @@
  uniquify-after-kill-buffer-p t
  uniquify-ignore-buffers-re "^\\*")
 
+;; point stack - forward/back stack for point
+(require 'point-stack)
+
 
 ;; ========================
 ;; Major modes 
 ;; ========================
+
+(setq python-check-command "pyflakes")
 
 (defalias 'perl-mode 'cperl-mode)
 (defun pde-perl-mode-hook ()
@@ -218,8 +223,8 @@
 ;; External packages
 ;; =========================
 
-(require 'autopair)
-(autopair-global-mode) ;; enable autopair in all buffers 
+;;(require 'autopair)
+;;(autopair-global-mode) ;; enable autopair in all buffers 
 
 ;;The following is from http://wttools.sourceforge.net/emacs-stuff/emacs.html
 ;;; Excellent package for better scrolling in emacs
@@ -287,6 +292,10 @@
 (add-to-list 'load-path "~/.emacs.d/external/autocomplete/")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/external/autocomplete//ac-dict")
+
+;; This turns off filename completion everywhere because it crashes in js.
+;; It would be better to do it for js2-mode only
+(defun ac-common-setup ())  
 (ac-config-default)
 
 (ac-set-trigger-key "TAB")
@@ -370,7 +379,13 @@
 
 ;;Provide short-cut for swap-windows (F8)
 (global-set-key [(f6)] 'swap-windows)
-;(global-set-key [(f9)] 'nav)
+(global-set-key [(f7)] 'nav)
+
+;; Point stack bindings
+(global-set-key '[(f8)] 'point-stack-push)
+(global-set-key '[(f9)] 'point-stack-pop)
+(global-set-key '[(f10)] 'point-stack-forward-stack-pop)
+
 
 ;;Set keybinding for functions in efunc.el
 (global-set-key [(meta f10)] 'my-ido-find-tag)
@@ -387,9 +402,10 @@
 (global-set-key [S-up] 'windmove-up)              ; move to upper window
 (global-set-key [S-down] 'windmove-down)          ; move to lower window
 
-(global-set-key (kbd "\C-x 4") 'xsteve-split-window)
+(global-set-key (kbd "\C-x 5") 'xsteve-split-window)
 
 (global-set-key [(C-return)] 'dabbrev-expand)
+
 
 
 ;; Org-mode key bindings
@@ -397,19 +413,19 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
-(global-set-key (kbd "<f11>") 'org-clock-goto)
-(global-set-key (kbd "C-<f11>") 'org-clock-in)
-(global-set-key (kbd "<f10>") 'org-remember)
-(global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
-(global-set-key (kbd "<f9> b") 'bbdb)
-(global-set-key (kbd "<f9> c") 'calendar)
-(global-set-key (kbd "<f9> f") 'boxquote-insert-file)
-(global-set-key (kbd "<f9> i") (lambda ()
-                                 (interactive)
-                                 (info "~/git/org-mode/doc/org.info")))
-(global-set-key (kbd "<f9> o") 'org-occur)
-(global-set-key (kbd "<f9> r") 'boxquote-region)
-(global-set-key (kbd "<f12>") 'org-agenda)
+;(global-set-key (kbd "<f11>") 'org-clock-goto)
+;(global-set-key (kbd "C-<f11>") 'org-clock-in)
+;(global-set-key (kbd "<f10>") 'org-remember)
+;(global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
+;(global-set-key (kbd "<f9> b") 'bbdb)
+;(global-set-key (kbd "<f9> c") 'calendar)
+;(global-set-key (kbd "<f9> f") 'boxquote-insert-file)
+;(global-set-key (kbd "<f9> i") (lambda ()
+;                                 (interactive)
+;                                 (info "~/git/org-mode/doc/org.info")))
+;(global-set-key (kbd "<f9> o") 'org-occur)
+;(global-set-key (kbd "<f9> r") 'boxquote-region)
+;(global-set-key (kbd "<f12>") 'org-agenda)
 ;;Set auto-revert interval to be faster
 ;;(setq auto-revert-interval 2)
 
@@ -443,3 +459,4 @@
 (global-set-key (kbd "C-c M-x") 'smex-update-and-run)
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+(put 'downcase-region 'disabled nil)

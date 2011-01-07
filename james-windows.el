@@ -14,7 +14,7 @@
 ;;Set the default font
 (setq default-frame-alist
       '((font .
-"-outline-Consolas-normal-r-normal-normal-12-97-96-96-c-*-iso8859-1")
+"-outline-Consolas-normal-r-normal-normal-11-97-96-96-c-*-iso8859-1")
         (vertical-scroll-bars . right)))
 
 
@@ -42,9 +42,21 @@
 (setq explicit-shell-file-name shell-file-name)
 (setq explicit-sh-args '("--login" "-i"))
 
-;; Set python executable path
-(setq python-python-command "C:\\python26\\python.exe")
+;; Set up cygwin-mount
+(require 'cygwin-mount)
+(cygwin-mount-activate)
 
+;; Set python executable path;
+(setq python-python-command "C:\\python27\\python.exe")
+
+ ;;pdb setup, note the python version
+ (setq pdb-path 'c:/python27/lib/pdb.py
+       gud-pdb-command-name (symbol-name pdb-path))
+ (defadvice pdb (before gud-query-cmdline activate)
+   "Provide a better default command line when called interactively."
+   (interactive
+    (list (gud-query-cmdline pdb-path
+	 		    (file-name-nondirectory buffer-file-name)))))
 
 ;; Bind custom dired functions and fix search
 (setq w32-browser-wait-time 1)
@@ -60,15 +72,17 @@
 
 
 (require 'tramp)
-(setq tramp-default-method "ssh")
-(nconc (cadr (assq 'tramp-login-args (assoc "ssh" tramp-methods)))  '(("bash" "-i")))
-(setcdr (assq 'tramp-remote-sh (assoc "ssh" tramp-methods)) '("bash -i"))
+;(setq tramp-default-method "ssh")
+;(nconc (cadr (assq 'tramp-login-args (assoc "ssh" tramp-methods)))  '(("bash" "-i")))
+;(setcdr (assq 'tramp-remote-sh (assoc "ssh" tramp-methods)) '("bash -i"))
 ;(setq tramp-default-method "plink")
 ;; Set tramp-default-method 
 ;(cond  ((eq window-system 'w32)
 ;      (setq tramp-default-method "sshx"))
 ;      (t
 ;      (setq tramp-default-method "pscp")))
+
+(setq tramp-default-method "plink")
 
 (require 'james-gui)
 
