@@ -7,6 +7,10 @@
 ;;(color-theme-ruby-blue)
 (load-file "~/.emacs.d/external/color-theme-tangotango.el")
 (color-theme-tangotango)
+;; (load-file "~/.emacs.d/external/color-theme-solarized.el")
+;; (color-theme-solarized-dark)
+;; (load-file "~/.emacs.d/external/naquadah-theme.el")
+;; (color-theme-naquadah)
 
 ;;(load-file "~/.emacs.d/external/blackboard-theme.el")
 ;;(color-theme-blackboard)
@@ -17,6 +21,8 @@
 ;; TODO
 ;(set-face-background 'hl-line "#19293A")
 ;;(set-face-background 'hl-line "#222626")
+
+;; USUAL:
 (set-face-background 'hl-line "#2B3030")
 
 ;; Add color to a shell running in emacs 'M-x shell'

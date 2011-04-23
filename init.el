@@ -40,6 +40,9 @@
 ;; Behavior
 ;; ================================
 
+;; Spaces instead of tabs
+(setq-default indent-tabs-mode nil)
+
 ;; Set initial mode to text-mode
 (setq-default initial-major-mode 'text-mode)
 
@@ -155,6 +158,9 @@
 ;; Major modes 
 ;; ========================
 
+;;(autoload 'log4j-mode "log4j-mode" "Major mode for viewing log files." t)
+;;(add-to-list 'auto-mode-alist '("\\log\\'" . log4j-mode))
+
 (setq python-check-command "pyflakes")
 
 (defalias 'perl-mode 'cperl-mode)
@@ -210,6 +216,13 @@
 
 (setq auto-mode-alist
 (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+
+;; Add markdown mode
+(autoload 'markdown-mode "markdown-mode.el"
+  "Major mode for editing Markdown files" t)
+(setq auto-mode-alist
+      (cons '("\\.md" . markdown-mode) auto-mode-alist))
+
 
 
 ;; This removes unsightly ^M characters that would otherwise
@@ -354,9 +367,6 @@
 ;;Set ctrl-z to undo
 (global-set-key "\C-z" 'undo)
 
-;;set up alternate alt key
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-c\C-m" 'execute-extended-command)
 
 ;;set up kill word keyboard bindings
 (global-set-key "\C-w" 'kill-word)
@@ -388,7 +398,7 @@
 
 
 ;;Set keybinding for functions in efunc.el
-(global-set-key [(meta f10)] 'my-ido-find-tag)
+;;(global-set-key [(meta f10)] 'my-ido-find-tag)
 
 ;(global-set-key [f11] 'bubble-buffer-next)
 ;(global-set-key [(shift f11)] 'bubble-buffer-previous)
@@ -405,6 +415,7 @@
 (global-set-key (kbd "\C-x 5") 'xsteve-split-window)
 
 (global-set-key [(C-return)] 'dabbrev-expand)
+
 
 
 
@@ -429,9 +440,24 @@
 ;;Set auto-revert interval to be faster
 ;;(setq auto-revert-interval 2)
 
-(global-set-key "\M-g" 'goto-line)
 
-(global-set-key (kbd "C-c i") 'indent-all-xml)
+;; Redefine comment-dwim to comment out whole line
+(global-set-key (kbd "C-;") 'comment-dwim-line)
+
+;; Misc keybindings
+
+(global-set-key "\M-g" 'goto-line)
+(global-set-key (kbd "C-c g") 'goto-line)
+(global-set-key (kbd "C-c o") 'occur)
+;(global-set-key (kbd "C-c i") 'indent-all-xml)
+(global-set-key (kbd "C-c i") 'ido-goto-symbol)
+(global-set-key [(meta f10)] 'ido-goto-symbol)
+
+(global-set-key (kbd "C-c p") 'pager-page-up)
+(global-set-key (kbd "C-c n") 'pager-page-down)
+
+(global-set-key [home] 'smart-beginning-of-line)
+(global-set-key (kbd "C-a") 'smart-beginning-of-line)
 
 
 ;; =======================
@@ -439,9 +465,7 @@
 ;; =======================
 
 (require 'server)
-(when (and (= emacs-major-version 23)
-           (= emacs-minor-version 2)
-           (equal window-system 'w32))
+(when (equal window-system 'w32)
   (defun server-ensure-safe-dir (dir) "Noop" t)) ; Suppress error "directory
                                                  ; ~/.emacs.d/server is unsafe"
                                                  ; on windows.
@@ -454,7 +478,11 @@
 
 (require 'smex)
 (smex-initialize)
+;;set up alternate alt key
 (global-set-key (kbd "M-x") 'smex)
+(global-set-key "\C-x\C-m" 'smex)
+(global-set-key "\C-c\C-m" 'smex)
+(global-set-key (kbd "C-x m") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 (global-set-key (kbd "C-c M-x") 'smex-update-and-run)
 ;; This is your old M-x.
