@@ -12,6 +12,8 @@
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
        (load-file "~/.emacs.d/james-linux.el"))
+      ((eq system-type 'darwin)
+       (load-file "~/.emacs.d/james-osx.el"))
       ((eq system-type 'windows-nt)
        (load-file "~/.emacs.d/james-windows.el")))
              
@@ -99,23 +101,23 @@
 (global-set-key (kbd "C-;") 'comment-dwim)
 (global-set-key (kbd "C-c f") 'comint-dynamic-complete)
 
-(setq hippie-expand-try-functions-list
-          '(try-expand-line
-            try-expand-dabbrev
-            try-expand-line-all-buffers
-            try-expand-list
-            try-expand-list-all-buffers
-            try-expand-dabbrev-visible
-            try-expand-dabbrev-all-buffers
-            try-expand-dabbrev-from-kill
-            try-complete-file-name
-            try-complete-file-name-partially
-            try-complete-lisp-symbol
-            try-complete-lisp-symbol-partially
-            try-expand-whole-kill))
-(autoload 'comint-dynamic-complete "comint" "Complete for file name" t)
-(setq comint-completion-addsuffix '("/" . ""))
-;;(setq-default indent-tabs-mode nil)
+;; (setq hippie-expand-try-functions-list
+;;           '(try-expand-line
+;;             try-expand-dabbrev
+;;             try-expand-line-all-buffers
+;;             try-expand-list
+;;             try-expand-list-all-buffers
+;;             try-expand-dabbrev-visible
+;;             try-expand-dabbrev-all-buffers
+;;             try-expand-dabbrev-from-kill
+;;             try-complete-file-name
+;;             try-complete-file-name-partially
+;;             try-complete-lisp-symbol
+;;             try-complete-lisp-symbol-partially
+;;             try-expand-whole-kill))
+;; (autoload 'comint-dynamic-complete "comint" "Complete for file name" t)
+;; (setq comint-completion-addsuffix '("/" . ""))
+;; ;;(setq-default indent-tabs-mode nil)
 
 (defadvice kill-ring-save (before slick-copy activate compile)
   "When called interactively with no active region, copy a single line instead."
@@ -161,28 +163,28 @@
 ;;(autoload 'log4j-mode "log4j-mode" "Major mode for viewing log files." t)
 ;;(add-to-list 'auto-mode-alist '("\\log\\'" . log4j-mode))
 
-(setq python-check-command "pyflakes")
+;; (setq python-check-command "pyflakes")
 
-(defalias 'perl-mode 'cperl-mode)
-(defun pde-perl-mode-hook ()
-  (abbrev-mode t)
-  (add-to-list 'cperl-style-alist
-               '("PDE"
-                 (cperl-auto-newline                         . t)
-                 (cperl-brace-offset                         . 0)
-                 (cperl-close-paren-offset                   . -4)
-                 (cperl-continued-brace-offset               . 0)
-                 (cperl-continued-statement-offset           . 4)
-                ;; (cperl-extra-newline-before-brace           . nil)
-                ;; (cperl-extra-newline-before-brace-multiline . nil)
-                 (cperl-indent-level                         . 4)
-                 (cperl-indent-parens-as-block               . t)
-                 (cperl-label-offset                         . -4)
-                 (cperl-merge-trailing-else                  . t)
-                 (cperl-tab-always-indent                    . t)))
-  (cperl-set-style "PDE"))
+;; (defalias 'perl-mode 'cperl-mode)
+;; (defun pde-perl-mode-hook ()
+;;   (abbrev-mode t)
+;;   (add-to-list 'cperl-style-alist
+;;                '("PDE"
+;;                  (cperl-auto-newline                         . t)
+;;                  (cperl-brace-offset                         . 0)
+;;                  (cperl-close-paren-offset                   . -4)
+;;                  (cperl-continued-brace-offset               . 0)
+;;                  (cperl-continued-statement-offset           . 4)
+;;                 ;; (cperl-extra-newline-before-brace           . nil)
+;;                 ;; (cperl-extra-newline-before-brace-multiline . nil)
+;;                  (cperl-indent-level                         . 4)
+;;                  (cperl-indent-parens-as-block               . t)
+;;                  (cperl-label-offset                         . -4)
+;;                  (cperl-merge-trailing-else                  . t)
+;;                  (cperl-tab-always-indent                    . t)))
+;;   (cperl-set-style "PDE"))
 
-(setq cperl-invalid-face nil) 
+;; (setq cperl-invalid-face nil) 
 
 ;;Add nxml mode
 (load "~/.emacs.d/nxml-mode/rng-auto.el")
@@ -191,7 +193,7 @@
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
 
-;;Add js2 mode for javascript
+;; Add js2 mode for javascript
 (autoload 'js2-mode "js2" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
@@ -213,7 +215,6 @@
                                auto-mode-alist))
 
 (require 'csharp-mode)
-
 (setq auto-mode-alist
 (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 
@@ -243,15 +244,15 @@
 ;;; Excellent package for better scrolling in emacs
 ;;; should be default package. But now it can be downloaded
 ;;; from: http://user.it.uu.se/~mic/pager.el
-(require 'pager)
-     (global-set-key "\C-v"	   'pager-page-down)
-     (global-set-key [next] 	   'pager-page-down)
-     (global-set-key "\ev"	   'pager-page-up)
-     (global-set-key [prior]	   'pager-page-up)
-     (global-set-key '[M-up]    'pager-row-up)
-     (global-set-key '[M-kp-8]  'pager-row-up)
-     (global-set-key '[M-down]  'pager-row-down)
-     (global-set-key '[M-kp-2]  'pager-row-down)
+;; (require 'pager)
+;;      (global-set-key "\C-v"	   'pager-page-down)
+;;      (global-set-key [next] 	   'pager-page-down)
+;;      (global-set-key "\ev"	   'pager-page-up)
+;;      (global-set-key [prior]	   'pager-page-up)
+;;      (global-set-key '[M-up]    'pager-row-up)
+;;      (global-set-key '[M-kp-8]  'pager-row-up)
+;;      (global-set-key '[M-down]  'pager-row-down)
+;;      (global-set-key '[M-kp-2]  'pager-row-down)
 
 
 (require 'etags)
@@ -263,7 +264,6 @@
 (add-to-list 'load-path "~/.emacs.d/external/nav")
 (require 'nav)
 (require 'grep-buffers)
-(require 'w32-browser)
 
 
 ;; Visible bookmakrs
@@ -321,40 +321,40 @@
 ;; ======================
 
 
-;; Change cursor color according to mode; inspired by
-;; http://www.emacswiki.org/emacs/ChangingCursorDynamically
-;;http://emacs-fu.blogspot.com/2009/12/changing-cursor-color-and-shape.html
-(setq djcb-read-only-color       "gray")
-;; valid values are t, nil, box, hollow, bar, (bar . WIDTH), hbar,
-;; (hbar. HEIGHT); see the docs for set-cursor-type
+;; ;; Change cursor color according to mode; inspired by
+;; ;; http://www.emacswiki.org/emacs/ChangingCursorDynamically
+;; ;;http://emacs-fu.blogspot.com/2009/12/changing-cursor-color-and-shape.html
+;; (setq djcb-read-only-color       "gray")
+;; ;; valid values are t, nil, box, hollow, bar, (bar . WIDTH), hbar,
+;; ;; (hbar. HEIGHT); see the docs for set-cursor-type
 
-(setq djcb-read-only-cursor-type 'hbar)
-(setq djcb-overwrite-color       "red")
-(setq djcb-overwrite-cursor-type 'box)
-(setq djcb-normal-color          "yellow")
-(setq djcb-normal-cursor-type    'box)
+;; (setq djcb-read-only-cursor-type 'hbar)
+;; (setq djcb-overwrite-color       "red")
+;; (setq djcb-overwrite-cursor-type 'box)
+;; (setq djcb-normal-color          "yellow")
+;; (setq djcb-normal-cursor-type    'box)
 
-(defun djcb-set-cursor-according-to-mode ()
-  "change cursor color and type according to some minor modes."
+;; (defun djcb-set-cursor-according-to-mode ()
+;;   "change cursor color and type according to some minor modes."
 
-  (cond
-    (buffer-read-only
-      (set-cursor-color djcb-read-only-color)
-      (setq cursor-type djcb-read-only-cursor-type))
-    (overwrite-mode
-      (set-cursor-color djcb-overwrite-color)
-      (setq cursor-type djcb-overwrite-cursor-type))
-    (t 
-      (set-cursor-color djcb-normal-color)
-      (setq cursor-type djcb-normal-cursor-type))))
+;;   (cond
+;;     (buffer-read-only
+;;       (set-cursor-color djcb-read-only-color)
+;;       (setq cursor-type djcb-read-only-cursor-type))
+;;     (overwrite-mode
+;;       (set-cursor-color djcb-overwrite-color)
+;;       (setq cursor-type djcb-overwrite-cursor-type))
+;;     (t 
+;;       (set-cursor-color djcb-normal-color)
+;;       (setq cursor-type djcb-normal-cursor-type))))
 
-(add-hook 'post-command-hook 'djcb-set-cursor-according-to-mode)
+;; (add-hook 'post-command-hook 'djcb-set-cursor-according-to-mode)
 
 
 
-;; =======================
-;; Keybindings
-;; =======================
+;; ;; =======================
+;; ;; Keybindings
+;; ;; =======================
 
 
 ;; duplicate a line

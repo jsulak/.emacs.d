@@ -5,6 +5,7 @@
   ;; If there is more than one, they won't work right.
  '(bm-highlight-style (quote bm-highlight-only-fringe))
  '(column-number-mode t)
+ '(cua-mode t nil (cua-base))
  '(ecb-gzip-setup (quote cons))
  '(ecb-layout-window-sizes (quote (("left8" (0.23863636363636365 . 0.2903225806451613) (0.23863636363636365 . 0.24193548387096775) (0.23863636363636365 . 0.2903225806451613) (0.23863636363636365 . 0.16129032258064516)))))
  '(ecb-mouse-click-destination (quote left-top))
@@ -22,6 +23,7 @@
  '(js2-indent-on-enter-key t)
  '(js2-mirror-mode nil)
  '(js2-use-ast-for-indentation-p t)
+ '(menu-bar-mode nil)
  '(nxml-auto-insert-xml-declaration-flag t)
  '(nxml-slash-auto-complete-flag t)
  '(org-agenda-files (quote ("~/Dropbox/notes/refile.org" "~/Dropbox/notes/projects.org" "~/Dropbox/notes/idoswitcher.org")))

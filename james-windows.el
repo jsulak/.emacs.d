@@ -18,6 +18,8 @@
         (vertical-scroll-bars . right)))
 
 
+(require 'w32-browser)
+
 ;; This assumes that Cygwin is installed in C:\cygwin (the
 ;; default) and that C:\cygwin\bin is not already in your
 ;; Windows Path (it generally should not be).
