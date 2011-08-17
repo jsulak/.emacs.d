@@ -5,8 +5,6 @@
 (color-theme-initialize)
 ;;(load-file "~/.emacs.d/external/ruby-blue-theme.el")
 ;;(color-theme-ruby-blue)
-(load-file "~/.emacs.d/external/color-theme-tangotango.el")
-(color-theme-tangotango)
 
 
 

@@ -88,4 +88,9 @@
 
 (require 'james-gui)
 
+
+(load-file "~/.emacs.d/external/color-theme-tangotango.el")
+(color-theme-tangotango)
+
+
 (provide 'james-windows)

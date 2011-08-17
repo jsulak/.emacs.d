@@ -187,11 +187,14 @@
 ;; (setq cperl-invalid-face nil) 
 
 ;;Add nxml mode
-(load "~/.emacs.d/nxml-mode/rng-auto.el")
-(push "b:/scripts/catalog/emacs-catalog.xml" rng-schema-locating-files-default)
+;;(load "~/.emacs.d/nxml-mode/rng-auto.el")
+;;(push "b:/scripts/catalog/emacs-catalog.xml" rng-schema-locating-files-default)
 (setq auto-mode-alist
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
+
+;; Add nxhtml mode
+;;(load "~/.emacs.d/nxhtml/autostart.el")
 
 ;; Add js2 mode for javascript
 (autoload 'js2-mode "js2" nil t)
@@ -232,10 +235,31 @@
           'comint-strip-ctrl-m)
 
 
+(add-to-list 'load-path "~/.emacs.d/external/jade-mode")
+(require 'sws-mode)
+(require 'jade-mode)
+(add-to-list 'auto-mode-alist '("\\.styl$" .sws-mode))
+(add-to-list 'auto-mode-alist '("\\.jade$" .sws-mode))
+
+
 
 ;; =========================
 ;; External packages
 ;; =========================
+
+(require 'js-comint)
+(setq inferior-js-program-command "node")
+(setq inferior-js-mode-hook
+      (lambda ()
+        ;; We like nice colors
+        (ansi-color-for-comint-mode-on)
+        ;; Deal with some prompt nonsense
+        (add-to-list 'comint-preoutput-filter-functions
+                     (lambda (output)
+                       (replace-regexp-in-string ".*1G\.\.\..*5G" "..."
+                     (replace-regexp-in-string ".*1G.*3G" ">" output))))))
+
+
 
 (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers 
@@ -255,11 +279,40 @@
 ;;      (global-set-key '[M-kp-2]  'pager-row-down)
 
 
+;; Auto-complete
+(add-to-list 'load-path "~/.emacs.d/external/autocomplete/")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/external/autocomplete//ac-dict")
+(setq ac-auto-start 2)
+(setq ac-ignore-case nil)
+
+;; This turns off filename completion everywhere because it crashes in js.
+;; It would be better to do it for js2-mode only
+(defun ac-common-setup ())  
+(ac-config-default)
+
+(ac-set-trigger-key "TAB")
+;;(setq ac-auto-start nil)
+;;(setq ac-auto-show-menu nil)
+
+
+
 (require 'etags)
 (require 'cl)
-(require 'yasnippet)
+(require 'yasnippet-bundle)
 (yas/initialize)
-(yas/load-directory "~/.emacs.d/snippets")
+(yas/load-directory "~/.emacs.d/snippets/text-mode")
+(add-to-list 'ac-sources 'ac-source-yasnippet)
+(eval-after-load 'js2-mode
+  '(progn
+     (define-key js2-mode-map (kbd "TAB") (lambda()
+                                            (interactive)
+                                            (let ((yas/fallback-behavior 'return-nil))
+                                              (unless (yas/expand)
+                                                (indent-for-tab-command)
+                                                (if (looking-back "^\s*")
+                                                    (back-to-indentation))))))))
+
 
 (add-to-list 'load-path "~/.emacs.d/external/nav")
 (require 'nav)
@@ -301,19 +354,6 @@
 (require 'undo-tree)
 (global-undo-tree-mode)
 
-;; Auto-complete
-(add-to-list 'load-path "~/.emacs.d/external/autocomplete/")
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/external/autocomplete//ac-dict")
-
-;; This turns off filename completion everywhere because it crashes in js.
-;; It would be better to do it for js2-mode only
-(defun ac-common-setup ())  
-(ac-config-default)
-
-(ac-set-trigger-key "TAB")
-;;(setq ac-auto-start nil)
-;;(setq ac-auto-show-menu nil)
 
 
 ;; ======================
@@ -420,9 +460,9 @@
 
 
 ;; Org-mode key bindings
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
+;;(global-set-key "\C-cl" 'org-store-link)
+;; (global-set-key "\C-ca" 'org-agenda)
+;; (global-set-key "\C-cb" 'org-iswitchb)
 
 ;(global-set-key (kbd "<f11>") 'org-clock-goto)
 ;(global-set-key (kbd "C-<f11>") 'org-clock-in)
@@ -481,7 +521,7 @@
 ;;set up alternate alt key
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key "\C-x\C-m" 'smex)
-(global-set-key "\C-c\C-m" 'smex)
+;;(global-set-key "\C-c\C-m" 'smex)
 (global-set-key (kbd "C-x m") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 (global-set-key (kbd "C-c M-x") 'smex-update-and-run)
