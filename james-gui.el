@@ -6,7 +6,7 @@
 ;;(load-file "~/.emacs.d/external/ruby-blue-theme.el")
 ;;(color-theme-ruby-blue)
 (load-file "~/.emacs.d/external/color-theme-tangotango.el")
-(color-theme-tangotango)
+;;(color-theme-tangotango)
 ;; (load-file "~/.emacs.d/external/color-theme-solarized.el")
 ;; (color-theme-solarized-dark)
 ;; (load-file "~/.emacs.d/external/naquadah-theme.el")
@@ -14,6 +14,9 @@
 
 ;;(load-file "~/.emacs.d/external/blackboard-theme.el")
 ;;(color-theme-blackboard)
+
+(require 'color-theme-solarized)
+(color-theme-solarized-dark)
 
 ;; Add line highlighting
 (global-hl-line-mode 1)
@@ -23,7 +26,7 @@
 ;;(set-face-background 'hl-line "#222626")
 
 ;; USUAL:
-(set-face-background 'hl-line "#2B3030")
+;;(set-face-background 'hl-line "#2B3030")
 
 ;; Add color to a shell running in emacs 'M-x shell'
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)

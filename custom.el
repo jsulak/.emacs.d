@@ -1,8 +1,8 @@
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(bm-highlight-style (quote bm-highlight-only-fringe))
  '(column-number-mode t)
  '(ecb-gzip-setup (quote cons))
@@ -15,13 +15,16 @@
  '(erc-user-full-name "luddite")
  '(grep-find-ignored-directories (quote ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "_sgbak")))
  '(js2-auto-indent-p t)
- '(js2-basic-offset 2)
- '(js2-bounce-indent-p nil)
+ '(js2-basic-offset 3)
+ '(js2-bounce-indent-p t)
+ '(js2-cleanup-whitespace t)
+ '(js2-consistent-level-indent-inner-bracket-p t)
  '(js2-enter-indents-newline t)
+ '(js2-highlight-external-variables nil)
  '(js2-highlight-level 3)
  '(js2-indent-on-enter-key t)
  '(js2-mirror-mode nil)
- '(js2-use-ast-for-indentation-p t)
+ '(js2-use-ast-for-indentation-p nil)
  '(nxml-auto-insert-xml-declaration-flag t)
  '(nxml-slash-auto-complete-flag t)
  '(org-agenda-files (quote ("~/Dropbox/notes/refile.org" "~/Dropbox/notes/projects.org" "~/Dropbox/notes/idoswitcher.org")))
@@ -32,11 +35,10 @@
  '(tool-bar-mode nil)
  '(visual-line-fringe-indicators (quote (nil nil))))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#162433" :foreground "#C7D4E2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 72 :width normal :foundry "microsoft" :family "Consolas"))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(cperl-array-face ((((class color) (background dark)) (:foreground "yellow"))))
  '(cperl-hash-face ((((class color) (background dark)) (:slant italic :weight bold))))
  '(diredp-date-time ((t nil)))
