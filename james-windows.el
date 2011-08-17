@@ -8,8 +8,7 @@
  '(cperl-array-face ((((class color) (background dark)) (:foreground "yellow"))))
  '(cperl-hash-face ((((class color) (background dark)) (:slant italic :weight bold))))
 ; '(ido-subdir ((((min-colors 88) (class color)) (:foreground "orange"))))
- '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil)))
- '(linum ((t (:inherit (shadow default) :foreground "darkgray")))))
+ '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil))))
 
 ;;Set the default font
 (setq default-frame-alist
@@ -89,8 +88,11 @@
 (require 'james-gui)
 
 
-(load-file "~/.emacs.d/external/color-theme-tangotango.el")
-(color-theme-tangotango)
+;;;(load-file "~/.emacs.d/external/color-theme-tangotango.el")
+;;(color-theme-tangotango)
 
 
 (provide 'james-windows)
+(setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))
+(require 'color-theme-solarized)
+(color-theme-solarized-dark)

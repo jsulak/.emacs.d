@@ -6,6 +6,10 @@
       (append load-path
 	      '("~/.emacs.d/external")))
 
+(setq load-path
+      (append load-path
+	      '("~/.emacs.d/external/emacs-color-theme-solarized")))
+
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
@@ -154,6 +158,16 @@
 
 ;; point stack - forward/back stack for point
 (require 'point-stack)
+
+;; Adds extra keybinding to interactive search that sends the current term to occur
+;; From http://emacsblog.org/page/5/
+(define-key isearch-mode-map (kbd "C-o")
+  (lambda ()
+    (interactive)
+    (let ((case-fold-search isearch-case-fold-search))
+      (occur (if isearch-regexp isearch-string
+               (regexp-quote isearch-string))))))
+
 
 
 ;; ========================
