@@ -57,5 +57,4 @@
  '(diredp-read-priv ((t nil)))
  '(diredp-write-priv ((t nil)))
  '(ido-subdir ((((min-colors 88) (class color)) (:foreground "orange"))))
- '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil)))
- '(linum ((t (:inherit (shadow default) :foreground "darkgray")))))
+ '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil))))
