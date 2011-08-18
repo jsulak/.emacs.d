@@ -6,10 +6,6 @@
       (append load-path
 	      '("~/.emacs.d/external")))
 
-(setq load-path
-      (append load-path
-	      '("~/.emacs.d/external/emacs-color-theme-solarized")))
-
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
