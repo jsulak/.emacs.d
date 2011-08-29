@@ -3,6 +3,6 @@
 # contributor: David Miller <david@deadpansincerity.com>
 # --
 /** $1 */
-function ${2:my_function}( ${3:args} ){
-    $0
+function ${2:my_function}(${3:args}){
+  $0
 }
