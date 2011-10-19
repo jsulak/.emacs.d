@@ -95,4 +95,9 @@
 (provide 'james-windows)
 (setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))
 (require 'color-theme-solarized)
+
+;; (load-file "~/.emacs.d/external/ruby-blue-theme.el")
+;; (color-theme-ruby-blue)
+;; (set-face-background 'hl-line "#19293A")
+
 (color-theme-solarized-dark)

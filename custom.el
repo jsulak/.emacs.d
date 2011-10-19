@@ -26,9 +26,11 @@
  '(js2-use-ast-for-indentation-p t)
  '(menu-bar-mode nil)
  '(nxml-auto-insert-xml-declaration-flag t)
+ '(nxml-child-indent 4)
  '(nxml-slash-auto-complete-flag t)
  '(org-agenda-files (quote ("~/Dropbox/notes/refile.org" "~/Dropbox/notes/projects.org" "~/Dropbox/notes/idoswitcher.org")))
  '(quack-programs (quote ("c:\\program%20files\\plt\\mzscheme.exe" "bigloo" "csi" "csi -hygienic" "drscheme" "gosh" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "mred -z" "mzscheme" "mzscheme -M errortrace" "mzscheme -il r6rs" "mzscheme -il typed-scheme" "mzscheme.exe" "mzscheme3m" "mzschemecgc" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi")))
+ '(rng-schema-locating-files (quote ("schemas.xml" "~/.emacs.d/nxml-mode/schema/schemas.xml")))
  '(show-paren-mode t)
  '(tabbar-mode t)
  '(tabbar-separator (quote (" | ")))
@@ -39,7 +41,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- ;; '(default ((t (:inherit nil :stipple nil :background "#162433" :foreground "#C7D4E2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 72 :width normal :foundry "microsoft" :family "Consolas"))))
  '(cperl-array-face ((((class color) (background dark)) (:foreground "yellow"))))
  '(cperl-hash-face ((((class color) (background dark)) (:slant italic :weight bold))))
  '(diredp-date-time ((t nil)))

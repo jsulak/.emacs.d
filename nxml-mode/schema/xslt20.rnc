@@ -1,4 +1,4 @@
-# $Id: xslt20.rnc,v 1.3 2005/04/19 11:51:35 ndw Exp $
+# $Id: xslt20.rnc 52 2006-07-12 14:24:40Z ndw $
 
 # This was mostly generated from the syntax summary in the XSLT 1.0
 # Recommendation (using XSLT of course) by James. Norm hacked at it
@@ -9,6 +9,14 @@
 
 # Change Log:
 #
+# 2006-07-12: http://norman.walsh.name/2006/07/12/xslt20
+#  The mode attribute on <xsl:apply-templates> may have the value
+#      "#current" but not "#all". Also, the mode attribute on <xsl:template>
+#      may be either "#all" or a list of QNames (that may include "#default").
+#  The attribute "normalize-unicode" is now spelled "normalization-form".
+#      And the values "NKFC" and "NKFD" are now spelled correctly: "NFKC"
+#      and "NFKD".
+#  The name attribute on <xsl:namespace> is now properly described as an AVT.
 # 2005-04-19: http://norman.walsh.name/2005/04/19/xslt20
 #  Allow xsl:version on literal result elements (LREs) to have any value
 #  Allow xsl:xpath-default-namespace, xsl:default-collation, xsl:type,
@@ -182,7 +190,7 @@ apply-templates.element =
       extension.atts,
       global.atts,
       attribute select { expression.datatype }?,
-      attribute mode { "#all" | "#default" | qname.datatype }?,
+      attribute mode { apply-templates.mode.datatype }?,
       (sort.element | with-param.element)*
    }
 
@@ -404,7 +412,7 @@ namespace.element =
    element namespace {
       global.atts,
       extension.atts,
-      attribute name { xsd:NCName },
+      attribute name { avt.datatype },
       (attribute select { expression.datatype }
        | sequence.constructor)
    }
@@ -481,11 +489,11 @@ output.element =
       attribute include-content-type { "yes" | "no" }?,
       attribute indent { "yes" | "no" }?,
       attribute media-type { text }?,
-      attribute normalize-unicode {
+      attribute normalization-form {
          xsd:string "NFC"
        | xsd:string "NFD"
-       | xsd:string "NKFC"
-       | xsd:string "NKFD"
+       | xsd:string "NFKC"
+       | xsd:string "NFKD"
        | xsd:string "fully-normalized"
        | xsd:string "none"
        | xsd:NMTOKEN
@@ -567,11 +575,11 @@ result-document.element =
       attribute include-content-type { "yes" | "no" | expr-avt.datatype }?,
       attribute indent { "yes" | "no" | expr-avt.datatype }?,
       attribute media-type { avt.datatype }?,
-      attribute normalize-unicode {
+      attribute normalization-form {
          xsd:string "NFC"
        | xsd:string "NFD"
-       | xsd:string "NKFC"
-       | xsd:string "NKFD"
+       | xsd:string "NFKC"
+       | xsd:string "NFKD"
        | xsd:string "fully-normalized"
        | xsd:string "none"
        | xsd:NMTOKEN
@@ -635,7 +643,7 @@ template.element =
       extension.atts,
       global.atts,
       (attribute match { pattern.datatype }
-       & attribute mode { "#all" | "#default" | qname.datatype }?)?,
+       & attribute mode { template.mode.datatype }?)?,
       attribute name { qname.datatype }?,
       attribute priority { number.datatype }?,
       attribute as { sequence.datatype }?,
@@ -693,6 +701,8 @@ with-param.element =
 
 extension.prefixes.datatype = list { xsd:NCName* }
 exclude.prefixes.datatype = list { "#all" | (xsd:NCName | "#default")* }
+template.mode.datatype = list { "#all" | ("#default" | qname.datatype)+ }
+apply-templates.mode.datatype = "#current" | "#default" | qname.datatype
 
 prefix.datatype = xsd:NCName | "#default"
 wildcards.datatype =

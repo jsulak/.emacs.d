@@ -17,8 +17,8 @@
 (global-hl-line-mode 1)
 
 ;; TODO
-;(set-face-background 'hl-line "#19293A")
-;;(set-face-background 'hl-line "#222626")
+;;(set-face-background 'hl-line "#19293A")
+;(set-face-background 'hl-line "#222626")
 
 ;; USUAL:
 ;; (set-face-background 'hl-line "#2B3030")
