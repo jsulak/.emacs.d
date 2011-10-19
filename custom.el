@@ -1,8 +1,8 @@
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(bm-highlight-style (quote bm-highlight-only-fringe))
  '(column-number-mode t)
  '(cua-mode t nil (cua-base))
@@ -15,6 +15,7 @@
  '(erc-nick "luddite")
  '(erc-user-full-name "luddite")
  '(grep-find-ignored-directories (quote ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "_sgbak")))
+ '(js-indent-level 2)
  '(js2-auto-indent-p t)
  '(js2-basic-offset 2)
  '(js2-bounce-indent-p nil)
@@ -37,10 +38,10 @@
  '(tool-bar-mode nil)
  '(visual-line-fringe-indicators (quote (nil nil))))
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(cperl-array-face ((((class color) (background dark)) (:foreground "yellow"))))
  '(cperl-hash-face ((((class color) (background dark)) (:slant italic :weight bold))))
  '(diredp-date-time ((t nil)))

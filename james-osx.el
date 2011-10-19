@@ -1,3 +1,5 @@
+(menu-bar-mode 1)
+
 (setq ring-bell-function 'ignore)
 (menu-bar-mode 1)
 (require 'james-gui)
