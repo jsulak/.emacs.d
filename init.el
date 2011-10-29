@@ -579,12 +579,6 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
-;; =======================
-;; Modal mode
-;; =======================
-(require 'modal-mode)
-;; (modal-mode 1)
-
 
 ;; =======================
 ;; Smex.  Must be at end of .emacs
