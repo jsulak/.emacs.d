@@ -1,0 +1,132 @@
+((("File" .
+   [1 0 0 0])
+  ("rsense-rurema-home" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("setq" .
+   [2 0 0 0])
+  ("f" .
+   [1])
+  ("open" .
+   [3 0 0 0])
+  ("name" .
+   [1 0 0 0])
+  ("rsense-home" .
+   [0 0 0 0 1 0 0 0 0 0 0])
+  ("concat" .
+   [1 0 0 0 0 0])
+  ("load-path" .
+   [1 0 0 0 0 0 0 0 0])
+  ("add-to-" .
+   [0 0 0 0 0 0 1])
+  ("expand-file-name" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("length" .
+   [5 0 0 0 0 0])
+  ("return" .
+   [1 0 0 0 0 0])
+  ("stackster" .
+   [5 0 0 0 0 0 1 0 0])
+  ("isStacksterUrl" .
+   [0 0 1 0 0 0 0 0 0 0 0 0 0 0])
+  ("url" .
+   [6 0 0])
+  ("changeInfo" .
+   [0 0 0 0 0 0 2 0 0 0])
+  ("addListener" .
+   [0 0 0 0 0 1 0 0 0 0 0])
+  ("tabs" .
+   [1 0 0 0])
+  ("requestTimerId" .
+   [0 0 0 0 0 0 0 2 0 0 0 0 0 0])
+  ("window" .
+   [1 0 0 0 0 0])
+  ("scheduleRequest" .
+   [0 0 0 1 0 0 0 0 0 0 0 0 0 0 0])
+  ("190" .
+   [2 0 0])
+  ("color" .
+   [1 0 0 0 0])
+  ("setBadgeBackgroundColor" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0])
+  ("showLoggedOut" .
+   [0 0 0 0 0 0 0 1 0 0 0 0 0])
+  ("true" .
+   [1 0 0 0])
+  ("http" .
+   [3 0 0 0])
+  ("startRequest" .
+   [0 0 0 0 0 2 0 0 0 0 0 0])
+  ("stackCount" .
+   [0 0 0 0 0 2 0 0 0 5])
+  ("updateStackCount" .
+   [0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0])
+  ("count" .
+   [8 0 0 0 0])
+  ("getStackCount" .
+   [0 0 0 0 1 0 0 1 0 0 0 0 0])
+  ("resp" .
+   [1 0 0 0])
+  ("responseText" .
+   [0 0 0 0 0 0 0 0 1 0 0 0])
+  ("onSuccess" .
+   [1 0 0 0 0 0 1 0 0])
+  ("readyState" .
+   [0 0 0 0 1 0 0 0 0 0])
+  ("onreadystatechange" .
+   [0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("onError" .
+   [1 0 0 0 0 1 0])
+  ("XMLHttpRequest" .
+   [0 0 0 0 1 0 0 0 0 0 0 0 0 0])
+  ("xhr" .
+   [8 0 0])
+  ("function" .
+   [12 0 2 0 1 0 0 0])
+  ("text" .
+   [3 0 0 0])
+  ("setBadgeText" .
+   [0 0 0 2 2 0 0 0 0 0 0 0])
+  ("browserAction" .
+   [0 0 0 1 4 1 0 0 0 0 0 0 0])
+  ("chrome" .
+   [6 0 0 0 0 0])
+  ("stop" .
+   [3 0 0 0])
+  ("start" .
+   [2 0 0 0 0])
+  ("loadingAnimation" .
+   [0 0 0 0 0 0 0 1 1 0 0 0 1 0 0 2])
+  ("yasnippet-bundle" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("ac-source-yasnippet" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0])
+  ("ac-source" .
+   [0 0 0 0 0 0 0 0 1])
+  ("ac-sources" .
+   [0 0 0 0 0 0 0 0 0 1])
+  ("add-to-list" .
+   [1 0 0 0 0 0 0 0 0 0 1])
+  ("provide" .
+   [1 0 0 0 0 0 0])
+  ("james-windows" .
+   [0 0 0 0 0 0 0 0 0 1 0 0 0])
+  ("james-gui" .
+   [1 0 0 0 0 0 0 0 0])
+  ("load" .
+   [2 0 0 0])
+  ("require" .
+   [1 0 0 0 0 0 0])
+  ("color-theme-solarized-light" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("each" .
+   [0 0 1 0])
+  ("sum" .
+   [0 0 1])
+  ("scan" .
+   [1 1 1 0])
+  ("aWord" .
+   [1 0 0 0 0])
+  ("txt_again" .
+   [0 0 0 0 0 1 0 0 0])
+  ("__" .
+   [1 0])))

@@ -5,6 +5,7 @@
   ;; If there is more than one, they won't work right.
  '(bm-highlight-style (quote bm-highlight-only-fringe))
  '(column-number-mode t)
+ '(css-indent-offset 2)
  '(cua-mode t nil (cua-base))
  '(ecb-gzip-setup (quote cons))
  '(ecb-layout-window-sizes (quote (("left8" (0.23863636363636365 . 0.2903225806451613) (0.23863636363636365 . 0.24193548387096775) (0.23863636363636365 . 0.2903225806451613) (0.23863636363636365 . 0.16129032258064516)))))
@@ -57,4 +58,5 @@
  '(diredp-read-priv ((t nil)))
  '(diredp-write-priv ((t nil)))
  '(ido-subdir ((((min-colors 88) (class color)) (:foreground "orange"))))
- '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil))))
+ '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil)))
+ '(mumamo-background-chunk-major ((((class color) (min-colors 88) (background dark)) nil))))

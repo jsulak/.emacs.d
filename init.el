@@ -41,6 +41,8 @@
 ;; Behavior
 ;; ================================
 
+(global-set-key "\M-z" 'zap-up-to-char)
+
 ;; Spaces instead of tabs
 (setq-default indent-tabs-mode nil)
 
@@ -166,10 +168,20 @@
                (regexp-quote isearch-string))))))
 
 
-
 ;; ========================
 ;; Major modes 
 ;; ========================
+
+
+;; Clojure
+;; (require 'paredit) if you didn't install via package.el
+(defun turn-on-paredit () (paredit-mode 1))
+(add-hook 'clojure-mode-hook 'turn-on-paredit)
+
+(add-to-list 'load-path "~/.emacs.d/external/rinari")
+(require 'rinari)
+
+(require 'ruby-end)
 
 ;;(autoload 'log4j-mode "log4j-mode" "Major mode for viewing log files." t)
 ;;(add-to-list 'auto-mode-alist '("\\log\\'" . log4j-mode))
@@ -204,8 +216,31 @@
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
 
+;; TODO: Disabled nxhtml mode for now.  Should try to get this working at some point.
 ;; Add nxhtml mode
-;;(load "~/.emacs.d/nxhtml/autostart.el")
+;; (load "~/.emacs.d/nxhtml/autostart.el")
+
+;; (setq
+;;       nxhtml-global-minor-mode t
+;;       mumamo-chunk-coloring 'submode-colored
+;;       nxhtml-skip-welcome t
+;;       indent-region-mode t
+;;       rng-nxml-auto-validate-flag nil
+;;       nxml-degraded t)
+     ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo))
+;; (require 'mumamo-fun)
+;;      (setq mumamo-chunk-coloring 'submode-colored)
+;;      (add-to-list 'auto-mode-alist '("\\.rhtml\\'" . eruby-html-mumamo))
+     ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-html-mumamo))
+
+;; yaml
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
+;; (add-hook 'yaml-mode-hook
+;;       '(lambda ()
+;;         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
 
 ;; Add js2 mode for javascript
 (autoload 'js2-mode "js2" nil t)
@@ -216,6 +251,12 @@
 (setq auto-mode-alist
         (cons '("\\.\\(bat\\|cmd\\)\\'" . bat-mode)
 	      auto-mode-alist))
+
+;; Add support for scss to css mode
+(setq auto-mode-alist
+      (cons '("\\.\\(scss\\)\\'" . css-mode)
+            auto-mode-alist))
+
 
 ;;Add support for xquery-mode
 (require 'xquery-mode)
@@ -521,6 +562,15 @@
                                                  ; ~/.emacs.d/server is unsafe"
                                                  ; on windows.
 (server-start)
+;; =======================
+;; Package.el
+;; =======================
+(require 'package)
+;; Add the original Emacs Lisp Package Archive
+(add-to-list 'package-archives
+             '("elpa" . "http://tromey.com/elpa/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
 
 
 ;; =======================
