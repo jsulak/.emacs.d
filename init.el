@@ -41,7 +41,12 @@
 ;; Behavior
 ;; ================================
 
+
 (global-set-key "\M-z" 'zap-up-to-char)
+
+;; Leave lines at top or bottom when recentering
+(setq scroll-margin 3)
+
 
 ;; Spaces instead of tabs
 (setq-default indent-tabs-mode nil)
@@ -56,6 +61,7 @@
 (cua-mode t)
 
 (ido-mode 1)
+(ido-everywhere t)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 
@@ -211,7 +217,8 @@
 
 ;;Add nxml mode
 ;;(load "~/.emacs.d/nxml-mode/rng-auto.el")
-;;(push "b:/scripts/catalog/emacs-catalog.xml" rng-schema-locating-files-default)
+;;(push "~/.emacs.d/nxml-mode/schemas/schemas.xml" rng-schema-locating-files-default)
+;; TODO: Can possibly remove nxml from the .emacs.d/ folder
 (setq auto-mode-alist
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
@@ -572,6 +579,12 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
+;; =======================
+;; Modal mode
+;; =======================
+(require 'modal-mode)
+;; (modal-mode 1)
+
 
 ;; =======================
 ;; Smex.  Must be at end of .emacs
@@ -589,3 +602,4 @@
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 (put 'downcase-region 'disabled nil)
+(put 'autopair-newline 'disabled nil)

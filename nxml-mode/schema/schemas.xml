@@ -2,6 +2,7 @@
   <transformURI fromPattern="*.xml" toPattern="*.rnc"/>
 
   <uri pattern="*.xsl" typeId="XSLT"/>
+  <uri pattern="*.xslt" typeId="XSLT"/>
   <uri pattern="*.html" typeId="XHTML"/>
   <uri pattern="*.rng" typeId="RELAX NG"/>
   <uri pattern="*.rdf" typeId="RDF"/>
@@ -37,7 +38,7 @@
   
   <documentElement localName="locatingRules" uri="locate.rnc"/>
 
-  <typeId id="XSLT" uri="xslt.rnc"/>
+  <typeId id="XSLT" uri="xslt20.rnc"/>
   <typeId id="RELAX NG" uri="relaxng.rnc"/>
   <typeId id="XHTML" uri="xhtml.rnc"/>
   <typeId id="DocBook" uri="docbook.rnc"/>
