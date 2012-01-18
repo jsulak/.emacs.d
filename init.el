@@ -178,6 +178,8 @@
 ;; Major modes 
 ;; ========================
 
+;; Coffee mode
+(require 'coffee-mode)
 
 ;; Clojure
 ;; (require 'paredit) if you didn't install via package.el
@@ -250,8 +252,8 @@
 
 
 ;; Add js2 mode for javascript
-(autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;;(autoload 'js2-mode "js2" nil t)
+;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
 ;;Add support for dos batch files
 (require 'dosbat)
@@ -362,15 +364,15 @@
 (yas/initialize)
 (yas/load-directory "~/.emacs.d/snippets/text-mode")
 (add-to-list 'ac-sources 'ac-source-yasnippet)
-(eval-after-load 'js2-mode
-  '(progn
-     (define-key js2-mode-map (kbd "TAB") (lambda()
-                                            (interactive)
-                                            (let ((yas/fallback-behavior 'return-nil))
-                                              (unless (yas/expand)
-                                                (indent-for-tab-command)
-                                                (if (looking-back "^\s*")
-                                                    (back-to-indentation))))))))
+;; (eval-after-load 'js2-mode
+;;   '(progn
+;;      (define-key js2-mode-map (kbd "TAB") (lambda()
+;;                                             (interactive)
+;;                                             (let ((yas/fallback-behavior 'return-nil))
+;;                                               (unless (yas/expand)
+;;                                                 (indent-for-tab-command)
+;;                                                 (if (looking-back "^\s*")
+;;                                                     (back-to-indentation))))))))
 
 
 (add-to-list 'load-path "~/.emacs.d/external/nav")

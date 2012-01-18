@@ -59,6 +59,23 @@ environment."
 (setq ispell-extra-args '("--sug-mode=ultra"))
 
 
+;; Dired mode
+(setq dired-load-hook
+      (lambda (&rest ignore)
+ (define-key dired-mode-map
+   "l" 'dired-open-mac)
+ (define-key dired-mode-map
+   "f" 'dired-show-only)))
+(put 'dired-find-alternate-file 'disabled nil)
+
+
+(defun dired-open-mac ()
+     (interactive)
+     (let ((file-name (dired-get-file-for-visit)))
+       (if (file-exists-p file-name)
+           (call-process "/usr/bin/open" nil 0 nil file-name))))
+
+
 ;; Set up rsense
 (setq rsense-home (expand-file-name "~/opt/rsense-0.3"))
 (add-to-list 'load-path (concat rsense-home "/etc"))
