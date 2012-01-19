@@ -3,3 +3,4 @@
 *.orig
 .git
 tramp
+ac-comphist.dat
