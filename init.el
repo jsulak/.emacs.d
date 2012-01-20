@@ -41,6 +41,9 @@
 ;; Behavior
 ;; ================================
 
+(require 'modal-mode)
+(setq default-major-mode 'modal-fundamental-mode)
+(modal-mode 1)
 
 (global-set-key "\M-z" 'zap-up-to-char)
 
