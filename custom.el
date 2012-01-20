@@ -1,12 +1,14 @@
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(bm-highlight-style (quote bm-highlight-only-fringe))
  '(column-number-mode t)
  '(css-indent-offset 2)
  '(cua-mode t nil (cua-base))
+ '(custom-enabled-themes (quote (sanityinc-tomorrow-eighties)))
+ '(custom-safe-themes (quote ("54d1bcf3fcf758af4812f98eb53b5d767f897442753e1aa468cfeb221f8734f9" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
  '(ecb-gzip-setup (quote cons))
  '(ecb-layout-window-sizes (quote (("left8" (0.23863636363636365 . 0.2903225806451613) (0.23863636363636365 . 0.24193548387096775) (0.23863636363636365 . 0.2903225806451613) (0.23863636363636365 . 0.16129032258064516)))))
  '(ecb-mouse-click-destination (quote left-top))
@@ -39,26 +41,26 @@
  '(tool-bar-mode nil)
  '(visual-line-fringe-indicators (quote (nil nil))))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(cperl-array-face ((((class color) (background dark)) (:foreground "yellow"))))
- '(cperl-hash-face ((((class color) (background dark)) (:slant italic :weight bold))))
- '(diredp-date-time ((t nil)))
- '(diredp-dir-heading ((t (:foreground "white"))))
- '(diredp-dir-priv ((t nil)))
- '(diredp-exec-priv ((t nil)))
- '(diredp-file-name ((t nil)))
- '(diredp-file-suffix ((t nil)))
- '(diredp-flag-mark ((t (:foreground "Yellow"))))
- '(diredp-flag-mark-line ((t nil)))
- '(diredp-link-priv ((t nil)))
- '(diredp-no-priv ((t nil)))
- '(diredp-other-priv ((t nil)))
- '(diredp-rare-priv ((t nil)))
- '(diredp-read-priv ((t nil)))
- '(diredp-write-priv ((t nil)))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(cperl-array-face ((((class color) (background dark)) (:foreground "yellow"))) t)
+ '(cperl-hash-face ((((class color) (background dark)) (:slant italic :weight bold))) t)
+ '(diredp-date-time ((t nil)) t)
+ '(diredp-dir-heading ((t (:foreground "white"))) t)
+ '(diredp-dir-priv ((t nil)) t)
+ '(diredp-exec-priv ((t nil)) t)
+ '(diredp-file-name ((t nil)) t)
+ '(diredp-file-suffix ((t nil)) t)
+ '(diredp-flag-mark ((t (:foreground "Yellow"))) t)
+ '(diredp-flag-mark-line ((t nil)) t)
+ '(diredp-link-priv ((t nil)) t)
+ '(diredp-no-priv ((t nil)) t)
+ '(diredp-other-priv ((t nil)) t)
+ '(diredp-rare-priv ((t nil)) t)
+ '(diredp-read-priv ((t nil)) t)
+ '(diredp-write-priv ((t nil)) t)
  '(ido-subdir ((((min-colors 88) (class color)) (:foreground "orange"))))
- '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil)))
- '(mumamo-background-chunk-major ((((class color) (min-colors 88) (background dark)) nil))))
+ '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil)) t)
+ '(mumamo-background-chunk-major ((((class color) (min-colors 88) (background dark)) nil)) t))

@@ -12,9 +12,10 @@
 ;;(load-file "~/.emacs.d/external/color-theme-tangotango.el")
 ;;(color-theme-tangotango)
 
-
-(set-face-attribute 'default nil :font "Menlo-11")
-
+;; (set-face-attribute 'default nil :font "Menlo-11") 
+(set-face-attribute 'default nil :font "DejaVu Sans Mono-11")
+;; (set-face-attribute 'default nil :font "Inconsolata-13")
+;; (set-face-attribute 'default nil :font "Letter Gothic-14")
 
 ;; Setup path to work.
 ;; From http://blog.dskang.com/2011/04/28/emacs-path-problem-on-os-x/
