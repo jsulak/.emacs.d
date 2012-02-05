@@ -2,6 +2,7 @@
 
 (setq ring-bell-function 'ignore)
 (menu-bar-mode 1)
+
 (require 'james-gui)
 
 (setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))

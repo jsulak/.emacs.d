@@ -12,11 +12,12 @@
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
        (load-file "~/.emacs.d/james-linux.el"))
-      ((eq system-type 'darwin)
-       (load-file "~/.emacs.d/james-osx.el"))
+      ((and (eq system-type 'darwin)
+            (window-system)
+            (load-file "~/.emacs.d/james-osx.el")))
       ((eq system-type 'windows-nt)
        (load-file "~/.emacs.d/james-windows.el")))
-             
+
 (load-file "~/.emacs.d/org-mode-settings.el")
 
 
@@ -50,9 +51,7 @@
 ;; Behavior
 ;; ================================
 
-(require 'modal-mode)
-(setq default-major-mode 'modal-fundamental-mode)
-(modal-mode 1)
+(setq ns-pop-up-frames nil)
 
 (global-set-key "\M-z" 'zap-up-to-char)
 
