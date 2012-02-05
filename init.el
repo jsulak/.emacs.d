@@ -28,9 +28,7 @@
 ;; Package.el
 ;; =======================
 (require 'package)
-(setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
-                          ("gnu" . "http://elpa.gnu.org/packages/")
-                          ("marmalade" . "http://marmalade-repo.org/packages/")))
+(setq package-archives '(("marmalade" . "http://marmalade-repo.org/packages/")))
 
 
 
@@ -516,7 +514,7 @@
 ;(global-set-key [(shift f11)] 'bubble-buffer-previous)
 (global-set-key [(meta f11)] 'xsteve-ido-choose-from-recentf)
 
-(global-set-key [(meta f12)] 'recentf-open-files)
+(global-set-key [(meta f12)] 'ffip)
 ;(global-set-key [(f7)] 'ibuffer)
 
 (global-set-key [S-left] 'windmove-left)          ; move to left window
@@ -583,6 +581,11 @@
                                                  ; on windows.
 (server-start)
 (package-initialize)
+
+(defvar ffip-patterns
+  '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
+    "*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs")
+  "List of patterns to look for with `find-file-in-project'.")
 
 ;; =======================
 ;; Smex.  Must be at end of .emacs
