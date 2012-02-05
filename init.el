@@ -1,3 +1,10 @@
+;; =======================
+;; Package.el
+;; =======================
+(require 'package)
+(setq package-archives '(("marmalade" . "http://marmalade-repo.org/packages/")))
+(package-initialize)
+
 ;; append load path to load my customizations
 (setq load-path
        (append load-path
@@ -24,13 +31,6 @@
 ;; Load custom functions
 (require 'efuncs)
 
-;; =======================
-;; Package.el
-;; =======================
-(require 'package)
-(setq package-archives '(("marmalade" . "http://marmalade-repo.org/packages/")))
-
-
 
 ;; ================================
 ;; Appearance 
@@ -48,6 +48,12 @@
 ;; ================================
 ;; Behavior
 ;; ================================
+
+;; Add more file types to find-file-in-project
+(defvar ffip-patterns
+  '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
+    "*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs")
+  "List of patterns to look for with `find-file-in-project'.")
 
 (setq ns-pop-up-frames nil)
 
@@ -580,12 +586,6 @@
                                                  ; ~/.emacs.d/server is unsafe"
                                                  ; on windows.
 (server-start)
-(package-initialize)
-
-(defvar ffip-patterns
-  '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
-    "*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs")
-  "List of patterns to look for with `find-file-in-project'.")
 
 ;; =======================
 ;; Smex.  Must be at end of .emacs
