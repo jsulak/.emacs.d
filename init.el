@@ -64,7 +64,8 @@
 ;; Add more file types to find-file-in-project
 (defvar ffip-patterns
   '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
-    "*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs" "*.zsh" "*.erb" "*.coffee")
+    "*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs" "*.zsh"
+    "*.erb" "*.coffee" "*.xml" "*.acl" "*.bat" "*.cmd")
   "List of patterns to look for with `find-file-in-project'.")
 
 (setq ns-pop-up-frames nil)
