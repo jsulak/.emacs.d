@@ -5,6 +5,18 @@
 (setq package-archives '(("marmalade" . "http://marmalade-repo.org/packages/")))
 (package-initialize)
 
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;; Add in your own as you wish:
+(defvar my-packages '(find-file-in-project)
+  "A list of packages to ensure are installed at launch.")
+
+(dolist (p my-packages)
+  (when (not (package-installed-p p))
+    (package-install p)))
+
+
 ;; append load path to load my customizations
 (setq load-path
        (append load-path

@@ -4,3 +4,4 @@
 .git
 tramp
 ac-comphist.dat
+elpa/*
