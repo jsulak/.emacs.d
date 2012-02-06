@@ -301,6 +301,9 @@
       (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode)
 	    auto-mode-alist))
 
+(defvar xquery-indent-size 4
+  "The size of each indent level.")
+
 ;;Add ACL mode mode 
 (autoload 'acl-mode "acl-mode")
 (setq auto-mode-alist (append (list (cons "\\.acl\\'" 'acl-mode))
@@ -492,6 +495,9 @@
 (global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))
 ;; Join lines
 (global-set-key "\C-x\C-j" 'join-line)
+
+;; delete enclosed text
+(global-set-key (kbd "C-c d") 'delete-enclosed-text)
 
 ;;Set ctrl-z to undo
 (global-set-key "\C-z" 'undo)

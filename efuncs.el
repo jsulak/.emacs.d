@@ -285,6 +285,15 @@ Ignores CHAR at point."
 		   (point)))))
 
 
+(defun delete-enclosed-text ()
+  "Delete texts between any pair of delimiters."
+  (interactive)
+  (save-excursion
+    (let (p1 p2)
+      (skip-chars-backward "^(<[\"'") (setq p1 (point))
+      (skip-chars-forward "^)>]\"'") (setq p2 (point))
+      (delete-region p1 p2))))
+
  ;; (defun ido-goto-symbol (&optional symbol-list)
  ;;      "Refresh imenu and jump to a place in the buffer using Ido."
  ;;      (interactive)
