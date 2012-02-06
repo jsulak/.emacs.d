@@ -90,16 +90,19 @@
 (require 'james-gui)
 
 
-;;;(load-file "~/.emacs.d/external/color-theme-tangotango.el")
-;;(color-theme-tangotango)
+;; (load-file "~/.emacs.d/external/color-theme-tangotango.el")
+;; (color-theme-tangotango)
+;; (set-face-background 'hl-line "#2B3030")
+;; 
 
-
-(provide 'james-windows)
 (setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))
 (require 'color-theme-solarized)
+(color-theme-solarized-dark)
 
 ;; (load-file "~/.emacs.d/external/ruby-blue-theme.el")
 ;; (color-theme-ruby-blue)
 ;; (set-face-background 'hl-line "#19293A")
 
-(color-theme-solarized-dark)
+
+
+(provide 'james-windows)
