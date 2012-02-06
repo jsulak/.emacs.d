@@ -337,8 +337,8 @@
 
 
 
-(require 'autopair)
-(autopair-global-mode) ;; enable autopair in all buffers 
+;; (require 'autopair)
+;; (autopair-global-mode) ;; enable autopair in all buffers 
 
 ;;The following is from http://wttools.sourceforge.net/emacs-stuff/emacs.html
 ;;; Excellent package for better scrolling in emacs
