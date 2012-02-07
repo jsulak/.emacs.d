@@ -9,7 +9,7 @@
   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(bm find-file-in-project smex undo-tree)
+(defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project ruby-end smex undo-tree yasnippet-bundle)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
