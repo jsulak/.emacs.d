@@ -65,7 +65,7 @@
 (defvar ffip-patterns
   '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
     "*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs" "*.zsh"
-    "*.erb" "*.coffee" "*.xml" "*.acl" "*.bat" "*.cmd")
+    "*.erb" "*.coffee" "*.xml" "*.acl" "*.bat" "*.cmd" "*.xqy" "*.xqm")
   "List of patterns to look for with `find-file-in-project'.")
 
 (setq ns-pop-up-frames nil)
@@ -248,7 +248,6 @@
 ;;Add nxml mode
 ;;(load "~/.emacs.d/nxml-mode/rng-auto.el")
 ;;(push "~/.emacs.d/nxml-mode/schemas/schemas.xml" rng-schema-locating-files-default)
-;; TODO: Can possibly remove nxml from the .emacs.d/ folder
 (setq auto-mode-alist
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
@@ -352,10 +351,6 @@
                      (replace-regexp-in-string ".*1G.*3G" ">" output))))))
 
 
-
-;; (require 'autopair)
-;; (autopair-global-mode) ;; enable autopair in all buffers 
-
 ;;The following is from http://wttools.sourceforge.net/emacs-stuff/emacs.html
 ;;; Excellent package for better scrolling in emacs
 ;;; should be default package. But now it can be downloaded
@@ -386,7 +381,6 @@
 (ac-set-trigger-key "TAB")
 ;;(setq ac-auto-start nil)
 ;;(setq ac-auto-show-menu nil)
-
 
 
 (require 'etags)
@@ -447,43 +441,6 @@
 (global-undo-tree-mode)
 
 
-
-;; ======================
-;; Cursor control
-;; ======================
-
-
-;; ;; Change cursor color according to mode; inspired by
-;; ;; http://www.emacswiki.org/emacs/ChangingCursorDynamically
-;; ;;http://emacs-fu.blogspot.com/2009/12/changing-cursor-color-and-shape.html
-;; (setq djcb-read-only-color       "gray")
-;; ;; valid values are t, nil, box, hollow, bar, (bar . WIDTH), hbar,
-;; ;; (hbar. HEIGHT); see the docs for set-cursor-type
-
-;; (setq djcb-read-only-cursor-type 'hbar)
-;; (setq djcb-overwrite-color       "red")
-;; (setq djcb-overwrite-cursor-type 'box)
-;; (setq djcb-normal-color          "yellow")
-;; (setq djcb-normal-cursor-type    'box)
-
-;; (defun djcb-set-cursor-according-to-mode ()
-;;   "change cursor color and type according to some minor modes."
-
-;;   (cond
-;;     (buffer-read-only
-;;       (set-cursor-color djcb-read-only-color)
-;;       (setq cursor-type djcb-read-only-cursor-type))
-;;     (overwrite-mode
-;;       (set-cursor-color djcb-overwrite-color)
-;;       (setq cursor-type djcb-overwrite-cursor-type))
-;;     (t 
-;;       (set-cursor-color djcb-normal-color)
-;;       (setq cursor-type djcb-normal-cursor-type))))
-
-;; (add-hook 'post-command-hook 'djcb-set-cursor-according-to-mode)
-
-
-
 ;; ;; =======================
 ;; ;; Keybindings
 ;; ;; =======================
@@ -501,7 +458,6 @@
 
 ;;Set ctrl-z to undo
 (global-set-key "\C-z" 'undo)
-
 
 ;;set up kill word keyboard bindings
 (global-set-key "\C-w" 'kill-word)
@@ -550,31 +506,6 @@
 (global-set-key (kbd "\C-x 5") 'xsteve-split-window)
 
 (global-set-key [(C-return)] 'dabbrev-expand)
-
-
-
-
-;; Org-mode key bindings
-;;(global-set-key "\C-cl" 'org-store-link)
-;; (global-set-key "\C-ca" 'org-agenda)
-;; (global-set-key "\C-cb" 'org-iswitchb)
-
-;(global-set-key (kbd "<f11>") 'org-clock-goto)
-;(global-set-key (kbd "C-<f11>") 'org-clock-in)
-;(global-set-key (kbd "<f10>") 'org-remember)
-;(global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
-;(global-set-key (kbd "<f9> b") 'bbdb)
-;(global-set-key (kbd "<f9> c") 'calendar)
-;(global-set-key (kbd "<f9> f") 'boxquote-insert-file)
-;(global-set-key (kbd "<f9> i") (lambda ()
-;                                 (interactive)
-;                                 (info "~/git/org-mode/doc/org.info")))
-;(global-set-key (kbd "<f9> o") 'org-occur)
-;(global-set-key (kbd "<f9> r") 'boxquote-region)
-;(global-set-key (kbd "<f12>") 'org-agenda)
-;;Set auto-revert interval to be faster
-;;(setq auto-revert-interval 2)
-
 
 ;; Redefine comment-dwim to comment out whole line
 (global-set-key (kbd "C-;") 'comment-dwim-line)
