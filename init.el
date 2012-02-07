@@ -9,7 +9,7 @@
   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(bm find-file-in-project undo-tree)
+(defvar my-packages '(bm find-file-in-project smex undo-tree)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
