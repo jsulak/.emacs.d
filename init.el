@@ -225,32 +225,6 @@
 
 (require 'ruby-end)
 
-;;(autoload 'log4j-mode "log4j-mode" "Major mode for viewing log files." t)
-;;(add-to-list 'auto-mode-alist '("\\log\\'" . log4j-mode))
-
-;; (setq python-check-command "pyflakes")
-
-;; (defalias 'perl-mode 'cperl-mode)
-;; (defun pde-perl-mode-hook ()
-;;   (abbrev-mode t)
-;;   (add-to-list 'cperl-style-alist
-;;                '("PDE"
-;;                  (cperl-auto-newline                         . t)
-;;                  (cperl-brace-offset                         . 0)
-;;                  (cperl-close-paren-offset                   . -4)
-;;                  (cperl-continued-brace-offset               . 0)
-;;                  (cperl-continued-statement-offset           . 4)
-;;                 ;; (cperl-extra-newline-before-brace           . nil)
-;;                 ;; (cperl-extra-newline-before-brace-multiline . nil)
-;;                  (cperl-indent-level                         . 4)
-;;                  (cperl-indent-parens-as-block               . t)
-;;                  (cperl-label-offset                         . -4)
-;;                  (cperl-merge-trailing-else                  . t)
-;;                  (cperl-tab-always-indent                    . t)))
-;;   (cperl-set-style "PDE"))
-
-;; (setq cperl-invalid-face nil) 
-
 ;;Add nxml mode
 ;;(load "~/.emacs.d/nxml-mode/rng-auto.el")
 ;;(push "~/.emacs.d/nxml-mode/schemas/schemas.xml" rng-schema-locating-files-default)
