@@ -11,7 +11,7 @@
 ;; (load-file "~/.emacs.d/external/naquadah-theme.el")
 ;; (color-theme-naquadah)
 
-
+(tool-bar-mode 0)
 
 ;; Add line highlighting
 (global-hl-line-mode 1)
