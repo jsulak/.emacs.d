@@ -9,7 +9,7 @@
   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project ruby-end smex undo-tree yaml-mode yasnippet-bundle)
+(defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project ido-ubiquitous magit ruby-end smex undo-tree yaml-mode yasnippet-bundle)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -78,6 +78,7 @@
 
 ;; Spaces instead of tabs
 (setq-default indent-tabs-mode nil)
+(set-default 'indicate-empty-lines t)
 
 ;; Set initial mode to text-mode
 (setq-default initial-major-mode 'text-mode)
@@ -88,11 +89,16 @@
 (setq cua-enable-cua-keys nil) ;; only for rectangles
 (cua-mode t)
 
-(ido-mode 1)
-(ido-everywhere t)
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-
+(ido-mode t)
+(ido-ubiquitous t)
+(setq ido-enable-prefix nil
+      ido-enable-flex-matching t
+      ido-auto-merge-work-directories-length nil
+      ido-create-new-buffer 'always
+      ido-use-filename-at-point 'guess
+      ido-use-virtual-buffers t
+      ido-handle-duplicate-virtual-buffers 2
+      ido-max-prospects 10)
 
 ;;auto indent
 (define-key global-map (kbd "RET") 'newline-and-indent)
@@ -524,7 +530,6 @@
 
 (global-set-key [home] 'smart-beginning-of-line)
 (global-set-key (kbd "C-a") 'smart-beginning-of-line)
-
 
 ;; =======================
 ;; Server

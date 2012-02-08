@@ -1,8 +1,8 @@
 
 ;; Add color themes
-(setq load-path (append load-path '("~/.emacs.d/themes/")))
-(require 'color-theme)
-(color-theme-initialize)
+;(setq load-path (append load-path '("~/.emacs.d/themes/")))
+;(require 'color-theme)
+;(color-theme-initialize)
 ;;(load-file "~/.emacs.d/external/ruby-blue-theme.el")
 ;;(color-theme-ruby-blue)
 ;;(color-theme-tangotango)
