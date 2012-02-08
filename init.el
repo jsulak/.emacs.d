@@ -62,6 +62,10 @@
 ;; Behavior
 ;; ================================
 
+(electric-pair-mode t)
+(electric-indent-mode t)
+(electric-layout-mode t)
+
 ;; Add more file types to find-file-in-project
 (defvar ffip-patterns
   '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
@@ -100,9 +104,6 @@
       ido-use-virtual-buffers t
       ido-handle-duplicate-virtual-buffers 2
       ido-max-prospects 10)
-
-;;auto indent
-(define-key global-map (kbd "RET") 'newline-and-indent)
 
 ;;paren highlighting
 (show-paren-mode 1)
@@ -288,10 +289,6 @@
 (autoload 'acl-mode "acl-mode")
 (setq auto-mode-alist (append (list (cons "\\.acl\\'" 'acl-mode))
                                auto-mode-alist))
-
-(require 'csharp-mode)
-(setq auto-mode-alist
-(append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 
 ;; Add markdown mode
 ;; (autoload 'markdown-mode "markdown-mode.el"
