@@ -9,7 +9,8 @@
   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project ido-ubiquitous magit ruby-end smex undo-tree yaml-mode yasnippet-bundle)
+(defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project ido-ubiquitous
+                         magit markdown-mode ruby-end smex undo-tree yaml-mode yasnippet-bundle)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -293,12 +294,10 @@
 (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 
 ;; Add markdown mode
-(autoload 'markdown-mode "markdown-mode.el"
-  "Major mode for editing Markdown files" t)
+;; (autoload 'markdown-mode "markdown-mode.el"
+  ;; "Major mode for editing Markdown files" t)
 (setq auto-mode-alist
       (cons '("\\.md" . markdown-mode) auto-mode-alist))
-
-
 
 ;; This removes unsightly ^M characters that would otherwise
 ;; appear in the output of java applications.
