@@ -80,10 +80,8 @@
 ;; Leave lines at top or bottom when recentering
 (setq scroll-margin 3)
 
-
 ;; Spaces instead of tabs
 (setq-default indent-tabs-mode nil)
-(set-default 'indicate-empty-lines t)
 
 ;; Set initial mode to text-mode
 (setq-default initial-major-mode 'text-mode)
