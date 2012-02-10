@@ -45,7 +45,6 @@
 (when (file-exists-p local-init)
   (load local-init))
 
-
 ;; Load custom functions
 (require 'efuncs)
 
@@ -79,8 +78,6 @@
   "List of patterns to look for with `find-file-in-project'.")
 
 (setq ns-pop-up-frames nil)
-
-(global-set-key "\M-z" 'zap-up-to-char)
 
 ;; Leave lines at top or bottom when recentering
 (setq scroll-margin 3)
@@ -125,7 +122,6 @@
 ;;http://www.xsteve.at/prg/emacs/power-user-tips.html
 (setq recentf-max-saved-items 500)
 (setq recentf-max-menu-items 60)
-
 (setq ibuffer-shrink-to-minimum-size t)
 (setq ibuffer-always-show-last-buffer nil)
 (setq ibuffer-sorting-mode 'recency)
@@ -139,15 +135,6 @@
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
-;; M-SPC not available, window manager take it away
-(global-set-key (kbd "M-'") 'just-one-space)
-(global-set-key (kbd "C-M-=") 'pde-indent-dwim)
-;; nearest key to dabbrev-expand
-(global-set-key (kbd "M-;") 'hippie-expand)
-(global-set-key (kbd "C-;") 'comment-dwim)
-(global-set-key (kbd "C-c f") 'comint-dynamic-complete)
 
 ;; (setq hippie-expand-try-functions-list
 ;;           '(try-expand-line
@@ -237,35 +224,9 @@
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
 
-;; TODO: Disabled nxhtml mode for now.  Should try to get this working at some point.
-;; Add nxhtml mode
-;; (load "~/.emacs.d/nxhtml/autostart.el")
-
-;; (setq
-;;       nxhtml-global-minor-mode t
-;;       mumamo-chunk-coloring 'submode-colored
-;;       nxhtml-skip-welcome t
-;;       indent-region-mode t
-;;       rng-nxml-auto-validate-flag nil
-;;       nxml-degraded t)
-     ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo))
-;; (require 'mumamo-fun)
-;;      (setq mumamo-chunk-coloring 'submode-colored)
-;;      (add-to-list 'auto-mode-alist '("\\.rhtml\\'" . eruby-html-mumamo))
-     ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-html-mumamo))
-
 ;; yaml
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-
-;; (add-hook 'yaml-mode-hook
-;;       '(lambda ()
-;;         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-
-
-;; Add js2 mode for javascript
-;;(autoload 'js2-mode "js2" nil t)
-;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
 ;;Add support for dos batch files
 (require 'dosbat)
@@ -277,7 +238,6 @@
 (setq auto-mode-alist
       (cons '("\\.\\(scss\\)\\'" . css-mode)
             auto-mode-alist))
-
 
 ;;Add support for xquery-mode
 (require 'xquery-mode)
@@ -294,8 +254,6 @@
                                auto-mode-alist))
 
 ;; Add markdown mode
-;; (autoload 'markdown-mode "markdown-mode.el"
-  ;; "Major mode for editing Markdown files" t)
 (setq auto-mode-alist
       (cons '("\\.md" . markdown-mode) auto-mode-alist))
 
@@ -304,7 +262,6 @@
 (add-hook 'comint-output-filter-functions
           'comint-strip-ctrl-m)
 
-
 (add-to-list 'load-path "~/.emacs.d/external/jade-mode")
 (require 'sws-mode)
 (require 'jade-mode)
@@ -312,38 +269,9 @@
 (add-to-list 'auto-mode-alist '("\\.jade$" .sws-mode))
 
 
-
 ;; =========================
 ;; External packages
 ;; =========================
-
-(require 'js-comint)
-(setq inferior-js-program-command "node")
-(setq inferior-js-mode-hook
-      (lambda ()
-        ;; We like nice colors
-        (ansi-color-for-comint-mode-on)
-        ;; Deal with some prompt nonsense
-        (add-to-list 'comint-preoutput-filter-functions
-                     (lambda (output)
-                       (replace-regexp-in-string ".*1G\.\.\..*5G" "..."
-                     (replace-regexp-in-string ".*1G.*3G" ">" output))))))
-
-
-;;The following is from http://wttools.sourceforge.net/emacs-stuff/emacs.html
-;;; Excellent package for better scrolling in emacs
-;;; should be default package. But now it can be downloaded
-;;; from: http://user.it.uu.se/~mic/pager.el
-;; (require 'pager)
-;;      (global-set-key "\C-v"	   'pager-page-down)
-;;      (global-set-key [next] 	   'pager-page-down)
-;;      (global-set-key "\ev"	   'pager-page-up)
-;;      (global-set-key [prior]	   'pager-page-up)
-;;      (global-set-key '[M-up]    'pager-row-up)
-;;      (global-set-key '[M-kp-8]  'pager-row-up)
-;;      (global-set-key '[M-down]  'pager-row-down)
-;;      (global-set-key '[M-kp-2]  'pager-row-down)
-
 
 ;; Auto-complete
 (add-to-list 'load-path "~/.emacs.d/external/autocomplete/")
@@ -379,17 +307,11 @@
 ;;                                                     (back-to-indentation))))))))
 
 
-(add-to-list 'load-path "~/.emacs.d/external/nav")
-(require 'nav)
 (require 'grep-buffers)
-
 
 ;; Visible bookmakrs
 (setq bm-restore-repository-on-load t)
 (require 'bm)
-(global-set-key (kbd "<M-f2>") 'bm-toggle)
-(global-set-key (kbd "<f2>")   'bm-next)
-(global-set-key (kbd "<S-f2>") 'bm-previous)
  
 ;; make bookmarks persistent as default
 (setq-default bm-buffer-persistence t)
@@ -420,90 +342,6 @@
 (global-undo-tree-mode)
 
 
-;; ;; =======================
-;; ;; Keybindings
-;; ;; =======================
-
-
-;; duplicate a line
-(global-set-key (kbd "C-c y") 'djcb-duplicate-line)
-;; duplicate a line and comment the first
-(global-set-key (kbd "C-c c") (lambda()(interactive)(djcb-duplicate-line t)))
-;; Join lines
-(global-set-key "\C-x\C-j" 'join-line)
-
-;; delete enclosed text
-(global-set-key (kbd "C-c d") 'delete-enclosed-text)
-
-;;Set ctrl-z to undo
-(global-set-key "\C-z" 'undo)
-
-;;set up kill word keyboard bindings
-(global-set-key "\C-w" 'kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
-(global-set-key "\C-c\C-k" 'kill-region)
-(global-set-key "\C-q" 'backward-kill-word)
-
-;; Use ibuffer instead of normal buffer menu
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
-;; Run shell command
-(global-set-key (kbd "\C-c s") 'shell-command)
-
-;; Set goto-line
-(global-set-key "\C-x\C-g" 'goto-line)
-
-;;bind repeat last macro to F5
-(global-set-key [(f4)] 'call-last-kbd-macro)
-(global-set-key [(f5)] 'revert-buffer)
-
-;;Provide short-cut for swap-windows (F8)
-(global-set-key [(f6)] 'swap-windows)
-(global-set-key [(f7)] 'nav)
-
-;; Point stack bindings
-(global-set-key '[(f8)] 'point-stack-push)
-(global-set-key '[(f9)] 'point-stack-pop)
-(global-set-key '[(f10)] 'point-stack-forward-stack-pop)
-
-
-;;Set keybinding for functions in efunc.el
-;;(global-set-key [(meta f10)] 'my-ido-find-tag)
-
-;(global-set-key [f11] 'bubble-buffer-next)
-;(global-set-key [(shift f11)] 'bubble-buffer-previous)
-(global-set-key [(meta f11)] 'xsteve-ido-choose-from-recentf)
-
-(global-set-key [(meta f12)] 'ffip)
-;(global-set-key [(f7)] 'ibuffer)
-
-(global-set-key [S-left] 'windmove-left)          ; move to left window
-(global-set-key [S-right] 'windmove-right)        ; move to right window
-(global-set-key [S-up] 'windmove-up)              ; move to upper window
-(global-set-key [S-down] 'windmove-down)          ; move to lower window
-
-(global-set-key (kbd "\C-x 5") 'xsteve-split-window)
-
-(global-set-key [(C-return)] 'dabbrev-expand)
-
-;; Redefine comment-dwim to comment out whole line
-(global-set-key (kbd "C-;") 'comment-dwim-line)
-
-;; Misc keybindings
-
-(global-set-key "\M-g" 'goto-line)
-(global-set-key (kbd "C-c g") 'goto-line)
-(global-set-key (kbd "C-c o") 'occur)
-;(global-set-key (kbd "C-c i") 'indent-all-xml)
-(global-set-key (kbd "C-c i") 'ido-goto-symbol)
-(global-set-key [(meta f10)] 'ido-goto-symbol)
-
-(global-set-key (kbd "C-c p") 'pager-page-up)
-(global-set-key (kbd "C-c n") 'pager-page-down)
-
-(global-set-key [home] 'smart-beginning-of-line)
-(global-set-key (kbd "C-a") 'smart-beginning-of-line)
-
 ;; =======================
 ;; Server
 ;; =======================
@@ -514,6 +352,13 @@
                                                  ; ~/.emacs.d/server is unsafe"
                                                  ; on windows.
 (server-start)
+
+
+;; =======================
+;; Key bindings
+;; =======================
+(require 'james-bindings)
+
 
 ;; =======================
 ;; Smex.  Must be at end of .emacs

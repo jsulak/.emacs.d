@@ -121,19 +121,6 @@ When called twice restore the window configuration before the split."
       (pop-to-buffer cur-buf)
       (other-window '1))))
 
-(defun xsteve-ido-choose-from-recentf ()
-  "Use ido to select a recently opened file from the `recentf-list'"
-  (interactive)
-  (let ((home (expand-file-name (getenv "HOME"))))
-    (find-file
-     (ido-completing-read "Recentf open: "
-                          (mapcar (lambda (path)
-                                    (replace-regexp-in-string home "~" path))
-                                  recentf-list)
-                          nil t))))
-
-
-
 ;;; Hack dired to launch files with 'l' key.  Put this in your ~/.emacs file
 ;;; From http://omniorthogonal.blogspot.com/2008/05/useful-emacs-dired-launch-hack.html
 (defun dired-launch-command ()
