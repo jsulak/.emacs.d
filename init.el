@@ -40,6 +40,11 @@
 
 (load-file "~/.emacs.d/org-mode-settings.el")
 
+;; Local initialization options can be saved in local.el
+(setq local-init (concat user-emacs-directory "local.el"))
+(when (file-exists-p local-init)
+  (load local-init))
+
 
 ;; Load custom functions
 (require 'efuncs)
@@ -49,10 +54,10 @@
 ;; Appearance 
 ;; ================================
 
+(require 'linum)
+
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
-
-(require 'linum)
 
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)

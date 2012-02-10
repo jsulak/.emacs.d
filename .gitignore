@@ -5,3 +5,4 @@
 tramp
 ac-comphist.dat
 elpa/*
+local.el
