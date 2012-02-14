@@ -1,17 +1,5 @@
 (menu-bar-mode 0)
 
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- ;; TODO
-; '(default ((t (:inherit nil :stipple nil :background "#162433" :foreground "#C7D4E2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "outline" :family "Consolas"))))
- '(cperl-array-face ((((class color) (background dark)) (:foreground "yellow"))))
- '(cperl-hash-face ((((class color) (background dark)) (:slant italic :weight bold))))
-; '(ido-subdir ((((min-colors 88) (class color)) (:foreground "orange"))))
- '(js2-jsdoc-html-tag-name-face ((((class color) (min-colors 8) (background dark)) nil))))
-
 ;;Set the default font
 (setq default-frame-alist
       '((font .
@@ -24,7 +12,6 @@
 ;; This assumes that Cygwin is installed in C:\cygwin (the
 ;; default) and that C:\cygwin\bin is not already in your
 ;; Windows Path (it generally should not be).
-;;
 (setq exec-path (cons "C:/cygwin/bin" exec-path))
 (setenv "PATH" (concat "C:\\cygwin\\bin;" (getenv "PATH")))
 
@@ -36,30 +23,35 @@
 	ad-do-it))
 (ad-activate 'grep-compute-defaults)
 
-;;
 ;; NT-emacs assumes a Windows command shell, which you change
 ;; here.
-;;
 (setq shell-file-name "bash")
 (setenv "SHELL" shell-file-name) 
 (setq explicit-shell-file-name shell-file-name)
+(setq ediff-shell               shell-file-name) 
 (setq explicit-sh-args '("--login" "-i"))
+
 
 ;; Set up cygwin-mount
 (require 'cygwin-mount)
 (cygwin-mount-activate)
 
 ;; Set python executable path;
-(setq python-python-command "C:\\python27\\python.exe")
+;; (setq python-python-command "C:\\python27\\python.exe") ::)
 
- ;;pdb setup, note the python version
- (setq pdb-path 'c:/python27/lib/pdb.py
-       gud-pdb-command-name (symbol-name pdb-path))
- (defadvice pdb (before gud-query-cmdline activate)
-   "Provide a better default command line when called interactively."
-   (interactive
-    (list (gud-query-cmdline pdb-path
-	 		    (file-name-nondirectory buffer-file-name)))))
+;;  ;\;\pdb setup, note the python version ::)
+;;  (setq pdb-path 'c:/python27/lib/pdb.py ::)
+;;        gud-pdb-command-name (symbol-name pdb-path)) ::)
+;;  (defadvice pdb (before gud-query-cmdline activate) ::)
+;;    "Provide a better default command line when called interactively." ::)
+;;    (interactive ::)
+;;     (list (gud-query-cmdline pdb-path ::)
+;; 	 		    (file-name-nondirectory buffer-file-name))))) ::)
+
+
+;;; Add Cygwin Info pages
+(setq Info-default-directory-list (append Info-default-directory-list (list "c:/cygwin/usr/info/")))
+
 
 ;; Bind custom dired functions and fix search
 (setq w32-browser-wait-time 1)
@@ -75,16 +67,6 @@
 
 
 (require 'tramp)
-;(setq tramp-default-method "ssh")
-;(nconc (cadr (assq 'tramp-login-args (assoc "ssh" tramp-methods)))  '(("bash" "-i")))
-;(setcdr (assq 'tramp-remote-sh (assoc "ssh" tramp-methods)) '("bash -i"))
-;(setq tramp-default-method "plink")
-;; Set tramp-default-method 
-;(cond  ((eq window-system 'w32)
-;      (setq tramp-default-method "sshx"))
-;      (t
-;      (setq tramp-default-method "pscp")))
-
 (setq tramp-default-method "plink")
 
 (require 'james-gui)
