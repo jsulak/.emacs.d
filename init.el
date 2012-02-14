@@ -206,9 +206,8 @@
 
 (require 'ruby-end)
 
-;;Add nxml mode
-;;(load "~/.emacs.d/nxml-mode/rng-auto.el")
-;;(push "~/.emacs.d/nxml-mode/schemas/schemas.xml" rng-schema-locating-files-default)
+;; nxml mode
+(setq rng-schema-locating-files (quote ("schemas.xml" "~/.emacs.d/nxml-mode/schema/schemas.xml")))
 (setq auto-mode-alist
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
@@ -298,7 +297,9 @@
 ;; Visible bookmakrs
 (setq bm-restore-repository-on-load t)
 (require 'bm)
- 
+
+(setq bm-highlight-style (quote bm-highlight-only-style))
+
 ;; make bookmarks persistent as default
 (setq-default bm-buffer-persistence t)
  
