@@ -77,9 +77,12 @@
 ;; (set-face-background 'hl-line "#2B3030")
 ;; 
 
-(setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))
-(require 'color-theme-solarized)
-(color-theme-solarized-dark)
+;; (setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))
+;; (require 'color-theme-solarized)
+;; (color-theme-solarized-dark)
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
+(load-theme 'solarized-dark)
 
 ;; (load-file "~/.emacs.d/external/ruby-blue-theme.el")
 ;; (color-theme-ruby-blue)

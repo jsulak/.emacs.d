@@ -33,14 +33,16 @@ Installation & Usage
 
 ### Emacs 24
 
-1. Add the `emacs-color-theme-solarized` directory to your Emacs `load-path`.
-2. `M-x enable-theme`, then either `solarized-light` or `solarized-dark`.
+1. Add the `emacs-color-theme-solarized` directory to your Emacs `custom-theme-load-path`.
+2. Add `(load-theme solarized-[light|dark] t)` to your Emacs init file.
+3. Reload the init file, or restart Emacs.
 
 ### [color-theme] \(pre-Emacs 24\)
 
 1. Download and install [color-theme].
 2. Add the `emacs-color-theme-solarized` directory to your Emacs `load-path`.
 3. Add `(require 'color-theme-solarized)` to your Emacs init file (usually `~/.emacs`).
+3. Reload the init file, or restart Emacs.
 4. Use the usual [color-theme] mechanism to select one of the Solarized themes, or `M-x color-theme-solarized-[light|dark]`.
 
 ### IMPORTANT NOTE FOR TERMINAL USERS:
@@ -72,16 +74,17 @@ Advanced Configuration
 Solarized will work out of the box with just the instructions specified above
 but does include several variables that can be customized.
 
-    variable name           default   optional
-    -------------------------------------------
-    solarized-termcolors=   16    |   256
-    solarized-degrade   =   nil   |   t
-    solarized-bold      =   t     |   nil
-    solarized-underline =   t     |   nil
-    solarized-italic    =   t     |   nil
-    solarized-contrast  =   normal|   high, low
-    solarized-visibility=   normal|   high, low
-    -------------------------------------------
+    variable name            default   optional
+    --------------------------------------------
+    solarized-termcolors =   16    |   256
+    solarized-degrade    =   nil   |   t
+    solarized-bold       =   t     |   nil
+    solarized-underline  =   t     |   nil
+    solarized-italic     =   t     |   nil
+    solarized-contrast   =   normal|   high, low
+    solarized-visibility =   normal|   high, low
+    solarized-broken-srgb=   nil   |   t (see details for Mac behavior)
+    --------------------------------------------
 
 ### Option Details
 
@@ -119,6 +122,14 @@ but does include several variables that can be customized.
     Special characters such as trailing whitespace, tabs, newlines, when
     displayed using `:set list` can be set to one of three levels depending on 
     your needs. Default value is `normal` with `high` and `low` options.
+    
+*   solarized-broken-srgb
+
+    Emacs [bug #8402](http://debbugs.gnu.org/cgi/bugreport.cgi?bug=8402)
+    results in incorrect color handling on Macs. If this is `t` (the default
+    on Macs), Solarized works around it with alternative colors. However,
+    these colors are not totally portable, so you may be able to edit the
+    "Gen RGB" column in `solarized-definitions.el` to improve them further.
 
 Code Notes
 ----------

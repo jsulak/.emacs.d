@@ -10,7 +10,12 @@
 ;;; 2. Load this file
 ;;; 3. M-x color-theme-solarized-[dark|light]
 
-(require 'solarized-definitions)
+(require 'solarized-definitions
+         (let* ((reqname (concat (file-name-directory (or load-file-name
+                                                          buffer-file-name))
+                                 "solarized-definitions.el"))
+                (compreqname (concat reqname "c")))
+           (if (file-exists-p compreqname) compreqname reqname)))
 
 (eval-when-compile
   (require 'color-theme))

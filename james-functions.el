@@ -330,5 +330,5 @@ Ignores CHAR at point."
  ;;              (add-to-list 'name-and-pos (cons name position))))))))
 
 
-(provide 'efuncs)
+(provide 'james-functions)
 

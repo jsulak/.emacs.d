@@ -46,7 +46,7 @@
   (load local-init))
 
 ;; Load custom functions
-(require 'efuncs)
+(require 'james-functions)
 
 
 ;; ================================
@@ -66,9 +66,16 @@
 ;; Behavior
 ;; ================================
 
-(electric-pair-mode t)
+;; (electric-pair-mode t)
 (electric-indent-mode t)
 (electric-layout-mode t)
+
+;;  electric layout doesn't work right with js-mode
+(defun james-js-mode-hook ()
+  ;; electric-layout-mode doesn't play nice with js-mode
+  (electric-layout-mode -1))
+(add-hook 'js-mode-hook 'james-js-mode-hook)
+
 
 ;; Add more file types to find-file-in-project
 (defvar ffip-patterns
@@ -136,24 +143,6 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 
-;; (setq hippie-expand-try-functions-list
-;;           '(try-expand-line
-;;             try-expand-dabbrev
-;;             try-expand-line-all-buffers
-;;             try-expand-list
-;;             try-expand-list-all-buffers
-;;             try-expand-dabbrev-visible
-;;             try-expand-dabbrev-all-buffers
-;;             try-expand-dabbrev-from-kill
-;;             try-complete-file-name
-;;             try-complete-file-name-partially
-;;             try-complete-lisp-symbol
-;;             try-complete-lisp-symbol-partially
-;;             try-expand-whole-kill))
-;; (autoload 'comint-dynamic-complete "comint" "Complete for file name" t)
-;; (setq comint-completion-addsuffix '("/" . ""))
-;; ;;(setq-default indent-tabs-mode nil)
-
 (defadvice kill-ring-save (before slick-copy activate compile)
   "When called interactively with no active region, copy a single line instead."
   (interactive
@@ -217,9 +206,8 @@
 
 (require 'ruby-end)
 
-;;Add nxml mode
-;;(load "~/.emacs.d/nxml-mode/rng-auto.el")
-;;(push "~/.emacs.d/nxml-mode/schemas/schemas.xml" rng-schema-locating-files-default)
+;; nxml mode
+(setq rng-schema-locating-files (quote ("schemas.xml" "~/.emacs.d/nxml-mode/schema/schemas.xml")))
 (setq auto-mode-alist
         (cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
 	      auto-mode-alist))
@@ -281,13 +269,10 @@
 
 ;; This turns off filename completion everywhere because it crashes in js.
 ;; It would be better to do it for js2-mode only
-(defun ac-common-setup ())  
+;; (defun ac-common-setup ())  
 (ac-config-default)
 
 (ac-set-trigger-key "TAB")
-;;(setq ac-auto-start nil)
-;;(setq ac-auto-show-menu nil)
-
 
 (require 'etags)
 (require 'cl)
@@ -311,7 +296,9 @@
 ;; Visible bookmakrs
 (setq bm-restore-repository-on-load t)
 (require 'bm)
- 
+
+(setq bm-highlight-style (quote bm-highlight-only-style))
+
 ;; make bookmarks persistent as default
 (setq-default bm-buffer-persistence t)
  
