@@ -245,8 +245,7 @@
       (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode)
 	    auto-mode-alist))
 
-(defvar xquery-indent-size 4
-  "The size of each indent level.")
+(setq xquery-indent-size 4)
 
 ;;Add ACL mode mode 
 (autoload 'acl-mode "acl-mode")
