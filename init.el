@@ -46,7 +46,7 @@
   (load local-init))
 
 ;; Load custom functions
-(require 'efuncs)
+(require 'james-functions)
 
 
 ;; ================================
