@@ -17,14 +17,14 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
+;; =======================
+;; Load path
+;; =======================
 
-;; append load path to load my customizations
-(setq load-path
-       (append load-path
- 	      '("~/.emacs.d/")))
-(setq load-path
-      (append load-path
-	      '("~/.emacs.d/external")))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
+;; (require 'bytecomp)
+;; (byte-recompile-directory "~/.emacs.d/external" 0)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
@@ -38,19 +38,15 @@
       ((eq system-type 'windows-nt)
        (load-file "~/.emacs.d/james-windows.el")))
 
-(load-file "~/.emacs.d/org-mode-settings.el")
-
 ;; Local initialization options can be saved in local.el
 (setq local-init (concat user-emacs-directory "local.el"))
 (when (file-exists-p local-init)
   (load local-init))
 
-;; Load custom functions
 (require 'james-functions)
 
-
 ;; ================================
-;; Appearance 
+;; Behavior
 ;; ================================
 
 (require 'linum)
@@ -60,11 +56,6 @@
 
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
-
-
-;; ================================
-;; Behavior
-;; ================================
 
 ;; (electric-pair-mode t)
 (electric-indent-mode t)
@@ -97,9 +88,6 @@
 
 ;; do not confirm file creation
 (setq confirm-nonexistent-file-or-buffer nil)
-
-(setq cua-enable-cua-keys nil) ;; only for rectangles
-(cua-mode t)
 
 (ido-mode t)
 (ido-ubiquitous t)
@@ -232,7 +220,6 @@
 (setq auto-mode-alist
       (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode)
 	    auto-mode-alist))
-
 (setq xquery-indent-size 4)
 
 ;;Add ACL mode mode 
@@ -327,7 +314,6 @@
 (require 'undo-tree)
 (global-undo-tree-mode)
 
-
 ;; =======================
 ;; Server
 ;; =======================
@@ -338,7 +324,6 @@
                                                  ; ~/.emacs.d/server is unsafe"
                                                  ; on windows.
 (server-start)
-
 
 ;; =======================
 ;; Key bindings
@@ -355,11 +340,7 @@
 ;;set up alternate alt key
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key "\C-x\C-m" 'smex)
-;;(global-set-key "\C-c\C-m" 'smex)
 (global-set-key (kbd "C-x m") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-(global-set-key (kbd "C-c M-x") 'smex-update-and-run)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
 (put 'downcase-region 'disabled nil)
 (put 'autopair-newline 'disabled nil)
