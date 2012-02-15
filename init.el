@@ -27,7 +27,7 @@
 	      '("~/.emacs.d/external")))
 
 (setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+(load custom-file 'noerror)
 
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
