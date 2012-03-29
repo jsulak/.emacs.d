@@ -43,6 +43,9 @@
 (when (file-exists-p local-init)
   (load local-init))
 
+;; Eshell
+(setq eshell-aliases-file (concat user-emacs-directory "eshell-aliases"))
+
 (require 'james-functions)
 
 ;; ================================

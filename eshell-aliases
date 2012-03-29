@@ -1,0 +1,9 @@
+alias afind ack -il $*
+alias la ls -Al $*
+alias ll ls -l $*
+alias e find-file $1
+alias more less $*
+alias po popd $*
+alias pu pushd $*
+alias rvm-restart rvm_reload_flag=1 source '/Users/jsulak/.rvm/scripts/rvm' $*
+alias w cd ~/Dropbox/workspace/ $*
