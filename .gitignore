@@ -8,3 +8,5 @@ elpa/*
 local.el
 custom.el
 .emacs.desktop*
+eshell/*
+server/server
