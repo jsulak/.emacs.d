@@ -29,8 +29,8 @@
 
 
 ;; Move scroll bar to right
-(setq scroll-bar-mode-explicit t) 
-(set-scroll-bar-mode `right) 
+;; (setq scroll-bar-mode-explicit t)  ::)
+;; (set-scroll-bar-mode `right)  ::)
 
 ;; window frame title
 (setq frame-title-format "emacs - %b (%f)")

@@ -10,7 +10,7 @@
 
 ;; Add in your own as you wish:
 (defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project ido-ubiquitous
-                         magit markdown-mode ruby-end smex undo-tree yaml-mode yasnippet-bundle)
+                         magit markdown-mode ruby-end smex sml-modeline undo-tree yaml-mode yasnippet-bundle)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -48,6 +48,11 @@
 ;; ================================
 ;; Behavior
 ;; ================================
+
+;; Get rid of scroll bars and use sml-modeline instead, and make the fringe half-width
+(sml-modeline-mode 1)
+(scroll-bar-mode -1)
+(set-fringe-style 5)
 
 (require 'linum)
 
@@ -181,6 +186,8 @@
 ;; Major modes 
 ;; ========================
 
+(setq erc-hide-list '("JOIN" "PART" "QUIT"))
+
 ;; Coffee mode
 (require 'coffee-mode)
 
@@ -251,8 +258,12 @@
 (add-to-list 'load-path "~/.emacs.d/external/autocomplete/")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/external/autocomplete//ac-dict")
-(setq ac-auto-start 2)
+(setq ac-auto-start 3)
 (setq ac-ignore-case nil)
+
+;; Attempt to fix css autocomplete silliness
+(define-key ac-complete-mode-map "\r" nil)
+
 
 ;; This turns off filename completion everywhere because it crashes in js.
 ;; It would be better to do it for js2-mode only
