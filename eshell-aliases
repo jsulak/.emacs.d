@@ -1,9 +1,11 @@
-alias afind ack -il $*
-alias la ls -Al $*
-alias ll ls -l $*
-alias e find-file $1
-alias more less $*
-alias po popd $*
-alias pu pushd $*
-alias rvm-restart rvm_reload_flag=1 source '/Users/jsulak/.rvm/scripts/rvm' $*
+alias node NODE_NO_READLINE=1 node $*
+alias eo find-file-other-window $1
 alias w cd ~/Dropbox/workspace/ $*
+alias rvm-restart rvm_reload_flag=1 source '/Users/jsulak/.rvm/scripts/rvm' $*
+alias pu pushd $*
+alias po popd $*
+alias more less $*
+alias e find-file $1
+alias ll ls -l $*
+alias la ls -Al $*
+alias afind ack -il $*
