@@ -124,7 +124,6 @@
 
 ;;http://www.xsteve.at/prg/emacs/power-user-tips.html
 (setq recentf-max-saved-items 500)
-(setq recentf-max-menu-items 60)
 (setq ibuffer-shrink-to-minimum-size t)
 (setq ibuffer-always-show-last-buffer nil)
 (setq ibuffer-sorting-mode 'recency)
