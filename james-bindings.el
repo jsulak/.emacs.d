@@ -1,3 +1,12 @@
+
+;; Eshell
+;; Start eshell or switch to it if it's active.
+(global-set-key (kbd "C-c e") 'eshell)
+
+;; Start a new eshell even if one is active.
+(global-set-key (kbd "C-c E") (lambda () (interactive) (eshell t)))
+
+
 (global-set-key "\M-z" 'zap-up-to-char)
 (global-set-key (kbd "C-c z") 'zap-up-to-char)
 

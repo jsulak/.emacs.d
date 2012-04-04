@@ -42,10 +42,38 @@
 (when (file-exists-p local-init)
   (load local-init))
 
+(require 'james-functions)
+
+;; ======================
 ;; Eshell
+;; ======================
 (setq eshell-aliases-file (concat user-emacs-directory "eshell-aliases"))
 
-(require 'james-functions)
+(setq eshell-cmpl-cycle-completions nil
+      eshell-save-history-on-exit t
+      eshell-buffer-shorthand t
+      eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\)/\\'")
+
+;;;###autoload
+(eval-after-load 'esh-opt
+  '(progn
+     (require 'em-prompt)
+     (require 'em-term)
+     (require 'em-cmpl)
+     (setenv "PAGER" "cat")
+     (add-hook 'eshell-mode-hook ;; for some reason this needs to be a hook
+               '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-bol)))
+     (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)
+     (setq eshell-cmpl-cycle-completions nil)
+
+     ;; TODO: submit these via M-x report-emacs-bug
+     (add-to-list 'eshell-visual-commands "ssh")
+     (add-to-list 'eshell-visual-commands "tail")
+     (add-to-list 'eshell-command-completions-alist
+                  '("gunzip" "gz\\'"))
+     (add-to-list 'eshell-command-completions-alist
+                  '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))))
+
 
 ;; ================================
 ;; Behavior
