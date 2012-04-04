@@ -1,4 +1,5 @@
 (global-set-key "\M-z" 'zap-up-to-char)
+(global-set-key (kbd "C-c z") 'zap-up-to-char)
 
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 

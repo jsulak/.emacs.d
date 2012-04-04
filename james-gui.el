@@ -13,8 +13,6 @@
 
 (tool-bar-mode 0)
 
-;; Add line highlighting
-(global-hl-line-mode 1)
 
 ;; TODO
 ;;(set-face-background 'hl-line "#19293A")

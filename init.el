@@ -32,9 +32,8 @@
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
        (load-file "~/.emacs.d/james-linux.el"))
-      ((and (eq system-type 'darwin)
-            (window-system)
-            (load-file "~/.emacs.d/james-osx.el")))
+      ((eq system-type 'darwin)
+       (load-file "~/.emacs.d/james-osx.el"))
       ((eq system-type 'windows-nt)
        (load-file "~/.emacs.d/james-windows.el")))
 
@@ -59,6 +58,9 @@
 
 (require 'linum)
 
+;; Add line highlighting
+(global-hl-line-mode 1)
+
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 
@@ -74,7 +76,6 @@
   ;; electric-layout-mode doesn't play nice with js-mode
   (electric-layout-mode -1))
 (add-hook 'js-mode-hook 'james-js-mode-hook)
-
 
 ;; Add more file types to find-file-in-project
 (defvar ffip-patterns

@@ -10,3 +10,4 @@ custom.el
 .emacs.desktop*
 eshell/*
 server/server
+url/cookies
