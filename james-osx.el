@@ -3,12 +3,16 @@
 (setq ring-bell-function 'ignore)
 (menu-bar-mode 1)
 
-(require 'james-gui)
+(if window-system
+    (require 'james-gui))
+
+(if window-system
+    (set-face-attribute 'default nil :font "DejaVu Sans Mono-11"))
 
 ;; (setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))
 ;; (require 'color-theme-solarized)
 ;; (color-theme-solarized-dark)
-
+ 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
 (load-theme 'solarized-dark)
 
@@ -16,7 +20,7 @@
 ;;(color-theme-tangotango)
 
 ;; (set-face-attribute 'default nil :font "Menlo-11") 
-(set-face-attribute 'default nil :font "DejaVu Sans Mono-11")
+
 ;; (set-face-attribute 'default nil :font "Inconsolata-13")
 ;; (set-face-attribute 'default nil :font "Letter Gothic-14")
 
