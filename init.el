@@ -150,6 +150,9 @@
 (setq dired-isearch-filenames t)
 ;; Make dired open directories in same buffer
 (put 'dired-find-alternate-file 'disabled nil)
+(autoload 'dired-jump "dired-x" "Jump to dired corresponding current buffer.")
+(autoload 'dired-jump-other-window "dired-x" "jump to dired in other window.")
+
 
 ;;http://www.xsteve.at/prg/emacs/power-user-tips.html
 (setq recentf-max-saved-items 500)

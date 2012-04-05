@@ -2,6 +2,7 @@
 ;; Eshell
 ;; Start eshell or switch to it if it's active.
 (global-set-key (kbd "C-c e") 'eshell)
+(global-set-key (kbd "C-c d") 'dired-jump)
 
 ;; Start a new eshell even if one is active.
 (global-set-key (kbd "C-c E") (lambda () (interactive) (eshell t)))
