@@ -49,8 +49,7 @@
 ;; ======================
 (setq eshell-aliases-file (concat user-emacs-directory "eshell-aliases"))
 
-(setq eshell-cmpl-cycle-completions nil
-      eshell-save-history-on-exit t
+(setq eshell-save-history-on-exit t
       eshell-buffer-shorthand t
       eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\)/\\'")
 
@@ -291,7 +290,7 @@
 ;; Auto-complete
 (add-to-list 'load-path "~/.emacs.d/external/autocomplete/")
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/external/autocomplete//ac-dict")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/external/autocomplete/ac-dict")
 (setq ac-auto-start 3)
 (setq ac-ignore-case nil)
 
@@ -301,7 +300,7 @@
 
 ;; This turns off filename completion everywhere because it crashes in js.
 ;; It would be better to do it for js2-mode only
-;; (defun ac-common-setup ())  
+(defun ac-common-setup ())  
 (ac-config-default)
 
 (ac-set-trigger-key "TAB")
