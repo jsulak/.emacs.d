@@ -202,9 +202,6 @@
  uniquify-after-kill-buffer-p t
  uniquify-ignore-buffers-re "^\\*")
 
-;; point stack - forward/back stack for point
-(require 'point-stack)
-
 ;; Adds extra keybinding to interactive search that sends the current term to occur
 ;; From http://emacsblog.org/page/5/
 (define-key isearch-mode-map (kbd "C-o")
@@ -216,7 +213,7 @@
 
 (add-to-list 'load-path "which-folder-ace-jump-mode-file-in/")
 (require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
 
 ;; ========================
 ;; Major modes 

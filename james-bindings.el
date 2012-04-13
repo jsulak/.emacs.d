@@ -59,11 +59,6 @@
 (global-set-key [(f5)] 'revert-buffer)
 (global-set-key [(f6)] 'swap-windows)
 
-;; Point stack bindings
-(global-set-key '[(f8)] 'point-stack-push)
-(global-set-key '[(f9)] 'point-stack-pop)
-(global-set-key '[(f10)] 'point-stack-forward-stack-pop)
-
 ;;Set keybinding for functions in efunc.el
 ;;(global-set-key [(meta f10)] 'my-ido-find-tag)
 (global-set-key (kbd "C-x f") 'ffip)
