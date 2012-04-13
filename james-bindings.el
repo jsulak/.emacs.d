@@ -1,4 +1,7 @@
 
+;; Ace-jump-mode
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
 ;; Eshell
 ;; Start eshell or switch to it if it's active.
 (global-set-key (kbd "C-c e") 'eshell)

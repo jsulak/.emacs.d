@@ -214,6 +214,9 @@
       (occur (if isearch-regexp isearch-string
                (regexp-quote isearch-string))))))
 
+(add-to-list 'load-path "which-folder-ace-jump-mode-file-in/")
+(require 'ace-jump-mode)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
 ;; ========================
 ;; Major modes 
