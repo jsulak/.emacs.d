@@ -1,0 +1,6 @@
+[submodule "external/yasnippet"]
+	path = external/yasnippet
+	url = https://github.com/capitaomorte/yasnippet.git
+[submodule "snippets/js-mode"]
+	path = snippets/js-mode
+	url = git@github.com:jsulak/yasnippet-js-mode.git

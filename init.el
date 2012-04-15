@@ -1,3 +1,5 @@
+(require 'cl)
+
 ;; =======================
 ;; Package.el
 ;; =======================
@@ -10,7 +12,7 @@
 
 ;; Add in your own as you wish:
 (defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project ido-ubiquitous
-                         magit markdown-mode ruby-end smex sml-modeline undo-tree yaml-mode yasnippet-bundle)
+                         magit markdown-mode ruby-end smex sml-modeline undo-tree yaml-mode)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -291,7 +293,7 @@
 (add-to-list 'load-path "~/.emacs.d/external/autocomplete/")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/external/autocomplete/ac-dict")
-(setq ac-auto-start 3)
+(setq ac-auto-start 2)
 (setq ac-ignore-case nil)
 
 ;; Attempt to fix css autocomplete silliness
@@ -306,21 +308,15 @@
 (ac-set-trigger-key "TAB")
 
 (require 'etags)
-(require 'cl)
-(require 'yasnippet-bundle)
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/snippets/text-mode")
-(add-to-list 'ac-sources 'ac-source-yasnippet)
-;; (eval-after-load 'js2-mode
-;;   '(progn
-;;      (define-key js2-mode-map (kbd "TAB") (lambda()
-;;                                             (interactive)
-;;                                             (let ((yas/fallback-behavior 'return-nil))
-;;                                               (unless (yas/expand)
-;;                                                 (indent-for-tab-command)
-;;                                                 (if (looking-back "^\s*")
-;;                                                     (back-to-indentation))))))))
 
+
+
+(add-to-list 'load-path 
+             "~/.emacs.d/external/yasnippet")
+(require 'yasnippet)
+;; (yas/initialize) ::)
+(yas/global-mode 1)
+(add-to-list 'ac-sources 'ac-source-yasnippet)
 
 (require 'grep-buffers)
 
