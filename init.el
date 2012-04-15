@@ -295,6 +295,7 @@
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/external/autocomplete/ac-dict")
 (setq ac-auto-start 2)
 (setq ac-ignore-case nil)
+(global-auto-complete-mode t)
 
 ;; Attempt to fix css autocomplete silliness
 (define-key ac-complete-mode-map "\r" nil)
