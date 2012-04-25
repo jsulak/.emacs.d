@@ -330,5 +330,25 @@ Ignores CHAR at point."
  ;;              (add-to-list 'name-and-pos (cons name position))))))))
 
 
+;; Pretty-prints a json string
+;; if region is selected, then uses that,
+;; else does entire buffer.
+(defun pretty-print-json ()
+  (interactive)
+  (setq b
+        (if (region-active-p)
+            (region-beginning)
+          (point-min)))
+  (setq e
+        (if (region-active-p)
+            (region-end)
+          (point-max)))
+  (shell-command-on-region
+   b
+   e
+   "python -mjson.tool"
+   (current-buffer)
+   t))
+
 (provide 'james-functions)
 
