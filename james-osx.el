@@ -77,11 +77,18 @@ environment."
 (put 'dired-find-alternate-file 'disabled nil)
 
 
+(defun open-file-mac (file-name)
+  (if (file-exists-p file-name)
+      (call-process "/usr/bin/open" nil 0 nil file-name)))
+
 (defun dired-open-mac ()
      (interactive)
      (let ((file-name (dired-get-file-for-visit)))
-       (if (file-exists-p file-name)
-           (call-process "/usr/bin/open" nil 0 nil file-name))))
+     (open-file-mac file-name)))
+ 
+(defun open-current-buffer-mac ()
+  (interactive)
+  (open-file-mac buffer-file-name))
 
 
 ;; Set up rsense
@@ -99,3 +106,5 @@ environment."
 (add-hook 'ruby-mode-hook
           (lambda ()
             (local-set-key (kbd "C-c .") 'ac-complete-rsense)))
+
+(require 'tramp)

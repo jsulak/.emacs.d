@@ -5,7 +5,8 @@
 ;; Eshell
 ;; Start eshell or switch to it if it's active.
 (global-set-key (kbd "C-c e") 'eshell)
-(global-set-key (kbd "C-c d") 'dired-jump)
+(global-set-key (kbd "C-c j") 'dired-jump)
+(global-set-key (kbd "C-c l") 'open-current-buffer-mac)
 
 ;; Start a new eshell even if one is active.
 (global-set-key (kbd "C-c E") (lambda () (interactive) (eshell t)))
