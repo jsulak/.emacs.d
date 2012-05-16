@@ -93,19 +93,19 @@ environment."
 
 
 ;; Set up rsense
-(setq rsense-home (expand-file-name "~/opt/rsense-0.3"))
-(add-to-list 'load-path (concat rsense-home "/etc"))
-(setq rsense-rurema-home "~/src/rurema")
-(require 'rsense)
+;; (setq rsense-home (expand-file-name "~/opt/rsense-0.3"))
+;; (add-to-list 'load-path (concat rsense-home "/etc"))
+;; (setq rsense-rurema-home "~/src/rurema")
+;; (require 'rsense)
 
-(add-hook 'ruby-mode-hook
-          (lambda ()
-            (add-to-list 'ac-sources 'ac-source-rsense-method)
-            (add-to-list 'ac-sources 'ac-source-rsense-constant)))
+;; (add-hook 'ruby-mode-hook
+;;           (lambda ()
+;;             (add-to-list 'ac-sources 'ac-source-rsense-method)
+;;             (add-to-list 'ac-sources 'ac-source-rsense-constant)))
 
-;; Complete by C-c .
-(add-hook 'ruby-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-c .") 'ac-complete-rsense)))
+;; ;; Complete by C-c .
+;; (add-hook 'ruby-mode-hook
+;;           (lambda ()
+;;             (local-set-key (kbd "C-c .") 'ac-complete-rsense)))
 
 (require 'tramp)
