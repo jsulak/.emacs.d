@@ -257,12 +257,13 @@
       (cons '("\\.\\(scss\\)\\'" . css-mode)
             auto-mode-alist))
 
+;; The commenting is behaving weird
 ;;Add support for xquery-mode
-(require 'xquery-mode)
-(setq auto-mode-alist
-      (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode)
-	    auto-mode-alist))
-(setq xquery-indent-size 4)
+;; (require 'xquery-mode) 
+;; (setq auto-mode-alist 
+      ;; (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode) 
+	    ;; auto-mode-alist)) 
+;; (setq xquery-indent-size 4) 
 
 ;;Add ACL mode mode 
 (autoload 'acl-mode "acl-mode")
