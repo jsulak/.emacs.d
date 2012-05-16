@@ -300,7 +300,6 @@
 ;; Attempt to fix css autocomplete silliness
 (define-key ac-complete-mode-map "\r" nil)
 
-
 ;; This turns off filename completion everywhere because it crashes in js.
 ;; It would be better to do it for js2-mode only
 (defun ac-common-setup ())  
@@ -309,8 +308,6 @@
 (ac-set-trigger-key "TAB")
 
 (require 'etags)
-
-
 
 (add-to-list 'load-path 
              "~/.emacs.d/external/yasnippet")
@@ -354,6 +351,14 @@
 ;; Undo tree
 (require 'undo-tree)
 (global-undo-tree-mode)
+
+
+(add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
+(require 'flymake-jshint)
+(add-hook 'js-mode-hook
+          (lambda () (flymake-mode t)))
+(require 'flymake-cursor)
+
 
 ;; =======================
 ;; Server
