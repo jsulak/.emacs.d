@@ -11,7 +11,7 @@
   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project ido-ubiquitous
+(defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project flymake-cursor ido-ubiquitous
                          magit markdown-mode ruby-end smex sml-modeline undo-tree yaml-mode)
   "A list of packages to ensure are installed at launch.")
 
@@ -80,6 +80,9 @@
 ;; Behavior
 ;; ================================
 
+;; Midnight mode
+(require 'midnight)
+
 ;; Get rid of scroll bars and use sml-modeline instead, and make the fringe half-width
 (sml-modeline-mode 1)
 (scroll-bar-mode -1)
@@ -120,6 +123,10 @@
 
 ;; Spaces instead of tabs
 (setq-default indent-tabs-mode nil)
+
+;; Set tabs up for source files that already have tabs
+(setq-default tab-width 4)
+(setq tab-stop-list (number-sequence 4 200 4))
 
 ;; Set initial mode to text-mode
 (setq-default initial-major-mode 'text-mode)
@@ -252,6 +259,10 @@
         (cons '("\\.\\(bat\\|cmd\\)\\'" . bat-mode)
 	      auto-mode-alist))
 
+(setq auto-mode-alist (append (list (cons "\\.rvt\\'" 'tcl-mode))
+                    auto-mode-alist))
+
+
 ;; Add support for scss to css mode
 (setq auto-mode-alist
       (cons '("\\.\\(scss\\)\\'" . css-mode)
@@ -354,11 +365,11 @@
 (global-undo-tree-mode)
 
 
-(add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
-(require 'flymake-jshint)
-(add-hook 'js-mode-hook
-          (lambda () (flymake-mode t)))
-(require 'flymake-cursor)
+;; (add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
+;; (require 'flymake-jshint)
+;; (add-hook 'js-mode-hook
+;;           (lambda () (flymake-mode t)))
+;; (require 'flymake-cursor)
 
 
 ;; =======================
