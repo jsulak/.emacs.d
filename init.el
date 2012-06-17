@@ -46,6 +46,10 @@
 
 (require 'james-functions)
 
+(add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
+(load-theme 'solarized-dark)
+
+
 ;; ======================
 ;; Eshell
 ;; ======================
@@ -82,13 +86,8 @@
 
 ;; Get rid of scroll bars and use sml-modeline instead, and make the fringe half-width
 (sml-modeline-mode 1)
-(scroll-bar-mode -1)
-(set-fringe-style 5)
 
 (require 'linum)
-
-;; Add line highlighting
-(global-hl-line-mode 1)
 
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
@@ -354,11 +353,11 @@
 (global-undo-tree-mode)
 
 
-(add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
-(require 'flymake-jshint)
-(add-hook 'js-mode-hook
-          (lambda () (flymake-mode t)))
-(require 'flymake-cursor)
+;;(add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
+;;(require 'flymake-jshint)
+;;(add-hook 'js-mode-hook
+;;          (lambda () (flymake-mode t)))
+;;(require 'flymake-cursor)
 
 
 ;; =======================
