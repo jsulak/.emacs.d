@@ -350,5 +350,14 @@ Ignores CHAR at point."
    (current-buffer)
    t))
 
+(defun toggle-indent-style ()
+  (interactive)
+  (if indent-tabs-mode
+      (setq indent-tabs-mode nil)
+    (setq indent-tabs-mode 1))
+  )
+
+  
+
 (provide 'james-functions)
 

@@ -12,6 +12,9 @@
 ;; (color-theme-naquadah)
 
 (tool-bar-mode 0)
+(global-hl-line-mode 1)
+(scroll-bar-mode -1)
+(set-fringe-style 5)
 
 
 ;; TODO
@@ -24,11 +27,6 @@
 ;; Add color to a shell running in emacs 'M-x shell'
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
-
-;; Move scroll bar to right
-;; (setq scroll-bar-mode-explicit t)  ::)
-;; (set-scroll-bar-mode `right)  ::)
 
 ;; window frame title
 (setq frame-title-format "emacs - %b (%f)")
