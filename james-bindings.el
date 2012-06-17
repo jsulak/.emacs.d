@@ -33,6 +33,7 @@
 
 ;; Redefine comment-dwim to comment out whole line
 (global-set-key (kbd "C-;") 'comment-dwim-line)
+(global-set-key (kbd "C-c ;") 'comment-dwim-line)
 
 ;;Set ctrl-z to undo
 (global-set-key "\C-z" 'undo)
