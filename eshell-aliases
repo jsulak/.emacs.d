@@ -1,7 +1,6 @@
 alias node NODE_NO_READLINE=1 node $*
 alias eo find-file-other-window $1
 alias w cd ~/Dropbox/workspace/ $*
-alias rvm-restart rvm_reload_flag=1 source '/Users/jsulak/.rvm/scripts/rvm' $*
 alias pu pushd $*
 alias po popd $*
 alias more less $*
