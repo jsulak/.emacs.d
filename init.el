@@ -363,11 +363,11 @@
 (require 'undo-tree)
 (global-undo-tree-mode)
 
-;;(add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
-;;(require 'flymake-jshint)
-;;(add-hook 'js-mode-hook
-;;          (lambda () (flymake-mode t)))
-;;(require 'flymake-cursor)
+(add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
+(require 'flymake-jshint)
+(add-hook 'js-mode-hook
+         (lambda () (flymake-mode t)))
+(require 'flymake-cursor)
 
 ;; =======================
 ;; Server
