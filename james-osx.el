@@ -7,7 +7,7 @@
     (require 'james-gui))
 
 (if window-system
-    (set-face-attribute 'default nil :font "DejaVu Sans Mono-11"))
+    (set-face-attribute 'default nil :font "DejaVu Sans Mono-10"))
 
 ;; (setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))
 ;; (require 'color-theme-solarized)
@@ -109,3 +109,10 @@ environment."
 ;;             (local-set-key (kbd "C-c .") 'ac-complete-rsense)))
 
 (require 'tramp)
+
+;; JS hint mode
+(add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
+(require 'flymake-jshint)
+(add-hook 'js-mode-hook
+         (lambda () (flymake-mode t)))
+(require 'flymake-cursor)
