@@ -10,3 +10,6 @@
 [submodule "external/flymake"]
 	path = external/flymake
 	url = git@github.com:jsulak/emacs-flymake.git
+[submodule "external/jshint-mode"]
+	path = external/jshint-mode
+	url = git@github.com:jsulak/jshint-mode.git
