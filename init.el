@@ -25,6 +25,7 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/external/flymake"))
 ;; (require 'bytecomp)
 ;; (byte-recompile-directory "~/.emacs.d/external" 0)
 
@@ -226,6 +227,9 @@
 ;; ========================
 ;; Major modes 
 ;; ========================
+
+(setq flymake-run-in-place nil)
+(setq temporary-file-directory "~/.emacs.d/tmp/")
 
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 

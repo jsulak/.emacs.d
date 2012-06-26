@@ -7,3 +7,6 @@
 [submodule "external/solarized"]
 	path = external/solarized
 	url = git@github.com:jsulak/emacs-color-theme-solarized.git
+[submodule "external/flymake"]
+	path = external/flymake
+	url = git@github.com:jsulak/emacs-flymake.git
