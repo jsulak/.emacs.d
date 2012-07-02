@@ -85,6 +85,10 @@
 ;; Behavior
 ;; ================================
 
+;; Which function mode
+(which-function-mode)
+(setq which-func-modes t)
+
 ;; Midnight mode
 (require 'midnight)
 
@@ -229,7 +233,7 @@
 ;; ========================
 
 (setq flymake-run-in-place nil)
-(setq temporary-file-directory "~/.emacs.d/tmp/")
+(setq temporary-file-directory "~/tmp/")
 
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 
