@@ -85,6 +85,25 @@
 ;; Behavior
 ;; ================================
 
+;; Mark multiple
+(add-to-list 'load-path "~/.emacs.d/external/mark-multiple")
+(require 'inline-string-rectangle)
+(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
+
+(require 'mark-more-like-this)
+(global-set-key (kbd "C-<") 'mark-previous-like-this)
+(global-set-key (kbd "C->") 'mark-next-like-this)
+(global-set-key (kbd "C-M-m") 'mark-more-like-this) ; like the other two, but takes an argument (negative is previous)
+(global-set-key (kbd "C-*") 'mark-all-like-this)
+
+(require 'sgml-mode)
+(require 'rename-sgml-tag)
+(define-key sgml-mode-map (kbd "C-c C-r") 'rename-sgml-tag)
+
+;;(require 'js2-rename-var)
+;;(define-key js2-mode-map (kbd "C-c C-r") 'js2-rename-var)
+
+
 ;; Midnight mode
 (require 'midnight)
 
@@ -118,10 +137,10 @@
 
 ;; Use right arrow for return in one-line functions
 ;; (font-lock-add-keywords
- ;; 'js-mode `(("function *([^)]*) *{ *\\(return\\) "
-              ;; (0 (progn (compose-region (match-beginning 1)
-                                        ;; (match-end 1) "\u2190")
-                        ;; nil)))))
+;;  'js-mode `(("function *([^)]*) *{ *\\(return\\) "
+;;               (0 (progn (compose-region (match-beginning 1)
+;;                                         (match-end 1) "\u2190")
+;;                         nil)))))
 
 ;; Add more file types to find-file-in-project
 (defvar ffip-patterns
