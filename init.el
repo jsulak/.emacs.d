@@ -85,10 +85,6 @@
 ;; Behavior
 ;; ================================
 
-;; Which function mode
-(which-function-mode)
-(setq which-func-modes t)
-
 ;; Midnight mode
 (require 'midnight)
 
