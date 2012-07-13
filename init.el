@@ -85,6 +85,15 @@
 ;; Behavior
 ;; ================================
 
+;; Expand region
+(add-to-list 'load-path "~/.emacs.d/external/expand-region")
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+(add-hook 'js-mode-hook (lambda ()
+                          (require 'js-mode-expansions)
+                          (er/add-js-mode-expansions)))
+
+
 ;; Mark multiple
 (add-to-list 'load-path "~/.emacs.d/external/mark-multiple")
 (require 'inline-string-rectangle)
