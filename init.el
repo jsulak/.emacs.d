@@ -92,7 +92,7 @@
 (add-hook 'js-mode-hook (lambda ()
                           (require 'js-mode-expansions)
                           (er/add-js-mode-expansions)))
-
+(setq pending-delete-mode t)
 
 ;; Mark multiple
 (add-to-list 'load-path "~/.emacs.d/external/mark-multiple")
