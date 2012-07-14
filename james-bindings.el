@@ -1,3 +1,6 @@
+;; Expand region
+(global-set-key (kbd "C-'") 'er/expand-region)
+
 
 ;; Ace-jump-mode
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
@@ -18,7 +21,7 @@
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 (global-set-key (kbd "M-;") 'hippie-expand)
-(global-set-key (kbd "C-'") 'hippie-expand)
+(global-set-key (kbd "C-=") 'hippie-expand)
 
 ;; BM mode
 (global-set-key (kbd "<M-f2>") 'bm-toggle)
