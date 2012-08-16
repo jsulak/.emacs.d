@@ -3,7 +3,7 @@
 
 
 ;; Ace-jump-mode
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+;; (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
 ;; Eshell
 ;; Start eshell or switch to it if it's active.

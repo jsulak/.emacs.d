@@ -98,11 +98,23 @@
 (require 'inline-string-rectangle)
 (global-set-key (kbd "C-x r t") 'inline-string-rectangle)
 
+;; TODO: Does multiple cursors have this?
 (require 'mark-more-like-this)
 (global-set-key (kbd "C-<") 'mark-previous-like-this)
 (global-set-key (kbd "C->") 'mark-next-like-this)
 (global-set-key (kbd "C-M-m") 'mark-more-like-this) ; like the other two, but takes an argument (negative is previous)
 (global-set-key (kbd "C-*") 'mark-all-like-this)
+
+;; Multiple cursors
+(add-to-list 'load-path "~/.emacs.d/external/multiple-cursors")
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
+(global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
+;; Rectangular region mode
+(global-set-key (kbd "C-c SPC") 'set-rectangular-region-anchor)
+(global-set-key (kbd "C-c C-SPC") 'set-rectangular-region-anchor)
+
 
 (require 'sgml-mode)
 (require 'rename-sgml-tag)
@@ -438,3 +450,4 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'autopair-newline 'disabled nil)
+(put 'upcase-region 'disabled nil)
