@@ -45,7 +45,8 @@ shell, parsing and returning the environment as an alist."
     (mapcar 'env-line-to-cons
             (remove-if
              (lambda (str)
-               (string-equal str ""))
+               (or (not (string-match "=" str))
+	       (string-equal str "")))
              (split-string (shell-command-to-string cmd) "[\r\n]")))))
 
 (defun setenv-from-cons (var-val)
@@ -55,10 +56,10 @@ the value, e.g. (\"VAR\" . \"VAL\")"
   (setenv (car var-val) (cdr var-val)))
 
 (defun setenv-from-shell-environment (&optional shell-cmd env-cmd)
-  "apply the environment reported by `/usr/bin/env' (or env-cmd) 
+ "apply the environment reported by `/usr/bin/env' (or env-cmd) 
 as launched by `/bin/bash -ic' (or shell-cmd) to the current 
 environment."
-  (mapc 'setenv-from-cons (interactive-env-alist shell-cmd env-cmd)))
+ (mapc 'setenv-from-cons (interactive-env-alist shell-cmd env-cmd)))
 
 (setenv-from-shell-environment)
 (setq exec-path (split-string (getenv "PATH") path-separator))
