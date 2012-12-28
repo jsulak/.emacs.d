@@ -1,3 +1,16 @@
+
+;; http://whattheemacsd.com//editing-defuns.el-01.html
+(global-set-key (kbd "<C-return>") 'open-line-below)
+(global-set-key (kbd "<C-S-return>") 'open-line-above)
+
+;; http://whattheemacsd.com//editing-defuns.el-02.html
+(global-set-key (kbd "<C-S-down>") 'move-line-down)
+(global-set-key (kbd "<C-S-up>") 'move-line-up)
+
+;; Tag navigation
+(global-set-key (kbd "M-.") 'find-tag)
+(global-set-key (kbd "C-.") 'pop-tag-mark)
+
 ;; Expand region
 (global-set-key (kbd "C-'") 'er/expand-region)
 
@@ -80,7 +93,7 @@
 
 (global-set-key (kbd "\C-x 5") 'xsteve-split-window)
 
-(global-set-key [(C-return)] 'dabbrev-expand)
+;; (global-set-key [(C-return)] 'dabbrev-expand)
 
 
 ;; Misc keybindings
