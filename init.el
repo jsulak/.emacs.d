@@ -12,7 +12,7 @@
 
 ;; Add in your own as you wish:
 (defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project flymake-cursor ido-ubiquitous
-                         magit markdown-mode ruby-end smex sml-modeline undo-tree yaml-mode)
+                         magit markdown-mode ruby-end smex sml-modeline yaml-mode)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -98,7 +98,7 @@
 (require 'multiple-cursors)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-*") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-*") 'mc/mark-all-like-this-dwim)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
 (global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
