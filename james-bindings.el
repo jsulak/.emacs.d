@@ -13,10 +13,7 @@
 
 ;; Expand region
 (global-set-key (kbd "C-'") 'er/expand-region)
-
-
-;; Ace-jump-mode
-;; (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+(global-set-key (kbd "C-\"") 'er/contract-region)
 
 ;; Eshell
 ;; Start eshell or switch to it if it's active.
