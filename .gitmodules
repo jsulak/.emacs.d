@@ -13,9 +13,6 @@
 [submodule "external/jshint-mode"]
 	path = external/jshint-mode
 	url = git@github.com:jsulak/jshint-mode.git
-[submodule "external/mark-multiple"]
-	path = external/mark-multiple
-	url = https://github.com/magnars/mark-multiple.el.git
 [submodule "external/expand-region"]
 	path = external/expand-region
 	url = https://github.com/magnars/expand-region.el.git

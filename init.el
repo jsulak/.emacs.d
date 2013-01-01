@@ -93,21 +93,12 @@
                           (er/add-js-mode-expansions)))
 (setq pending-delete-mode t)
 
-;; Mark multiple
-(add-to-list 'load-path "~/.emacs.d/external/mark-multiple")
-(require 'inline-string-rectangle)
-(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
-
-;; TODO: Does multiple cursors have this?
-(require 'mark-more-like-this)
-(global-set-key (kbd "C-<") 'mark-previous-like-this)
-(global-set-key (kbd "C->") 'mark-next-like-this)
-(global-set-key (kbd "C-M-m") 'mark-more-like-this) ; like the other two, but takes an argument (negative is previous)
-(global-set-key (kbd "C-*") 'mark-all-like-this)
-
 ;; Multiple cursors
 (add-to-list 'load-path "~/.emacs.d/external/multiple-cursors")
 (require 'multiple-cursors)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-*") 'mc/mark-all-like-this)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
 (global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
@@ -115,10 +106,8 @@
 (global-set-key (kbd "C-c SPC") 'set-rectangular-region-anchor)
 (global-set-key (kbd "C-c C-SPC") 'set-rectangular-region-anchor)
 
-
 (require 'sgml-mode)
-(require 'rename-sgml-tag)
-(define-key sgml-mode-map (kbd "C-c C-r") 'rename-sgml-tag)
+(define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
 
 ;;(require 'js2-rename-var)
 ;;(define-key js2-mode-map (kbd "C-c C-r") 'js2-rename-var)
