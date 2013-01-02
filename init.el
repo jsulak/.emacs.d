@@ -3,21 +3,55 @@
 ;; =======================
 ;; Package.el
 ;; =======================
+
 (require 'package)
-(setq package-archives '(("marmalade" . "http://marmalade-repo.org/packages/")))
+(defvar marmalade '("marmalade" . "http://marmalade-repo.org/packages/"))
+(defvar gnu '("gnu" . "http://elpa.gnu.org/packages/"))
+(defvar melpa '("melpa" . "http://melpa.milkbox.net/packages/"))
+
+;; Add marmalade to package repos
+(add-to-list 'package-archives marmalade)
+(add-to-list 'package-archives melpa t)
+
 (package-initialize)
 
-(when (not package-archive-contents)
+(unless (and (file-exists-p "~/.emacs.d/elpa/archives/marmalade")
+             (file-exists-p "~/.emacs.d/elpa/archives/gnu")
+             (file-exists-p "~/.emacs.d/elpa/archives/melpa"))
   (package-refresh-contents))
 
-;; Add in your own as you wish:
-(defvar my-packages '(bm csharp-mode cygwin-mount find-file-in-project flymake-cursor ido-ubiquitous
-                         magit markdown-mode ruby-end smex sml-modeline yaml-mode)
-  "A list of packages to ensure are installed at launch.")
+(defun packages-install (&rest packages)
+  (mapc (lambda (package)
+          (let ((name (car package))
+                (repo (cdr package)))
+            (when (not (package-installed-p name))
+              (let ((package-archives (list repo)))
+                (package-initialize)
+                (package-install name)))))
+        packages)
+  (package-initialize)
+  (delete-other-windows))
 
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
+(defun init--install-packages ()
+  (packages-install
+   (cons 'bm melpa)
+   (cons 'csharp-mode melpa)
+   (cons 'find-file-in-project melpa)
+   (cons 'flymake-cursor melpa)
+   (cons 'ido-ubiquitous melpa)
+   (cons 'magit melpa)
+   (cons 'markdown-mode melpa)
+   (cons 'ruby-end melpa)
+   (cons 'smex melpa)
+   (cons 'sml-modeline marmalade)
+   (cons 'yaml-mode melpa)))
+
+(condition-case nil
+    (init--install-packages)
+  (error
+   (package-refresh-contents)
+   (init--install-packages)))
+
 
 ;; =======================
 ;; Load path
@@ -434,6 +468,3 @@
 (global-set-key "\C-x\C-m" 'smex)
 (global-set-key (kbd "C-x m") 'smex)
 
-(put 'downcase-region 'disabled nil)
-(put 'autopair-newline 'disabled nil)
-(put 'upcase-region 'disabled nil)
