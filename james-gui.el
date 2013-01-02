@@ -11,9 +11,7 @@
 ;; (load-file "~/.emacs.d/external/naquadah-theme.el")
 ;; (color-theme-naquadah)
 
-(tool-bar-mode 0)
 (global-hl-line-mode 1)
-(scroll-bar-mode -1)
 (set-fringe-style 5)
 
 

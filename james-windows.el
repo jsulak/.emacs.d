@@ -1,5 +1,3 @@
-(menu-bar-mode 0)
-
 ;;Set the default font
 (setq default-frame-alist
       '((font .
