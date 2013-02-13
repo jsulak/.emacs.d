@@ -52,6 +52,7 @@
    (cons 'ruby-end melpa)
    (cons 'smex melpa)
    (cons 'sml-modeline marmalade)
+   (cons 'rainbow-mode gnu)
    (cons 'yaml-mode melpa)))
 
 (condition-case nil
