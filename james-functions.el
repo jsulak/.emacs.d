@@ -255,22 +255,8 @@ If point was already at that position, move point to beginning of line."
            (position (cdr (assoc selected-symbol name-and-pos))))
       (goto-char position))))
 
-;; From http://repo.or.cz/w/emacs.git/blob/HEAD:/lisp/misc.el
-(defun zap-up-to-char (arg char)
-  "Kill up to, but not including ARGth occurrence of CHAR.
-Case is ignored if `case-fold-search' is non-nil in the current buffer.
-Goes backward if ARG is negative; error if CHAR not found.
-Ignores CHAR at point."
-  (interactive "p\ncZap up to char: ")
-  (let ((direction (if (>= arg 0) 1 -1)))
-    (kill-region (point)
-		 (progn
-		   (forward-char direction)
-		   (unwind-protect
-		       (search-forward (char-to-string char) nil nil arg)
-		     (backward-char direction))
-		   (point)))))
-
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurence of CHAR.")
 
 (defun delete-enclosed-text ()
   "Delete texts between any pair of delimiters."
