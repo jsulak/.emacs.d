@@ -374,24 +374,5 @@ Ignores CHAR at point."
   (forward-line -1)
   (indent-for-tab-command))
 
-;; http://whattheemacsd.com//editing-defuns.el-02.html
-(defun move-line-down ()
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (forward-line)
-      (transpose-lines 1))
-    (forward-line)
-    (move-to-column col)))
-
-(defun move-line-up ()
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (forward-line)
-      (transpose-lines -1))
-    (move-to-column col)))
-
-
 (provide 'james-functions)
 

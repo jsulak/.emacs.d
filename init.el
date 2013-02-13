@@ -48,6 +48,7 @@
    (cons 'flymake-cursor melpa)
    (cons 'ido-ubiquitous melpa)
    (cons 'magit melpa)
+   (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
    (cons 'ruby-end melpa)
    (cons 'smex melpa)
