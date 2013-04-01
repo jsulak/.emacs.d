@@ -105,4 +105,8 @@
 (global-set-key (kbd "C-c [") 'beginning-of-defun)
 (global-set-key (kbd "C-c ]") 'end-of-defun)
 
+(global-set-key
+ (kbd "C-c n")
+ (lambda() (interactive)(find-file (format "~/Dropbox/programming_notebook/%s.md" (format-time-string "%Y%m%d")))))
+
 (provide 'james-bindings)
