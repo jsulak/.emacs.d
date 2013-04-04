@@ -353,6 +353,8 @@
 (setq auto-mode-alist
       (cons '("\\.\\(scss\\)\\'" . css-mode)
             auto-mode-alist))
+;; Automatically load rainbow mode in css mode
+(add-hook 'css-mode-hook 'rainbow-mode)
 
 ;; The commenting is behaving weird
 ;;Add support for xquery-mode
