@@ -461,6 +461,8 @@
                                                  ; on windows.
 (server-start)
 
+(require 'programming-notebook)
+
 ;; =======================
 ;; Key bindings
 ;; =======================
