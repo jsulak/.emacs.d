@@ -95,6 +95,10 @@
 (load-theme 'solarized-dark)
 
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/programming_notebook"))
+(require 'programming-notebook)
+
+
 ;; ======================
 ;; Eshell
 ;; ======================
@@ -460,8 +464,6 @@
                                                  ; ~/.emacs.d/server is unsafe"
                                                  ; on windows.
 (server-start)
-
-(require 'programming-notebook)
 
 ;; =======================
 ;; Key bindings
