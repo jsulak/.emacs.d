@@ -106,6 +106,5 @@
 (global-set-key (kbd "C-c ]") 'end-of-defun)
 
 (global-set-key (kbd "C-<f9>") 'pn-open-todays-entry)
-(global-set-key (kbd "C-<f10>") 'pn-insert-chrome-link)
 
 (provide 'james-bindings)
