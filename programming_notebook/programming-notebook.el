@@ -23,6 +23,7 @@
 
 
 (defun pn-open-todays-entry ()
+  "Open today's programming notebook entry."
   (interactive)
   (find-file
    (format
@@ -32,6 +33,7 @@
   )
 
 (defun pn-insert-chrome-link ()
+  "Insert the title and url of active Chrome tab, formatted as Markdown."
   (interactive)
   (setq link-cmd (concat (file-name-as-directory pn-notebook-dir) "chrome_link.scpt"))
   (insert (shell-command-to-string (format "osascript %s" link-cmd))))
