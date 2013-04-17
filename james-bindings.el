@@ -105,6 +105,7 @@
 (global-set-key (kbd "C-c [") 'beginning-of-defun)
 (global-set-key (kbd "C-c ]") 'end-of-defun)
 
-(global-set-key (kbd "C-<f9>") 'pn-open-todays-entry)
+(global-set-key [f9] 'pn-open-todays-entry)
+(global-set-key (kbd "C-<f9>") 'deft)
 
 (provide 'james-bindings)

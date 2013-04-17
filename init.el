@@ -44,8 +44,9 @@
   (packages-install
    (cons 'bm melpa)
    (cons 'csharp-mode melpa)
+   (cons 'deft melpa)
    (cons 'find-file-in-project melpa)
-   (cons 'flymake-cursor melpa)
+   (cons 'flymake-cursor melpa)   
    (cons 'ido-ubiquitous melpa)
    (cons 'magit melpa)
    (cons 'move-text melpa)
@@ -94,10 +95,19 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
 (load-theme 'solarized-dark)
 
+;; ======================
+;; Programming notebook and deft
+;; ======================
+
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/programming_notebook"))
 (require 'programming-notebook)
 
+(require 'deft)
+(setq deft-extension "md")
+(setq deft-directory (expand-file-name "~/Dropbox/programming_notebook"))
+(setq deft-text-mode 'programming-notebook-mode)
+(setq deft-auto-save-interval 0)
 
 ;; ======================
 ;; Eshell
