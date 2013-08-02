@@ -3,16 +3,16 @@
 	url = https://github.com/capitaomorte/yasnippet.git
 [submodule "snippets/js-mode"]
 	path = snippets/js-mode
-	url = git@github.com:jsulak/yasnippet-js-mode.git
+	url = https://github.com/jsulak/yasnippet-js-mode.git
 [submodule "external/solarized"]
 	path = external/solarized
-	url = git@github.com:jsulak/emacs-color-theme-solarized.git
+	url = https://github.com/jsulak/emacs-color-theme-solarized.git
 [submodule "external/flymake"]
 	path = external/flymake
-	url = git@github.com:jsulak/emacs-flymake.git
+	url = https://github.com/jsulak/emacs-flymake.git
 [submodule "external/jshint-mode"]
 	path = external/jshint-mode
-	url = git@github.com:jsulak/jshint-mode.git
+	url = https://github.com/jsulak/jshint-mode.git
 [submodule "external/expand-region"]
 	path = external/expand-region
 	url = https://github.com/magnars/expand-region.el.git
