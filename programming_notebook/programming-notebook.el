@@ -1,6 +1,7 @@
 
 (defvar pn-mode-keymap (make-keymap) "Programming notebook keymap.")
 (define-key pn-mode-keymap (kbd "C-<f10>") 'pn-insert-chrome-link)
+(define-key pn-mode-keymap (kbd "C-c f") 'pn-force-line-breaks)
 
 (defgroup programming-notebook nil
   "Programming notebook"
@@ -41,5 +42,12 @@
   (interactive)
   (setq link-cmd (concat (file-name-as-directory pn-notebook-dir) "chrome_link.scpt"))
   (insert (shell-command-to-string (format "osascript %s" link-cmd))))
+
+(defun pn-force-line-breaks ()
+  "Inserts two spaces at the end of the lines within a region to force Markdown to insert line breaks."
+  (interactive
+   (if (region-active-p) 
+       (replace-regexp "$" "  "))))
+
 
 (provide 'programming-notebook)

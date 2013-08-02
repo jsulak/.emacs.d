@@ -56,6 +56,7 @@
 (global-set-key "\C-x\C-k" 'kill-region)
 (global-set-key "\C-c\C-k" 'kill-region)
 (global-set-key "\C-q" 'backward-kill-word)
+(global-set-key "\C-c\C-q" 'quoted-insert)
 
 ;; delete enclosed text
 (global-set-key (kbd "C-c d") 'delete-enclosed-text)

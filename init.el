@@ -321,6 +321,10 @@
                (regexp-quote isearch-string))))))
 
 
+;; Enable camel-case awareness in all programming modes
+;; http://emacsredux.com/blog/2013/04/21/camelcase-aware-editing/
+(add-hook 'prog-mode-hook 'subword-mode)
+
 ;; ========================
 ;; Major modes 
 ;; ========================
