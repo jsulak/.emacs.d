@@ -345,6 +345,8 @@
 ;; ========================
 
 (setq flymake-run-in-place nil)
+(unless (file-exists-p "~/tmp/")
+  (make-directory "~/tmp/"))
 (setq temporary-file-directory "~/tmp/")
 
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
