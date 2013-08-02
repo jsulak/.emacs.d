@@ -109,4 +109,22 @@
 (global-set-key [f9] 'pn-open-todays-entry)
 (global-set-key (kbd "C-<f9>") 'deft)
 
+;; Git gutter keybindings
+;;; Jump between hunks
+(global-set-key (kbd "C-x n") 'git-gutter+-next-hunk)
+(global-set-key (kbd "C-x p") 'git-gutter+-previous-hunk)
+
+;;; Act on hunks
+(global-set-key (kbd "C-x v =") 'git-gutter+-popup-hunk) ; Show detailed diff
+(global-set-key (kbd "C-x r") 'git-gutter+-revert-hunk)
+;; Stage hunk at point.
+;; If region is active, stage all hunk lines within the region.
+(global-set-key (kbd "C-x t") 'git-gutter+-stage-hunks)
+(global-set-key (kbd "C-x c") 'git-gutter+-commit) ; Commit with Magit
+(global-set-key (kbd "C-x C") 'git-gutter+-stage-and-commit)
+
+(global-set-key (kbd "C-x g") 'git-gutter+-mode) ; Turn on/off in the current buffer
+(global-set-key (kbd "C-x G") 'global-git-gutter+-mode) ; Turn on/off globally
+
+
 (provide 'james-bindings)

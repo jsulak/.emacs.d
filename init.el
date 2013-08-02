@@ -46,7 +46,9 @@
    (cons 'csharp-mode melpa)
    (cons 'deft melpa)
    (cons 'find-file-in-project melpa)
-   (cons 'flymake-cursor melpa)   
+   (cons 'flymake-cursor melpa)
+   (cons 'git-gutter+ melpa)
+   (cons 'git-gutter-fringe+ melpa)
    (cons 'ido-ubiquitous melpa)
    (cons 'magit melpa)
    (cons 'move-text melpa)
@@ -108,6 +110,19 @@
 (setq deft-directory (expand-file-name "~/Dropbox/programming_notebook"))
 (setq deft-text-mode 'programming-notebook-mode)
 (setq deft-auto-save-interval 0)
+
+;; ======================
+;; Git gutter
+;; ======================
+(global-git-gutter+-mode t)
+(require 'git-gutter-fringe+)
+(git-gutter-fr+-minimal)
+(setq git-gutter-fr+-side 'right-fringe)
+
+(set-face-foreground 'git-gutter-fr+-modified "#586e75")
+(set-face-foreground 'git-gutter-fr+-added    "#586e75")
+(set-face-foreground 'git-gutter-fr+-deleted  "#586e75")
+
 
 ;; ======================
 ;; Eshell

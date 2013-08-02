@@ -12,7 +12,7 @@
 ;; (color-theme-naquadah)
 
 (global-hl-line-mode 1)
-(set-fringe-style 5)
+(set-fringe-style 6)
 
 
 ;; TODO
