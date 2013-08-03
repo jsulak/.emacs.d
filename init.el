@@ -56,6 +56,7 @@
    (cons 'ruby-end melpa)
    (cons 'smex melpa)
    (cons 'sml-modeline marmalade)
+   (cons 'undo-tree melpa)
    (cons 'rainbow-mode gnu)
    (cons 'yaml-mode melpa)))
 
