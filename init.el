@@ -97,10 +97,10 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
 (load-theme 'solarized-dark)
 
+
 ;; ======================
 ;; Programming notebook and deft
 ;; ======================
-
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/programming_notebook"))
 (require 'programming-notebook)
@@ -111,9 +111,11 @@
 (setq deft-text-mode 'programming-notebook-mode)
 (setq deft-auto-save-interval 0)
 
+
 ;; ======================
 ;; Git gutter
 ;; ======================
+
 (global-git-gutter+-mode t)
 (require 'git-gutter-fringe+)
 (git-gutter-fr+-minimal)
@@ -169,16 +171,6 @@
 ;; Multiple cursors
 (add-to-list 'load-path "~/.emacs.d/external/multiple-cursors")
 (require 'multiple-cursors)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-*") 'mc/mark-all-like-this-dwim)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
-(global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
-;; Rectangular region mode
-(global-set-key (kbd "C-c SPC") 'set-rectangular-region-anchor)
-(global-set-key (kbd "C-c C-SPC") 'set-rectangular-region-anchor)
-
 (require 'sgml-mode)
 (define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
 
@@ -205,8 +197,7 @@
 (electric-layout-mode t)
 
 ;;  electric layout doesn't work right with js-mode
-(defun james-js-mode-hook ()
-  ;; electric-layout-mode doesn't play nice with js-mode
+(defun james-js-mode-hook ()  
   (electric-layout-mode -1))
 (add-hook 'js-mode-hook 'james-js-mode-hook)
 
@@ -390,14 +381,6 @@
             auto-mode-alist))
 ;; Automatically load rainbow mode in css mode
 (add-hook 'css-mode-hook 'rainbow-mode)
-
-;; The commenting is behaving weird
-;;Add support for xquery-mode
-;; (require 'xquery-mode) 
-;; (setq auto-mode-alist 
-      ;; (cons '("\\.\\(xqy\\|xquery\\|xq\\|xqm\\)\\'" . xquery-mode) 
-	    ;; auto-mode-alist)) 
-;; (setq xquery-indent-size 4) 
 
 ;;Add ACL mode mode 
 (autoload 'acl-mode "acl-mode")

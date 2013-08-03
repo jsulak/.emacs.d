@@ -6,6 +6,21 @@
 (global-set-key (kbd "<C-S-down>") 'move-text-down)
 (global-set-key (kbd "<C-S-up>") 'move-text-up)
 
+
+;; Multiple cursors
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-*") 'mc/mark-all-like-this-dwim)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
+(global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
+
+;; Rectangular region mode
+(global-set-key (kbd "C-c SPC") 'set-rectangular-region-anchor)
+(global-set-key (kbd "C-c C-SPC") 'set-rectangular-region-anchor)
+
+
+
 ;; Tag navigation
 (global-set-key (kbd "M-.") 'find-tag)
 (global-set-key (kbd "C-.") 'pop-tag-mark)
