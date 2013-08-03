@@ -54,6 +54,7 @@
    (cons 'magit melpa)
    (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
+   (cons 'multiple-cursors melpa)
    (cons 'ruby-end melpa)
    (cons 'smex melpa)
    (cons 'sml-modeline marmalade)
@@ -171,8 +172,6 @@
 (setq pending-delete-mode t)
 
 ;; Multiple cursors
-(add-to-list 'load-path "~/.emacs.d/external/multiple-cursors")
-(require 'multiple-cursors)
 (require 'sgml-mode)
 (define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
 
