@@ -46,6 +46,7 @@
    (cons 'coffee-mode melpa)
    (cons 'csharp-mode melpa)
    (cons 'deft melpa)
+   (cons 'expand-region melpa)
    (cons 'find-file-in-project melpa)
    (cons 'flymake-cursor melpa)
    (cons 'git-gutter+ melpa)
@@ -163,9 +164,6 @@
 ;; Behavior
 ;; ================================
 
-;; Expand region
-(add-to-list 'load-path "~/.emacs.d/external/expand-region")
-(require 'expand-region)
 (add-hook 'js-mode-hook (lambda ()
                           (require 'js-mode-expansions)
                           (er/add-js-mode-expansions)))
