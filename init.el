@@ -43,6 +43,7 @@
 (defun init--install-packages ()
   (packages-install
    (cons 'bm melpa)
+   (cons 'coffee-mode melpa)
    (cons 'csharp-mode melpa)
    (cons 'deft melpa)
    (cons 'find-file-in-project melpa)
@@ -342,9 +343,6 @@
 (setq temporary-file-directory "~/tmp/")
 
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
-
-;; Coffee mode
-(require 'coffee-mode)
 
 ;; Clojure
 ;; (require 'paredit) if you didn't install via package.el
