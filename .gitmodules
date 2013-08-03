@@ -13,7 +13,5 @@
 [submodule "external/jshint-mode"]
 	path = external/jshint-mode
 	url = https://github.com/jsulak/jshint-mode.git
-[submodule "external/expand-region"]
-	path = external/expand-region
-	url = https://github.com/magnars/expand-region.el.git
+
 
