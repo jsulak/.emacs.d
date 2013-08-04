@@ -19,11 +19,11 @@ I use [Emacs For Mac OS X](http://emacsformacosx.com).
 
 If you want to use my settings straight out of the box, here are some things to note:
 
- * Read Steve Yegge's [Effective Emacs](https://sites.google.com/site/steveyegge2/effective-emacs)
+ * Read Steve Yegge's [Effective Emacs](https://sites.google.com/site/steveyegge2/effective-emacs).
 
  * Start by reading up on all the cool stuff in james-bindings.el.
 
- * Add your machine-specific stuff in ~/.emacs.d/custom.el
+ * Add your machine-specific stuff in ~/.emacs.d/custom.el.
 
  * `C-h` is rebound to backspace, like in the shell. Get help on `F1` instead.
 
@@ -33,7 +33,7 @@ If you want to use my settings straight out of the box, here are some things to 
 
  * I recommend rebinding Caps Lock to Ctrl and use that instead of the often badly placed Ctrl-key.
 
- * Watch [emacsrocks.com](http://emacsrocks.com)
+ * Watch [emacsrocks.com](http://emacsrocks.com).
 
 
 ## Survival guide for the first week of Emacs
@@ -107,7 +107,7 @@ overview of the most commonly used shortcuts to get you through this pain:
 
 Almost everything in my Emacs config was borrowed (stolen) from someone else's.  Exploring other people's configs are one of the best ways to learn about how Emacs works.  Some good sources:
 
-* [Magnar's .emacs.d](https://github.com/magnars/.emacs.d) (Much of this text is borrowed from here.)
+* [Magnar's .emacs.d](https://github.com/magnars/.emacs.d) (much of this text is borrowed from here)
 * [milkypostman's dotemacs](https://github.com/milkypostman/dotemacs)
 * [purcell's emacs.d](https://github.com/purcell/emacs.d)
 * [Emacs Starter Kit](https://github.com/technomancy/emacs-starter-kit)
