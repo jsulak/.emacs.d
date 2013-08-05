@@ -57,6 +57,7 @@
    (cons 'markdown-mode melpa)
    (cons 'multiple-cursors melpa)
    (cons 'ruby-end melpa)
+   (cons 'smartparens melpa)
    (cons 'smex melpa)
    (cons 'sml-modeline marmalade)
    (cons 'undo-tree melpa)
@@ -251,7 +252,10 @@
       ido-max-prospects 10)
 
 ;;paren highlighting
-(show-paren-mode 1)
+(require 'smartparens-config)
+(smartparens-global-mode t)
+(show-smartparens-global-mode t)
+(sp-use-smartparens-bindings)
 
 ;; Delete files into trash
 (setq delete-by-moving-to-trash t)
