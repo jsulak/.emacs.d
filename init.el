@@ -346,9 +346,6 @@
 (defun turn-on-paredit () (paredit-mode 1))
 (add-hook 'clojure-mode-hook 'turn-on-paredit)
 
-(add-to-list 'load-path "~/.emacs.d/external/rinari")
-(require 'rinari)
-
 (require 'ruby-end)
 
 ;; nxml mode
