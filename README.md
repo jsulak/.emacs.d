@@ -99,9 +99,9 @@ overview of the most commonly used shortcuts to get you through this pain:
 
 ### Help
 
-* `F1 t   ` Basic tutorial
-* `F1 k   ` Help for a key binding
-* `F1 r   ` Emacs' extensive documentation
+* `C-h t   ` Basic tutorial
+* `C-h k   ` Help for a key binding
+* `C-h r   ` Emacs' extensive documentation
 
 ## Other Emacs configs
 
