@@ -1,4 +1,3 @@
-
 ;; http://whattheemacsd.com//editing-defuns.el-01.html
 (global-set-key (kbd "<C-return>") 'open-line-below)
 (global-set-key (kbd "<C-S-return>") 'open-line-above)
@@ -18,8 +17,6 @@
 ;; Rectangular region mode
 (global-set-key (kbd "C-c SPC") 'set-rectangular-region-anchor)
 (global-set-key (kbd "C-c C-SPC") 'set-rectangular-region-anchor)
-
-
 
 ;; Tag navigation
 (global-set-key (kbd "M-.") 'find-tag)
@@ -76,7 +73,7 @@
 ;; delete enclosed text
 (global-set-key (kbd "C-c d") 'delete-enclosed-text)
 
-;; Jump to a definition in the current file. (Protip: this is awesome.)
+;; Jump to a definition in the current file.
 (global-set-key (kbd "C-x C-i") 'imenu)
 
 ;; Run shell command
@@ -91,7 +88,6 @@
 (global-set-key [(f6)] 'swap-windows)
 
 ;;Set keybinding for functions in efunc.el
-;;(global-set-key [(meta f10)] 'my-ido-find-tag)
 (global-set-key (kbd "C-x f") 'ffip)
 (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer-other-window)
