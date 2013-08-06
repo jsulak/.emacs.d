@@ -27,8 +27,7 @@
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 ;; window frame title
-(setq frame-title-format "emacs - %b (%f)")
-(setq icon-title-format "emacs [%b]")
+(setq frame-title-format "Emacs %f")
 
 (custom-set-faces
   ;; custom-set-faces was added by Custom.

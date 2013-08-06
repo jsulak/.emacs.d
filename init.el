@@ -46,6 +46,7 @@
    (cons 'coffee-mode melpa)
    (cons 'csharp-mode melpa)
    (cons 'deft melpa)
+   (cons 'diminish melpa)
    (cons 'expand-region melpa)
    (cons 'find-file-in-project melpa)
    (cons 'flymake-cursor melpa)
@@ -471,6 +472,16 @@
                                                  ; ~/.emacs.d/server is unsafe"
                                                  ; on windows.
 (server-start)
+
+;; ======================
+;; Diminish (clean up) mode line
+;; ======================
+
+(diminish 'auto-complete-mode)
+(diminish 'git-gutter+-mode)
+(diminish 'smartparens-mode)
+(diminish 'undo-tree-mode)
+(diminish 'yas-minor-mode)
 
 ;; =======================
 ;; Key bindings
