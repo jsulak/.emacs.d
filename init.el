@@ -254,9 +254,13 @@
 
 ;;paren highlighting
 (require 'smartparens-config)
-(smartparens-global-mode t)
-(show-smartparens-global-mode t)
+;; (smartparens-global-mode t)
+;; (show-smartparens-global-mode t)
 (sp-use-smartparens-bindings)
+(show-paren-mode t)
+
+(which-function-mode t)
+(custom-set-faces '(which-func ((t nil))))
 
 ;; Delete files into trash
 (setq delete-by-moving-to-trash t)

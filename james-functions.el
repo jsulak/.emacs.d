@@ -347,10 +347,8 @@ If point was already at that position, move point to beginning of line."
 ;; http://whattheemacsd.com//editing-defuns.el-01.html
 (defun open-line-below ()
   (interactive)
-  (if (eolp)
-      (newline)
-    (end-of-line)
-    (newline))
+  (end-of-line)
+  (newline) 
   (indent-for-tab-command))
 
 (defun open-line-above ()
@@ -364,8 +362,7 @@ If point was already at that position, move point to beginning of line."
 ;; http://emacsredux.com/blog/2013/07/24/highlight-comment-annotations/
 (defun font-lock-comment-annotations ()
   "Highlight a bunch of well known comment annotations.
-
-This functions should be added to the hooks of major modes for programming."
+   This functions should be added to the hooks of major modes for programming."
   (font-lock-add-keywords
    nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\):"
           1 font-lock-warning-face t))))
