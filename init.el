@@ -52,8 +52,9 @@
    (cons 'flymake-cursor melpa)
    (cons 'git-gutter+ melpa)
    (cons 'git-gutter-fringe+ melpa)
-   (cons 'ido-ubiquitous melpa)
+   (cons 'ido-ubiquitous melpa)   
    (cons 'magit melpa)
+   (cons 'mmm-mode melpa)
    (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
    (cons 'multiple-cursors melpa)
@@ -250,7 +251,7 @@
       ido-use-filename-at-point 'guess
       ido-use-virtual-buffers t
       ido-handle-duplicate-virtual-buffers 2
-      ido-max-prospects 10)
+      ido-max-prospects 15)
 
 ;;paren highlighting
 (require 'smartparens-config)
@@ -343,6 +344,24 @@
 ;; Major modes 
 ;; ========================
 
+(require 'mmm-auto)
+
+(mmm-add-classes
+ '((html-rvt
+    :submode tcl-mode
+    :delimiter-mode nil
+    :front "<\\?[=]?"
+    :front-offset 1
+    :back-offset 1
+    :back "\\?>")))
+
+(setq mmm-submode-decoration-level 0)
+(setq mmm-global-mode 'maybe)
+(mmm-add-mode-ext-class 'html-mode "\\.rvt\\'" 'html-rvt)
+(setq auto-mode-alist (append (list (cons "\\.rvt\\'" 'html-mode))
+                    auto-mode-alist))
+
+
 (setq flymake-run-in-place nil)
 (unless (file-exists-p "~/tmp/")
   (make-directory "~/tmp/"))
@@ -372,9 +391,6 @@
 (setq auto-mode-alist
         (cons '("\\.\\(bat\\|cmd\\)\\'" . bat-mode)
 	      auto-mode-alist))
-
-(setq auto-mode-alist (append (list (cons "\\.rvt\\'" 'tcl-mode))
-                    auto-mode-alist))
 
 
 ;; Add support for scss to css mode
