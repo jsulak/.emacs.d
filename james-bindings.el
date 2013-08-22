@@ -87,6 +87,10 @@
 (global-set-key [(f5)] 'revert-buffer)
 (global-set-key [(f6)] 'swap-windows)
 
+;; vc-diff
+(global-set-key [(f7)] 'vc-diff)
+(global-set-key [(f8)] 'indent-region)
+
 ;;Set keybinding for functions in efunc.el
 (global-set-key (kbd "C-x f") 'ffip)
 (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
