@@ -49,6 +49,7 @@
    (cons 'diminish melpa)
    (cons 'expand-region melpa)
    (cons 'find-file-in-project melpa)
+   (cons 'flx-ido melpa)
    (cons 'flymake-cursor melpa)
    (cons 'git-gutter+ melpa)
    (cons 'git-gutter-fringe+ melpa)
@@ -242,8 +243,11 @@
 ;; do not confirm file creation
 (setq confirm-nonexistent-file-or-buffer nil)
 
+(require 'flx-ido)
 (ido-mode t)
 (ido-ubiquitous t)
+(flx-ido-mode 1)
+(setq ido-use-faces nil)
 (setq ido-enable-prefix nil
       ido-enable-flex-matching t
       ido-auto-merge-work-directories-length nil
