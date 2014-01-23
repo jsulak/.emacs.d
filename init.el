@@ -49,7 +49,6 @@
    (cons 'diminish melpa)
    (cons 'expand-region melpa)
    (cons 'find-file-in-project melpa)
-   (cons 'flx-ido melpa)
    (cons 'flymake-cursor melpa)
    (cons 'git-gutter+ melpa)
    (cons 'git-gutter-fringe+ melpa)
@@ -59,10 +58,13 @@
    (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
    (cons 'multiple-cursors melpa)
+   (cons 'powerline melpa)
    (cons 'ruby-end melpa)
    (cons 'smartparens melpa)
    (cons 'smex melpa)
-   (cons 'sml-modeline marmalade)
+   (cons 'sml-modeline marmalade)   
+   (cons 'soft-morning-theme melpa)
+   (cons 'tangotango-theme melpa)
    (cons 'undo-tree melpa)
    (cons 'rainbow-mode gnu)
    (cons 'yaml-mode melpa)))
@@ -78,14 +80,15 @@
 ;; Load path
 ;; =======================
 
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external/flymake"))
 ;; (require 'bytecomp)
 ;; (byte-recompile-directory "~/.emacs.d/external" 0)
 
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
 
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
@@ -103,7 +106,7 @@
 (require 'james-functions)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
-(load-theme 'solarized-dark)
+;; (load-theme 'solarized-dark)
 
 
 ;; ======================
@@ -230,9 +233,6 @@
 ;; Leave lines at top or bottom when recentering
 (setq scroll-margin 3)
 
-;; Spaces instead of tabs
-(setq-default indent-tabs-mode nil)
-
 ;; Set tabs up for source files that already have tabs
 (setq-default tab-width 4)
 (setq tab-stop-list (number-sequence 4 200 4))
@@ -243,11 +243,11 @@
 ;; do not confirm file creation
 (setq confirm-nonexistent-file-or-buffer nil)
 
-(require 'flx-ido)
+;; (require 'flx-ido)
 (ido-mode t)
 (ido-ubiquitous t)
-(flx-ido-mode 1)
-(setq ido-use-faces nil)
+;; (flx-ido-mode 1)
+;(setq ido-use-faces nil)
 (setq ido-enable-prefix nil
       ido-enable-flex-matching t
       ido-auto-merge-work-directories-length nil

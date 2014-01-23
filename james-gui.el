@@ -11,6 +11,8 @@
 ;; (load-file "~/.emacs.d/external/naquadah-theme.el")
 ;; (color-theme-naquadah)
 
+(load-theme 'wombat)
+
 (global-hl-line-mode 1)
 (set-fringe-style 6)
 
@@ -18,6 +20,11 @@
 ;; TODO
 ;;(set-face-background 'hl-line "#19293A")
 ;(set-face-background 'hl-line "#222626")
+
+(set-face-background 'highlight "#303030")
+(set-face-underline 'hl-line nil)
+(set-face-underline 'highlight nil)
+(set-face-foreground 'highlight nil)
 
 ;; USUAL:
 ;; (set-face-background 'hl-line "#2B3030")
