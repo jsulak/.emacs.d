@@ -109,6 +109,8 @@ environment."
 ;;             (local-set-key (kbd "C-c .") 'ac-complete-rsense)))
 
 (require 'tramp)
+(setenv "TMPDIR" "/tmp")
+
 
 ;; JS hint mode
 ;; (add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
