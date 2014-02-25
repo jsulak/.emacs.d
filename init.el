@@ -61,8 +61,7 @@
    (cons 'powerline melpa)
    (cons 'ruby-end melpa)
    (cons 'smartparens melpa)
-   (cons 'smex melpa)
-   (cons 'sml-modeline marmalade)   
+   (cons 'smex melpa)   
    (cons 'soft-morning-theme melpa)
    (cons 'tangotango-theme melpa)
    (cons 'undo-tree melpa)
@@ -107,6 +106,8 @@
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
 ;; (load-theme 'solarized-dark)
+
+(powerline-default-theme)
 
 
 ;; ======================
@@ -182,12 +183,8 @@
 ;;(require 'js2-rename-var)
 ;;(define-key js2-mode-map (kbd "C-c C-r") 'js2-rename-var)
 
-
 ;; Midnight mode
 (require 'midnight)
-
-;; Get rid of scroll bars and use sml-modeline instead, and make the fringe half-width
-(sml-modeline-mode 1)
 
 (require 'linum)
 
@@ -262,9 +259,6 @@
 ;; (show-smartparens-global-mode t)
 (sp-use-smartparens-bindings)
 (show-paren-mode t)
-
-(which-function-mode t)
-(custom-set-faces '(which-func ((t nil))))
 
 ;; Delete files into trash
 (setq delete-by-moving-to-trash t)
