@@ -85,6 +85,7 @@
 ;;bind repeat last macro to F5
 (global-set-key [(f4)] 'call-last-kbd-macro)
 (global-set-key [(f5)] 'revert-buffer)
+(global-set-key [(ctrl f5)] 'revert-buffer-no-confirm)
 (global-set-key [(f6)] 'swap-windows)
 
 ;; vc-diff

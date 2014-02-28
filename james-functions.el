@@ -369,5 +369,9 @@ If point was already at that position, move point to beginning of line."
 
 (add-hook 'prog-mode-hook 'font-lock-comment-annotations)
 
+(defun revert-buffer-no-confirm ()
+    "Revert buffer without confirmation."
+    (interactive) (revert-buffer t t))
+
 (provide 'james-functions)
 
