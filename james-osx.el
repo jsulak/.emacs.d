@@ -5,8 +5,8 @@
 (if window-system
     (require 'james-gui))
 
-(if window-system
-    (set-face-attribute 'default nil :font "Inconsolata-g-10"))
+;; (if window-system
+	 ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-10"))
 
 ;; (setq load-path (append load-path '("~/.emacs.d/themes/solarized-theme")))
 ;; (require 'color-theme-solarized)

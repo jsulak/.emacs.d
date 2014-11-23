@@ -52,7 +52,6 @@
    (cons 'flymake-cursor melpa)
    (cons 'git-gutter+ melpa)
    (cons 'git-gutter-fringe+ melpa)
-   (cons 'ido-ubiquitous melpa)   
    (cons 'magit melpa)
    (cons 'mmm-mode melpa)
    (cons 'move-text melpa)
@@ -241,6 +240,7 @@
 
 ;; (require 'flx-ido)
 (ido-mode t)
+(require 'ido-ubiquitous)
 (ido-ubiquitous t)
 ;; (flx-ido-mode 1)
 ;(setq ido-use-faces nil)
@@ -423,6 +423,7 @@
 (setq ac-auto-start 2)
 (setq ac-ignore-case nil)
 (global-auto-complete-mode t)
+(add-to-list 'ac-modes 'html-mode)
 
 ;; Attempt to fix css autocomplete silliness
 (define-key ac-complete-mode-map "\r" nil)
@@ -505,6 +506,8 @@
 ;; =======================
 (require 'james-bindings)
 
+(if window-system
+	(set-face-attribute 'default nil :font "Inconsolata-g-10"))
 
 ;; =======================
 ;; Smex.  Must be at end of .emacs
