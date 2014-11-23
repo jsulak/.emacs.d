@@ -82,7 +82,7 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external/flymake"))
 ;; (require 'bytecomp)
@@ -91,11 +91,11 @@
 
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
-       (load-file "~/.emacs.d/james-linux.el"))
+       (load-file "~/.emacs.d/site-lisp/james-linux.el"))
       ((eq system-type 'darwin)
-       (load-file "~/.emacs.d/james-osx.el"))
+       (load-file "~/.emacs.d/site-lisp/james-osx.el"))
       ((eq system-type 'windows-nt)
-       (load-file "~/.emacs.d/james-windows.el")))
+       (load-file "~/.emacs.d/site-lisp/james-windows.el")))
 
 ;; Local initialization options can be saved in local.el
 (setq local-init (concat user-emacs-directory "local.el"))
