@@ -16,16 +16,19 @@
 (defvar marmalade '("marmalade" . "http://marmalade-repo.org/packages/"))
 (defvar gnu '("gnu" . "http://elpa.gnu.org/packages/"))
 (defvar melpa '("melpa" . "http://melpa.milkbox.net/packages/"))
+(defvar melpa-stable '("melpa-stable" . "http://stable.melpa.org/packages/"))
 
 ;; Add marmalade to package repos
 (add-to-list 'package-archives marmalade)
 (add-to-list 'package-archives melpa t)
+(add-to-list 'package-archives melpa-stable t)
 
 (package-initialize)
 
 (unless (and (file-exists-p "~/.emacs.d/elpa/archives/marmalade")
              (file-exists-p "~/.emacs.d/elpa/archives/gnu")
-             (file-exists-p "~/.emacs.d/elpa/archives/melpa"))
+             (file-exists-p "~/.emacs.d/elpa/archives/melpa")
+	     (file-exists-p "~/.emacs.d/elpa/archives/melpa-stable"))
   (package-refresh-contents))
 
 (defun packages-install (&rest packages)
@@ -58,7 +61,7 @@
    (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
    (cons 'multiple-cursors melpa)
-   (cons 'powerline melpa)
+   (cons 'powerline melpa-stable)
    (cons 'ruby-end melpa)
    (cons 'smartparens melpa)
    (cons 'smex melpa)   
