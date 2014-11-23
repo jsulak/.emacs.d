@@ -439,6 +439,7 @@
 (ac-set-trigger-key "TAB")
 
 (require 'etags)
+(setq tags-revert-without-query 1)
 
 (add-to-list 'load-path 
              "~/.emacs.d/external/yasnippet")
