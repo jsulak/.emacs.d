@@ -16,16 +16,19 @@
 (defvar marmalade '("marmalade" . "http://marmalade-repo.org/packages/"))
 (defvar gnu '("gnu" . "http://elpa.gnu.org/packages/"))
 (defvar melpa '("melpa" . "http://melpa.milkbox.net/packages/"))
+(defvar melpa-stable '("melpa-stable" . "http://stable.melpa.org/packages/"))
 
 ;; Add marmalade to package repos
 (add-to-list 'package-archives marmalade)
 (add-to-list 'package-archives melpa t)
+(add-to-list 'package-archives melpa-stable t)
 
 (package-initialize)
 
 (unless (and (file-exists-p "~/.emacs.d/elpa/archives/marmalade")
              (file-exists-p "~/.emacs.d/elpa/archives/gnu")
-             (file-exists-p "~/.emacs.d/elpa/archives/melpa"))
+             (file-exists-p "~/.emacs.d/elpa/archives/melpa")
+	     (file-exists-p "~/.emacs.d/elpa/archives/melpa-stable"))
   (package-refresh-contents))
 
 (defun packages-install (&rest packages)
@@ -57,7 +60,7 @@
    (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
    (cons 'multiple-cursors melpa)
-   (cons 'powerline melpa)
+   (cons 'powerline melpa-stable)
    (cons 'ruby-end melpa)
    (cons 'smartparens melpa)
    (cons 'smex melpa)   
@@ -81,7 +84,7 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external/flymake"))
 ;; (require 'bytecomp)
@@ -90,11 +93,11 @@
 
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
-       (load-file "~/.emacs.d/james-linux.el"))
+       (load-file "~/.emacs.d/site-lisp/james-linux.el"))
       ((eq system-type 'darwin)
-       (load-file "~/.emacs.d/james-osx.el"))
+       (load-file "~/.emacs.d/site-lisp/james-osx.el"))
       ((eq system-type 'windows-nt)
-       (load-file "~/.emacs.d/james-windows.el")))
+       (load-file "~/.emacs.d/site-lisp/james-windows.el")))
 
 ;; Local initialization options can be saved in local.el
 (setq local-init (concat user-emacs-directory "local.el"))
