@@ -51,6 +51,7 @@
    (cons 'deft melpa)
    (cons 'diminish melpa)
    (cons 'expand-region melpa)
+   (cons 'exec-path-from-shell melpa)
    (cons 'find-file-in-project melpa)
    (cons 'flymake-cursor melpa)
    (cons 'git-gutter+ melpa)
@@ -134,6 +135,7 @@
 (require 'git-gutter-fringe+)
 (git-gutter-fr+-minimal)
 (setq git-gutter-fr+-side 'right-fringe)
+(setq-default indicate-buffer-boundaries 'left)
 
 (set-face-foreground 'git-gutter-fr+-modified "#586e75")
 (set-face-foreground 'git-gutter-fr+-added    "#586e75")
@@ -251,7 +253,7 @@
 	  ido-enable-flex-matching t
 	  ido-auto-merge-work-directories-length nil
 	  ido-create-new-buffer 'always
-	  ido-use-filename-at-point 'guess
+	  ido-use-filename-at-point nil
 	  ido-use-virtual-buffers t
 	  ido-handle-duplicate-virtual-buffers 2
 	  ido-max-prospects 15)
