@@ -16,6 +16,9 @@
 (global-hl-line-mode 1)
 (set-fringe-style 6)
 
+;; Mouse behavior
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+
 
 ;; TODO
 ;;(set-face-background 'hl-line "#19293A")
