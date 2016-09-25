@@ -46,6 +46,7 @@
 (defun init--install-packages ()
   (packages-install
    (cons 'bm melpa)
+   (cons 'browse-kill-ring melpa)
    (cons 'coffee-mode melpa)
    (cons 'csharp-mode melpa)
    (cons 'deft melpa)

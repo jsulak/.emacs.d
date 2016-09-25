@@ -73,6 +73,9 @@
 ;; delete enclosed text
 (global-set-key (kbd "C-c d") 'delete-enclosed-text)
 
+;; Browse kill ring
+(global-set-key (kbd "M-y") 'browse-kill-ring)
+
 ;; Jump to a definition in the current file.
 (global-set-key (kbd "C-x C-i") 'imenu)
 
