@@ -142,5 +142,15 @@
 (global-set-key (kbd "C-x g") 'git-gutter+-mode) ; Turn on/off in the current buffer
 (global-set-key (kbd "C-x G") 'global-git-gutter+-mode) ; Turn on/off globally
 
+;; From http://irreal.org/blog/?p=5585
+(defun jcs-kill-a-buffer (askp)
+  (interactive "P")
+  (if askp
+      (kill-buffer (funcall completing-read-function
+                            "Kill buffer: "
+                            (mapcar #'buffer-name (buffer-list))))
+    (kill-this-buffer)))
+(global-set-key (kbd "C-x k") 'jcs-kill-a-buffer)
+
 
 (provide 'james-bindings)
