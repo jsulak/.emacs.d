@@ -81,3 +81,7 @@
 (add-hook 'js-mode-hook
          (lambda () (flymake-mode t)))
 (require 'flymake-cursor)
+
+(setq mac-option-modifier 'meta)
+(setq mac-command-modifier 'hyper)
+
