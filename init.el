@@ -362,7 +362,8 @@
 (setq mmm-global-mode 'maybe)
 (mmm-add-mode-ext-class 'html-mode "\\.rvt\\'" 'html-rvt)
 (setq auto-mode-alist (append (list (cons "\\.rvt\\'" 'html-mode))
-					auto-mode-alist))
+							  auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.test$" . tcl-mode))
 
 
 (setq flymake-run-in-place nil)
