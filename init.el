@@ -143,8 +143,6 @@
 ;; Midnight mode
 (require 'midnight)
 
-(require 'linum)
-
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 
@@ -268,7 +266,7 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-;; Send deletions to Recycling Bin
+;; Send deletions to Trash
 (setq delete-by-moving-to-trash t)
 
 ;; uniquify - make buffer names more unique
