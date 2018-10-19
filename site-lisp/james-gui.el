@@ -1,16 +1,4 @@
 
-;; Add color themes
-;(setq load-path (append load-path '("~/.emacs.d/themes/")))
-;(require 'color-theme)
-;(color-theme-initialize)
-;;(load-file "~/.emacs.d/external/ruby-blue-theme.el")
-;;(color-theme-ruby-blue)
-;;(color-theme-tangotango)
-;; (load-file "~/.emacs.d/external/color-theme-solarized.el")
-;; (color-theme-solarized-dark)
-;; (load-file "~/.emacs.d/external/naquadah-theme.el")
-;; (color-theme-naquadah)
-
 (load-theme 'wombat)
 
 (global-hl-line-mode 1)
