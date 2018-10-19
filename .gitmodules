@@ -7,9 +7,6 @@
 [submodule "external/solarized"]
 	path = external/solarized
 	url = https://github.com/jsulak/emacs-color-theme-solarized.git
-[submodule "external/flymake"]
-	path = external/flymake
-	url = https://github.com/jsulak/emacs-flymake.git
 [submodule "external/jshint-mode"]
 	path = external/jshint-mode
 	url = https://github.com/jsulak/jshint-mode.git

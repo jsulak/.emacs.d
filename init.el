@@ -15,8 +15,8 @@
 (require 'package)
 (defvar marmalade '("marmalade" . "http://marmalade-repo.org/packages/"))
 (defvar gnu '("gnu" . "http://elpa.gnu.org/packages/"))
-(defvar melpa '("melpa" . "http://melpa.milkbox.net/packages/"))
-(defvar melpa-stable '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(defvar melpa '("melpa" . "https://melpa.org/packages/"))
+(defvar melpa-stable '("melpa-stable" . "https://stable.melpa.org/packages/"))
 
 ;; Add marmalade to package repos
 (add-to-list 'package-archives marmalade)
@@ -48,28 +48,28 @@
    (cons 'bm melpa)
    (cons 'browse-kill-ring melpa)
    (cons 'coffee-mode melpa)
-   (cons 'csharp-mode melpa)
-   (cons 'deft melpa)
+   (cons 'csharp-mode melpa)   
    (cons 'diminish melpa)
    (cons 'expand-region melpa)
    (cons 'exec-path-from-shell melpa)
-   (cons 'find-file-in-project melpa)
-   (cons 'flymake-cursor melpa)
+   (cons 'find-file-in-project melpa)   
    (cons 'git-gutter+ melpa)
    (cons 'git-gutter-fringe+ melpa)
+   (cons 'js2-mode gnu)
+   (cons 'lua-mode melpa)
    (cons 'magit melpa)
    (cons 'mmm-mode melpa)
    (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
    (cons 'multiple-cursors melpa)
-   (cons 'powerline melpa-stable)
-   (cons 'ruby-end melpa)
    (cons 'smartparens melpa)
    (cons 'smex melpa)
    (cons 'soft-morning-theme melpa)
+   (cons 'spaceline melpa-stable)
    (cons 'tangotango-theme melpa)
    (cons 'undo-tree melpa)
    (cons 'rainbow-mode gnu)
+   (cons 'which-key melpa)
    (cons 'yaml-mode melpa)))
 
 (condition-case nil
@@ -88,9 +88,6 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/external/flymake"))
-;; (require 'bytecomp)
-;; (byte-recompile-directory "~/.emacs.d/external" 0)
 
 
 (cond ((or (eq system-type 'gnu/linux)
@@ -109,23 +106,9 @@
 (require 'james-functions)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
-;; (load-theme 'solarized-dark)
 
-(powerline-default-theme)
-
-
-;; ======================
-;; Programming notebook and deft
-;; ======================
-
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/programming_notebook"))
-(require 'programming-notebook)
-
-(require 'deft)
-(setq deft-extension "md")
-(setq deft-directory (expand-file-name "~/Dropbox/programming_notebook"))
-(setq deft-text-mode 'programming-notebook-mode)
-(setq deft-auto-save-interval 0)
+(require 'spaceline-config)
+(spaceline-emacs-theme)
 
 
 ;; ======================
@@ -143,34 +126,6 @@
 (set-face-foreground 'git-gutter-fr+-deleted  "#586e75")
 
 
-;; ======================
-;; Eshell
-;; ======================
-(setq eshell-aliases-file (concat user-emacs-directory "eshell-aliases"))
-
-(setq eshell-save-history-on-exit t
-	  eshell-buffer-shorthand t
-	  eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\)/\\'")
-
-;;;###autoload
-(eval-after-load 'esh-opt
-  '(progn
-	 (require 'em-prompt)
-	 (require 'em-term)
-	 (require 'em-cmpl)
-	 (setenv "PAGER" "cat")
-	 (add-hook 'eshell-mode-hook ;; for some reason this needs to be a hook
-			   '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-bol)))
-	 (setq eshell-cmpl-cycle-completions nil)
-
-	 ;; TODO: submit these via M-x report-emacs-bug
-	 (add-to-list 'eshell-visual-commands "ssh")
-	 (add-to-list 'eshell-visual-commands "tail")
-	 (add-to-list 'eshell-command-completions-alist
-				  '("gunzip" "gz\\'"))
-	 (add-to-list 'eshell-command-completions-alist
-				  '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))))
-
 
 ;; ================================
 ;; Behavior
@@ -185,13 +140,8 @@
 (require 'sgml-mode)
 (define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
 
-;;(require 'js2-rename-var)
-;;(define-key js2-mode-map (kbd "C-c C-r") 'js2-rename-var)
-
 ;; Midnight mode
 (require 'midnight)
-
-(require 'linum)
 
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
@@ -226,7 +176,7 @@
 (defvar ffip-patterns
   '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
 	"*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs" "*.zsh"
-	"*.erb" "*.coffee" "*.xml" "*.acl" "*.bat" "*.cmd" "*.xqy" "*.xqm")
+	"*.erb" "*.coffee" "*.xml" "*.xqy" "*.xqm")
   "List of patterns to look for with `find-file-in-project'.")
 
 (setq ns-pop-up-frames nil)
@@ -261,8 +211,6 @@
 
 ;;paren highlighting
 (require 'smartparens-config)
-;; (smartparens-global-mode t)
-;; (show-smartparens-global-mode t)
 (sp-use-smartparens-bindings)
 (show-paren-mode t)
 
@@ -318,7 +266,7 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-;; Send deletions to Recycling Bin
+;; Send deletions to Trash
 (setq delete-by-moving-to-trash t)
 
 ;; uniquify - make buffer names more unique
@@ -366,20 +314,6 @@
 (add-to-list 'auto-mode-alist '("\\.test$" . tcl-mode))
 
 
-(setq flymake-run-in-place nil)
-(unless (file-exists-p "~/tmp/")
-  (make-directory "~/tmp/"))
-(setq temporary-file-directory "~/tmp/")
-
-(setq erc-hide-list '("JOIN" "PART" "QUIT"))
-
-;; Clojure
-;; (require 'paredit) if you didn't install via package.el
-(defun turn-on-paredit () (paredit-mode 1))
-(add-hook 'clojure-mode-hook 'turn-on-paredit)
-
-(require 'ruby-end)
-
 ;; nxml mode
 (setq rng-schema-locating-files (quote ("schemas.xml" "~/.emacs.d/nxml-mode/schema/schemas.xml")))
 (setq auto-mode-alist
@@ -390,12 +324,6 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
-;;Add support for dos batch files
-(require 'dosbat)
-(setq auto-mode-alist
-		(cons '("\\.\\(bat\\|cmd\\)\\'" . bat-mode)
-		  auto-mode-alist))
-
 
 ;; Add support for scss to css mode
 (setq auto-mode-alist
@@ -403,11 +331,6 @@
 			auto-mode-alist))
 ;; Automatically load rainbow mode in css mode
 (add-hook 'css-mode-hook 'rainbow-mode)
-
-;;Add ACL mode mode
-(autoload 'acl-mode "acl-mode")
-(setq auto-mode-alist (append (list (cons "\\.acl\\'" 'acl-mode))
-							   auto-mode-alist))
 
 ;; Add markdown mode
 (setq auto-mode-alist
@@ -445,12 +368,6 @@
 (require 'etags)
 (setq tags-revert-without-query 1)
 
-(add-to-list 'load-path
-			 "~/.emacs.d/external/yasnippet")
-(require 'yasnippet)
-;; (yas/initialize) ::)
-(yas/global-mode 1)
-(add-to-list 'ac-sources 'ac-source-yasnippet)
 
 (require 'grep-buffers)
 
@@ -507,15 +424,15 @@
 (diminish 'git-gutter+-mode)
 (diminish 'smartparens-mode)
 (diminish 'undo-tree-mode)
-(diminish 'yas-minor-mode)
+;; (diminish 'yas-minor-mode)
 
 ;; =======================
 ;; Key bindings
 ;; =======================
 (require 'james-bindings)
 
-(if window-system
-	(set-face-attribute 'default nil :font "Inconsolata-g-10"))
+
+(which-key-mode)
 
 ;; =======================
 ;; Smex.  Must be at end of .emacs
@@ -527,3 +444,15 @@
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key "\C-x\C-m" 'smex)
 (global-set-key (kbd "C-x m") 'smex)
+
+
+;; =======================
+;; Temporary tramp work-around
+;; ========================
+
+;; (defadvice vc-registered (around my-vc-svn-registered-tramp activate)
+;;   "Don't try to use SVN on files accessed via TRAMP."
+;;   (if (and (fboundp 'tramp-tramp-file-p)
+;; 	   (tramp-tramp-file-p (ad-get-arg 0)))
+;;       nil
+;;     ad-do-it))
