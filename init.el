@@ -52,8 +52,7 @@
    (cons 'diminish melpa)
    (cons 'expand-region melpa)
    (cons 'exec-path-from-shell melpa)
-   (cons 'find-file-in-project melpa)
-   (cons 'flymake-cursor melpa)
+   (cons 'find-file-in-project melpa)   
    (cons 'git-gutter+ melpa)
    (cons 'git-gutter-fringe+ melpa)
    (cons 'js2-mode gnu)
@@ -89,9 +88,6 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/external/flymake"))
-;; (require 'bytecomp)
-;; (byte-recompile-directory "~/.emacs.d/external" 0)
 
 
 (cond ((or (eq system-type 'gnu/linux)
@@ -317,12 +313,6 @@
 (mmm-add-mode-ext-class 'html-mode "\\.rvt\\'" 'html-rvt)
 (setq auto-mode-alist (append (list (cons "\\.rvt\\'" 'html-mode))
 					auto-mode-alist))
-
-
-(setq flymake-run-in-place nil)
-(unless (file-exists-p "~/tmp/")
-  (make-directory "~/tmp/"))
-(setq temporary-file-directory "~/tmp/")
 
 
 ;; nxml mode

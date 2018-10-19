@@ -73,15 +73,6 @@
 (require 'tramp)
 (setenv "TMPDIR" "/tmp")
 
-
-;; JS hint mode
-;; (add-to-list  'load-path "/usr/local/lib/node_modules/jshint-mode")
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/external/jshint-mode"))
-(require 'flymake-jshint)
-(add-hook 'js-mode-hook
-         (lambda () (flymake-mode t)))
-(require 'flymake-cursor)
-
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'hyper)
 
