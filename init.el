@@ -526,3 +526,15 @@
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key "\C-x\C-m" 'smex)
 (global-set-key (kbd "C-x m") 'smex)
+
+
+;; =======================
+;; Temporary tramp work-around
+;; ========================
+
+;; (defadvice vc-registered (around my-vc-svn-registered-tramp activate)
+;;   "Don't try to use SVN on files accessed via TRAMP."
+;;   (if (and (fboundp 'tramp-tramp-file-p)
+;; 	   (tramp-tramp-file-p (ad-get-arg 0)))
+;;       nil
+;;     ad-do-it))
