@@ -54,6 +54,7 @@
    (cons 'find-file-in-project melpa)   
    (cons 'git-gutter+ melpa)
    (cons 'git-gutter-fringe+ melpa)
+   (cons 'ido-completing-read+ melpa-stable)
    (cons 'js2-mode gnu)
    (cons 'lua-mode melpa)
    (cons 'magit melpa)
@@ -180,11 +181,10 @@
 (setq confirm-nonexistent-file-or-buffer nil)
 
 ;; (require 'flx-ido)
-(ido-mode t)
-(require 'ido-ubiquitous)
-(ido-ubiquitous t)
-;; (flx-ido-mode 1)
-;(setq ido-use-faces nil)
+(ido-mode 1)
+(ido-everywhere 1)
+(require 'ido-completing-read+)
+(ido-ubiquitous-mode 1)
 (setq ido-enable-prefix nil
 	  ido-enable-flex-matching t
 	  ido-auto-merge-work-directories-length nil
@@ -400,6 +400,7 @@
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key "\C-x\C-m" 'smex)
 (global-set-key (kbd "C-x m") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
 
 ;; =======================
