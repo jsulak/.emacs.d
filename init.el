@@ -280,12 +280,6 @@
 (add-to-list 'auto-mode-alist '("\\.test$" . tcl-mode))
 
 
-;; nxml mode
-(setq rng-schema-locating-files (quote ("schemas.xml" "~/.emacs.d/nxml-mode/schema/schemas.xml")))
-(setq auto-mode-alist
-		(cons '("\\.\\(xml\\|xsl\\|xslt\\|rng\\|xhtml\\|xpr\\|xspec\\|xpl\\)\\'" . nxml-mode)
-		  auto-mode-alist))
-
 ;; yaml
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
