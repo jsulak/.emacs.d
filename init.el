@@ -55,8 +55,6 @@
    (cons 'expand-region melpa)
    (cons 'exec-path-from-shell melpa)
    (cons 'find-file-in-project melpa)   
-   (cons 'git-gutter+ melpa)
-   (cons 'git-gutter-fringe+ melpa)
    (cons 'ido-completing-read+ melpa-stable)
    (cons 'js2-mode gnu)
    (cons 'lua-mode melpa)
@@ -112,21 +110,6 @@
 
 (require 'spaceline-config)
 (spaceline-emacs-theme)
-
-
-;; ======================
-;; Git gutter
-;; ======================
-
-(global-git-gutter+-mode t)
-(require 'git-gutter-fringe+)
-(git-gutter-fr+-minimal)
-(setq git-gutter-fr+-side 'right-fringe)
-(setq-default indicate-buffer-boundaries 'left)
-
-(set-face-foreground 'git-gutter-fr+-modified "#586e75")
-(set-face-foreground 'git-gutter-fr+-added    "#586e75")
-(set-face-foreground 'git-gutter-fr+-deleted  "#586e75")
 
 
 
@@ -372,7 +355,6 @@
 ;; ======================
 
 (diminish 'auto-complete-mode)
-(diminish 'git-gutter+-mode)
 (diminish 'smartparens-mode)
 (diminish 'undo-tree-mode)
 ;; (diminish 'yas-minor-mode)
