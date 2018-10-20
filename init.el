@@ -319,13 +319,13 @@
 												 ; on windows.
 (server-start)
 
+
 ;; ======================
 ;; Diminish (clean up) mode line
 ;; ======================
 
 (diminish 'smartparens-mode)
 (diminish 'undo-tree-mode)
-;; (diminish 'yas-minor-mode)
 
 
 ;; =======================
