@@ -77,9 +77,6 @@
 ;; Run shell command
 (global-set-key (kbd "\C-c s") 'shell-command)
 
-;; Set goto-line
-(global-set-key "\C-x\C-g" 'goto-line)
-
 ;;bind repeat last macro to F5
 (global-set-key [(f4)] 'call-last-kbd-macro)
 (global-set-key [(f5)] 'revert-buffer)
@@ -108,7 +105,6 @@
 
 
 ;; Misc keybindings
-(global-set-key "\M-g" 'goto-line)
 (global-set-key (kbd "C-c g") 'goto-line)
 (global-set-key (kbd "C-c o") 'occur)
 (global-set-key (kbd "C-c i") 'ido-goto-symbol)
