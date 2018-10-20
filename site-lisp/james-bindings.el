@@ -44,11 +44,6 @@
 (global-set-key (kbd "M-;") 'hippie-expand)
 (global-set-key (kbd "C-=") 'hippie-expand)
 
-;; BM mode
-(global-set-key (kbd "<M-f2>") 'bm-toggle)
-(global-set-key (kbd "<f2>")   'bm-next)
-(global-set-key (kbd "<S-f2>") 'bm-previous)
-
 
 ;; duplicate a line
 (global-set-key (kbd "C-c y") 'djcb-duplicate-line)
