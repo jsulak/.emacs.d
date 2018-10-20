@@ -352,9 +352,6 @@
 (setq tags-revert-without-query 1)
 
 
-(require 'grep-buffers)
-
-
 ;; Undo tree
 (require 'undo-tree)
 (global-undo-tree-mode)
