@@ -1,6 +1,3 @@
-[submodule "snippets/js-mode"]
-	path = snippets/js-mode
-	url = https://github.com/jsulak/yasnippet-js-mode.git
 [submodule "external/solarized"]
 	path = external/solarized
 	url = https://github.com/jsulak/emacs-color-theme-solarized.git
