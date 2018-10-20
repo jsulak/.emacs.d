@@ -5,6 +5,9 @@
 
 ;; No splash screen please ... jeez
 (setq inhibit-startup-message t)
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
+
 
 (require 'cl)
 
@@ -140,12 +143,6 @@
 (require 'sgml-mode)
 (define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
 
-;; Midnight mode
-(require 'midnight)
-
-(setq inhibit-splash-screen t)
-(setq initial-scratch-message nil)
-
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
 
@@ -180,7 +177,8 @@
 ;; do not confirm file creation
 (setq confirm-nonexistent-file-or-buffer nil)
 
-;; (require 'flx-ido)
+
+;; Ido setup
 (ido-mode 1)
 (ido-everywhere 1)
 (require 'ido-completing-read+)
@@ -387,7 +385,6 @@
 ;; =======================
 (require 'james-bindings)
 
-
 (which-key-mode)
 
 ;; =======================
@@ -401,15 +398,3 @@
 (global-set-key "\C-x\C-m" 'smex)
 (global-set-key (kbd "C-x m") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-
-
-;; =======================
-;; Temporary tramp work-around
-;; ========================
-
-;; (defadvice vc-registered (around my-vc-svn-registered-tramp activate)
-;;   "Don't try to use SVN on files accessed via TRAMP."
-;;   (if (and (fboundp 'tramp-tramp-file-p)
-;; 	   (tramp-tramp-file-p (ad-get-arg 0)))
-;;       nil
-;;     ad-do-it))
