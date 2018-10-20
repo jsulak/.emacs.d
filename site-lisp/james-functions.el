@@ -1,4 +1,29 @@
-;;This document contains miscellaneous functions, for now all from
+
+
+(defadvice kill-ring-save (before slick-copy activate compile)
+  "When called interactively with no active region, copy a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+	 (message "Copied line")
+	 (list (line-beginning-position)
+	   (line-end-position)))))
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+	 (list (line-beginning-position)
+	   (line-end-position)))))
+
+
+;; Adds extra keybinding to interactive search that sends the current term to occur
+;; From http://emacsblog.org/page/5/
+(define-key isearch-mode-map (kbd "C-o")
+  (lambda ()
+	(interactive)
+	(let ((case-fold-search isearch-case-fold-search))
+	  (occur (if isearch-regexp isearch-string
+			   (regexp-quote isearch-string))))))
+
 
 ;;These are from Steve Yegge's blog post
 
@@ -266,54 +291,6 @@ If point was already at that position, move point to beginning of line."
       (skip-chars-backward "^(<[\"'") (setq p1 (point))
       (skip-chars-forward "^)>]\"'") (setq p2 (point))
       (delete-region p1 p2))))
-
- ;; (defun ido-goto-symbol (&optional symbol-list)
- ;;      "Refresh imenu and jump to a place in the buffer using Ido."
- ;;      (interactive)
- ;;      (unless (featurep 'imenu)
- ;;        (require 'imenu nil t))
- ;;      (cond
- ;;       ((not symbol-list)
- ;;        (let ((ido-mode ido-mode)
- ;;              (ido-enable-flex-matching
- ;;               (if (boundp 'ido-enable-flex-matching)
- ;;                   ido-enable-flex-matching t))
- ;;              name-and-pos symbol-names position)
- ;;          (unless ido-mode
- ;;            (ido-mode 1)
- ;;            (setq ido-enable-flex-matching t))
- ;;          (while (progn
- ;;                   (imenu--cleanup)
- ;;                   (setq imenu--index-alist nil)
- ;;                   (ido-goto-symbol (imenu--make-index-alist))
- ;;                   (setq selected-symbol
- ;;                         (ido-completing-read "Symbol? " symbol-names))
- ;;                   (string= (car imenu--rescan-item) selected-symbol)))
- ;;          (unless (and (boundp 'mark-active) mark-active)
- ;;            (push-mark nil t nil))
- ;;          (setq position (cdr (assoc selected-symbol name-and-pos)))
- ;;          (cond
- ;;           ((overlayp position)
- ;;            (goto-char (overlay-start position)))
- ;;           (t
- ;;            (goto-char position)))))
- ;;       ((listp symbol-list)
- ;;        (dolist (symbol symbol-list)
- ;;          (let (name position)
- ;;            (cond
- ;;             ((and (listp symbol) (imenu--subalist-p symbol))
- ;;              (ido-goto-symbol symbol))
- ;;             ((listp symbol)
- ;;              (setq name (car symbol))
- ;;              (setq position (cdr symbol)))
- ;;             ((stringp symbol)
- ;;              (setq name symbol)
- ;;              (setq position
- ;;                    (get-text-property 1 'org-imenu-marker symbol))))
- ;;            (unless (or (null position) (null name)
- ;;                        (string= (car imenu--rescan-item) name))
- ;;              (add-to-list 'symbol-names name)
- ;;              (add-to-list 'name-and-pos (cons name position))))))))
 
 
 ;; Pretty-prints a json string

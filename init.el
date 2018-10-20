@@ -3,7 +3,7 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-;; No splash screen please ... jeez
+;; Turn off splash screens, etc.
 (setq inhibit-startup-message t)
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
@@ -11,17 +11,19 @@
 
 (require 'cl)
 
-;; =======================
-;; Package.el
-;; =======================
+;; ==============================
+;; Package management
+;; ==============================
 
 (require 'package)
+
+
+;; Define package repositories
 (defvar marmalade '("marmalade" . "http://marmalade-repo.org/packages/"))
 (defvar gnu '("gnu" . "http://elpa.gnu.org/packages/"))
 (defvar melpa '("melpa" . "https://melpa.org/packages/"))
 (defvar melpa-stable '("melpa-stable" . "https://stable.melpa.org/packages/"))
 
-;; Add marmalade to package repos
 (add-to-list 'package-archives marmalade)
 (add-to-list 'package-archives melpa t)
 (add-to-list 'package-archives melpa-stable t)
@@ -46,6 +48,7 @@
   (package-initialize)
   (delete-other-windows))
 
+;; List of all packages to download / load from repositories
 (defun init--install-packages ()
   (packages-install   
    (cons 'browse-kill-ring melpa)
@@ -90,7 +93,7 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
 
-
+;; Environment-specific configurations
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
 	   (load-file "~/.emacs.d/site-lisp/james-linux.el"))
@@ -112,40 +115,9 @@
 (spaceline-emacs-theme)
 
 
-
 ;; ================================
-;; Behavior
+;; Behavior modifications
 ;; ================================
-
-(add-hook 'js-mode-hook (lambda ()
-						  (require 'js-mode-expansions)
-						  (er/add-js-mode-expansions)))
-(setq pending-delete-mode t)
-
-;; Multiple cursors
-(require 'sgml-mode)
-(define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
-
-(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-(add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
-
-;; (electric-pair-mode t)
-(electric-indent-mode t)
-(electric-layout-mode t)
-
-;;  electric layout doesn't work right with js-mode
-(defun james-js-mode-hook ()
-  (electric-layout-mode -1))
-(add-hook 'js-mode-hook 'james-js-mode-hook)
-
-;; Add more file types to find-file-in-project
-(defvar ffip-patterns
-  '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
-	"*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs" "*.zsh"
-	"*.erb" "*.coffee" "*.xml" "*.xqy" "*.xqm")
-  "List of patterns to look for with `find-file-in-project'.")
-
-(setq ns-pop-up-frames nil)
 
 ;; Leave lines at top or bottom when recentering
 (setq scroll-margin 3)
@@ -160,6 +132,36 @@
 ;; do not confirm file creation
 (setq confirm-nonexistent-file-or-buffer nil)
 
+;; Delete files into trash
+(setq delete-by-moving-to-trash t)
+
+;;Prevent backup files from being made
+(setq make-backup-files nil)
+(setq auto-save-default nil)
+
+;; Have typing get rid of the active selection
+(delete-selection-mode t)
+
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+(add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
+
+;;; Make all yes-or-no questions as y-or-n
+(fset 'yes-or-no-p 'y-or-n-p)
+(column-number-mode 1)
+
+
+;;http://www.xsteve.at/prg/emacs/power-user-tips.html
+(setq recentf-max-saved-items 500)
+(setq ibuffer-shrink-to-minimum-size t)
+(setq ibuffer-always-show-last-buffer nil)
+(setq ibuffer-sorting-mode 'recency)
+(setq ibuffer-use-header-line t)
+
+
+
+;; ==============================
+;; Ido mode
+;; ==============================
 
 ;; Ido setup
 (ido-mode 1)
@@ -175,65 +177,25 @@
 	  ido-handle-duplicate-virtual-buffers 2
 	  ido-max-prospects 15)
 
+
+;; ==============================
+;; Activate various modes
+;; ==============================
+
 ;;paren highlighting
 (require 'smartparens-config)
 (sp-use-smartparens-bindings)
 (show-paren-mode t)
 
-;; Delete files into trash
-(setq delete-by-moving-to-trash t)
-
-;; Have typing get rid of the active selection
-(delete-selection-mode t)
-
-;; Make dired mode search filenames only
-(setq dired-isearch-filenames t)
-;; Make dired open directories in same buffer
-(put 'dired-find-alternate-file 'disabled nil)
-(autoload 'dired-jump "dired-x" "Jump to dired corresponding current buffer.")
-(autoload 'dired-jump-other-window "dired-x" "jump to dired in other window.")
-
-
-;;http://www.xsteve.at/prg/emacs/power-user-tips.html
-(setq recentf-max-saved-items 500)
-(setq ibuffer-shrink-to-minimum-size t)
-(setq ibuffer-always-show-last-buffer nil)
-(setq ibuffer-sorting-mode 'recency)
-(setq ibuffer-use-header-line t)
-
-;;; Make all yes-or-no questions as y-or-n
-(fset 'yes-or-no-p 'y-or-n-p)
-(column-number-mode 1)
-
-;; recentf stuff
+;; recentf
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
-
-(defadvice kill-ring-save (before slick-copy activate compile)
-  "When called interactively with no active region, copy a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-	 (message "Copied line")
-	 (list (line-beginning-position)
-	   (line-end-position)))))
-(defadvice kill-region (before slick-cut activate compile)
-  "When called interactively with no active region, kill a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-	 (list (line-beginning-position)
-	   (line-end-position)))))
 
 ;; Activate winner mode
 (when (fboundp 'winner-mode)
 	  (winner-mode 1))
 
-;;Prevent backup files from being made
-(setq make-backup-files nil)
-(setq auto-save-default nil)
-
-;; Send deletions to Trash
-(setq delete-by-moving-to-trash t)
 
 ;; uniquify - make buffer names more unique
 (require 'uniquify)
@@ -243,14 +205,50 @@
  uniquify-after-kill-buffer-p t
  uniquify-ignore-buffers-re "^\\*")
 
-;; Adds extra keybinding to interactive search that sends the current term to occur
-;; From http://emacsblog.org/page/5/
-(define-key isearch-mode-map (kbd "C-o")
-  (lambda ()
-	(interactive)
-	(let ((case-fold-search isearch-case-fold-search))
-	  (occur (if isearch-regexp isearch-string
-			   (regexp-quote isearch-string))))))
+(require 'etags)
+(setq tags-revert-without-query 1)
+
+;; Undo tree
+(require 'undo-tree)
+(global-undo-tree-mode)
+
+;; Multiple cursors
+(require 'sgml-mode)
+(define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
+
+
+;; (electric-pair-mode t)
+(electric-indent-mode t)
+(electric-layout-mode t)
+
+;;  electric layout doesn't work right with js-mode
+(defun james-js-mode-hook ()
+  (electric-layout-mode -1))
+(add-hook 'js-mode-hook 'james-js-mode-hook)
+
+(add-hook 'js-mode-hook (lambda ()
+						  (require 'js-mode-expansions)
+						  (er/add-js-mode-expansions)))
+(setq pending-delete-mode t)
+
+
+
+;; Add more file types to find-file-in-project
+(defvar ffip-patterns
+  '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
+	"*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs" "*.zsh"
+	"*.erb" "*.coffee" "*.xml" "*.xqy" "*.xqm")
+  "List of patterns to look for with `find-file-in-project'.")
+
+(setq ns-pop-up-frames nil)
+
+;; Dired mode
+;; Make dired mode search filenames only
+(setq dired-isearch-filenames t)
+;; Make dired open directories in same buffer
+(put 'dired-find-alternate-file 'disabled nil)
+(autoload 'dired-jump "dired-x" "Jump to dired corresponding current buffer.")
+(autoload 'dired-jump-other-window "dired-x" "jump to dired in other window.")
 
 
 ;; Enable camel-case awareness in all programming modes
@@ -260,6 +258,8 @@
 ;; ========================
 ;; Major modes
 ;; ========================
+
+;; Multi major mode
 
 (require 'mmm-auto)
 
@@ -331,14 +331,6 @@
 
 (ac-set-trigger-key "TAB")
 
-(require 'etags)
-(setq tags-revert-without-query 1)
-
-
-;; Undo tree
-(require 'undo-tree)
-(global-undo-tree-mode)
-
 ;; =======================
 ;; Server
 ;; =======================
@@ -359,12 +351,15 @@
 (diminish 'undo-tree-mode)
 ;; (diminish 'yas-minor-mode)
 
+
 ;; =======================
 ;; Key bindings
 ;; =======================
+
 (require 'james-bindings)
 
 (which-key-mode)
+
 
 ;; =======================
 ;; Smex.  Must be at end of .emacs
@@ -372,7 +367,7 @@
 
 (require 'smex)
 (smex-initialize)
-;;set up alternate alt key
+
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key "\C-x\C-m" 'smex)
 (global-set-key (kbd "C-x m") 'smex)
