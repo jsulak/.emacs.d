@@ -9,8 +9,6 @@
 (setq initial-scratch-message nil)
 
 
-(require 'cl)
-
 ;; ==============================
 ;; Package management
 ;; ==============================
@@ -19,20 +17,15 @@
 
 
 ;; Define package repositories
-(defvar marmalade '("marmalade" . "http://marmalade-repo.org/packages/"))
 (defvar gnu '("gnu" . "http://elpa.gnu.org/packages/"))
 (defvar melpa '("melpa" . "https://melpa.org/packages/"))
 (defvar melpa-stable '("melpa-stable" . "https://stable.melpa.org/packages/"))
 
-(add-to-list 'package-archives marmalade)
 (add-to-list 'package-archives melpa t)
 (add-to-list 'package-archives melpa-stable t)
 
-(package-initialize)
-
-(unless (and (file-exists-p "~/.emacs.d/elpa/archives/marmalade")
-			 (file-exists-p "~/.emacs.d/elpa/archives/gnu")
-			 (file-exists-p "~/.emacs.d/elpa/archives/melpa")
+(unless (and 	 (file-exists-p "~/.emacs.d/elpa/archives/gnu")
+		 (file-exists-p "~/.emacs.d/elpa/archives/melpa")
 		 (file-exists-p "~/.emacs.d/elpa/archives/melpa-stable"))
   (package-refresh-contents))
 
@@ -52,25 +45,12 @@
 (defun init--install-packages ()
   (packages-install   
    (cons 'browse-kill-ring melpa)
-   (cons 'coffee-mode melpa)
-   (cons 'csharp-mode melpa)   
    (cons 'diminish melpa)
    (cons 'expand-region melpa)
    (cons 'exec-path-from-shell melpa)
-   (cons 'find-file-in-project melpa)   
-   (cons 'ido-completing-read+ melpa-stable)
-   (cons 'js2-mode gnu)
-   (cons 'lua-mode melpa)
-   (cons 'magit melpa)
-   (cons 'mmm-mode gnu)
    (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
-   (cons 'multiple-cursors melpa)
-   (cons 'smartparens melpa)
    (cons 'smex melpa)
-   (cons 'soft-morning-theme melpa)
-   (cons 'spaceline melpa-stable)
-   (cons 'tangotango-theme melpa)
    (cons 'undo-tree gnu)
    (cons 'rainbow-mode gnu)
    (cons 'which-key melpa)
@@ -111,8 +91,8 @@
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
 
-(require 'spaceline-config)
-(spaceline-emacs-theme)
+;(require 'spaceline-config)
+;(spaceline-emacs-theme)
 
 
 ;; ================================
@@ -181,11 +161,6 @@
 ;; ==============================
 ;; Activate various modes
 ;; ==============================
-
-;;paren highlighting
-(require 'smartparens-config)
-(sp-use-smartparens-bindings)
-(show-paren-mode t)
 
 ;; recentf
 (require 'recentf)
@@ -258,31 +233,6 @@
 ;; ========================
 ;; Major modes
 ;; ========================
-
-;; Multi major mode
-
-(require 'mmm-auto)
-
-(mmm-add-classes
- '((html-rvt
-	:submode tcl-mode
-	:delimiter-mode nil
-	:front "<\\?[=]?"
-	:front-offset 1
-	:back-offset 1
-	:back "\\?>")))
-
-(setq mmm-submode-decoration-level 0)
-(setq mmm-global-mode 'maybe)
-(mmm-add-mode-ext-class 'html-mode "\\.rvt\\'" 'html-rvt)
-(setq auto-mode-alist (append (list (cons "\\.rvt\\'" 'html-mode))
-							  auto-mode-alist))
-(add-to-list 'auto-mode-alist '("\\.test$" . tcl-mode))
-
-
-;; yaml
-(require 'yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 
 ;; Add support for scss to css mode
