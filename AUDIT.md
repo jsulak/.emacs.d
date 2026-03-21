@@ -43,7 +43,7 @@ Evaluated against Emacs 29.3.
 - [x] Replace **undo-tree** with **vundo** — undo-tree has known data-corruption bugs and is largely unmaintained.
 
 ### Medium Impact
-- [ ] Use **project.el** (built-in) for project-scoped find-file, grep, and compile.
+- [x] Use **project.el** (built-in) for project-scoped find-file, grep, and compile.
 - [x] Move remaining `global-set-key` calls in `james-bindings.el` into `use-package` `:bind` blocks for consistency.
 - [x] Install solarized theme from MELPA instead of vendoring it in `external/`.
 - [x] Enable `savehist-mode` to persist minibuffer history across sessions.
@@ -53,5 +53,5 @@ Evaluated against Emacs 29.3.
 ### Low Impact
 - [x] Replace `fset` keyboard macros (`indent-all`, `find-todo` in `james-functions.el`) with normal defuns.
 - [x] Enable `pixel-scroll-precision-mode` (Emacs 29) for smooth scrolling.
-- [x] Enable `display-line-numbers-mode` in `prog-mode-hook`.
+- [x] ~~Enable `display-line-numbers-mode` in `prog-mode-hook`.~~ — removed, not wanted.
 - [ ] Add **yasnippet** or **tempel** for snippet/template support.

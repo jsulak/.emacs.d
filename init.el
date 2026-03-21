@@ -117,7 +117,6 @@
 ;; Enable camel-case awareness in all programming modes
 ;; http://emacsredux.com/blog/2013/04/21/camelcase-aware-editing/
 (add-hook 'prog-mode-hook 'subword-mode)
-;; (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 (pixel-scroll-precision-mode t)
 
@@ -171,6 +170,13 @@
   (uniquify-separator ":")
   (uniquify-after-kill-buffer-p t)
   (uniquify-ignore-buffers-re "^\\*"))
+
+(use-package project
+  :ensure nil
+  :bind (("C-x p f" . project-find-file)
+         ("C-x p g" . project-find-regexp)
+         ("C-x p c" . project-compile)
+         ("C-x p d" . project-dired)))
 
 (use-package dired
   :ensure nil
@@ -238,10 +244,27 @@
 (use-package magit
   :bind ("C-x g" . magit-status))
 
+(use-package treemacs
+  :bind (("<f9>" . treemacs)
+         ("C-x t t" . treemacs)
+         ("C-x t 1" . treemacs-select-window))
+  :custom
+  (treemacs-width 35)
+  (treemacs-is-never-other-window t))
+
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist '(typescript tsx))
+  (global-treesit-auto-mode))
+
 (use-package eglot
   :ensure nil
   :hook ((python-mode . eglot-ensure)
          (js-mode . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         (tsx-ts-mode . eglot-ensure)
          (css-mode . eglot-ensure)))
 
 (use-package corfu

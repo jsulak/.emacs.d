@@ -21,6 +21,10 @@ Personal Emacs configuration targeting Emacs 29+. Uses `use-package` (built-in) 
 - Custom functions use advice (`slick-copy-advice`, `slick-cut-advice`) to extend kill/copy to work on whole lines when no region is active.
 - Platform detection uses `system-type` checks in init.el to load the appropriate `james-*.el` file.
 
+## System-Level Changes
+
+When changes require system-level setup (apt packages, npm global/local installs, PATH modifications, etc.), document them in `ANSIBLE-TODO.md` with the corresponding Ansible YAML snippets so the provisioning playbook can be updated.
+
 ## Modernization Roadmap
 
 See `AUDIT.md` for the planned modernization path (vertico/consult stack, magit, eglot, corfu, etc.). When making changes, prefer modern Emacs 29+ idioms and built-in packages where possible.
