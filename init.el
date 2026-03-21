@@ -217,10 +217,8 @@
 (use-package rainbow-mode
   :hook (css-mode . rainbow-mode))
 
-(use-package undo-tree
-  :diminish undo-tree-mode
-  :config
-  (global-undo-tree-mode))
+(use-package vundo
+  :bind ("C-x u" . vundo))
 
 (use-package which-key
   :config
