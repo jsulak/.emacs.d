@@ -271,6 +271,11 @@
   (eat-term-name "xterm-256color")
   :bind ("C-x t e" . eat-project))
 
+(use-package claude-code
+  :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :config (claude-code-mode)
+  :bind-keymap ("C-c c" . claude-code-command-map))
+
 (use-package eglot
   :ensure nil
   :hook ((python-mode . eglot-ensure)
