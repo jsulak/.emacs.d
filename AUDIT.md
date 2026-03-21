@@ -39,7 +39,7 @@ Evaluated against Emacs 29.3.
 ### High Impact
 - [x] Add **magit** for git integration.
 - [x] Add **eglot** (built into Emacs 29) for LSP support: completion, diagnostics, rename, etc.
-- [ ] Add **corfu** (or company-mode) for in-buffer popup completion, pairs well with eglot.
+- [x] Add **corfu** (or company-mode) for in-buffer popup completion, pairs well with eglot.
 - [x] Replace **undo-tree** with **vundo** — undo-tree has known data-corruption bugs and is largely unmaintained.
 
 ### Medium Impact
