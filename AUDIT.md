@@ -33,3 +33,25 @@ Evaluated against Emacs 29.3.
 ## Remaining TODOs
 
 - [ ] Consider replacing ido + amx with vertico + consult + orderless + marginalia.
+
+## Suggested Modernizations
+
+### High Impact
+- [ ] Add **magit** for git integration.
+- [ ] Add **eglot** (built into Emacs 29) for LSP support: completion, diagnostics, rename, etc.
+- [ ] Add **corfu** (or company-mode) for in-buffer popup completion, pairs well with eglot.
+- [ ] Replace **undo-tree** with **vundo** — undo-tree has known data-corruption bugs and is largely unmaintained.
+
+### Medium Impact
+- [ ] Use **project.el** (built-in) for project-scoped find-file, grep, and compile.
+- [ ] Move remaining `global-set-key` calls in `james-bindings.el` into `use-package` `:bind` blocks for consistency.
+- [ ] Install solarized theme from MELPA instead of vendoring it in `external/`.
+- [ ] Enable `savehist-mode` to persist minibuffer history across sessions.
+- [ ] Configure or remove `exec-path-from-shell` — currently loaded but never called.
+- [ ] Enable `electric-pair-mode` for automatic delimiter pairing.
+
+### Low Impact
+- [ ] Replace `fset` keyboard macros (`indent-all`, `find-todo` in `james-functions.el`) with normal defuns.
+- [ ] Enable `pixel-scroll-precision-mode` (Emacs 29) for smooth scrolling.
+- [ ] Enable `display-line-numbers-mode` in `prog-mode-hook`.
+- [ ] Add **yasnippet** or **tempel** for snippet/template support.
