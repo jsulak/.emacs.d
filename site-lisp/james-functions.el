@@ -5,14 +5,14 @@
   (if (use-region-p)
       (apply orig-fun args)
     (message "Copied line")
-    (kill-ring-save (line-beginning-position) (line-end-position))))
+    (funcall orig-fun (line-beginning-position) (line-end-position))))
 (advice-add 'kill-ring-save :around #'slick-copy-advice)
 
 (defun slick-cut-advice (orig-fun &rest args)
   "When called interactively with no active region, kill a single line instead."
   (if (use-region-p)
       (apply orig-fun args)
-    (kill-region (line-beginning-position) (line-end-position))))
+    (funcall orig-fun (line-beginning-position) (line-end-position))))
 (advice-add 'kill-region :around #'slick-cut-advice)
 
 
