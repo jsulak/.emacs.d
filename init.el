@@ -20,14 +20,24 @@
 
 (package-initialize)
 
-(unless (and (file-exists-p "~/.emacs.d/elpa/archives/gnu")
-             (file-exists-p "~/.emacs.d/elpa/archives/melpa")
-             (file-exists-p "~/.emacs.d/elpa/archives/melpa-stable"))
+(unless package-archive-contents
   (package-refresh-contents))
 
 ;; use-package is built into Emacs 29+
 (require 'use-package)
 (setq use-package-always-ensure t)
+
+;; Automatically refresh archives if a package install fails
+(defvar james--package-refreshed nil)
+(advice-add 'package-install :around
+            (lambda (orig-fun &rest args)
+              (condition-case nil
+                  (apply orig-fun args)
+                (error
+                 (unless james--package-refreshed
+                   (setq james--package-refreshed t)
+                   (package-refresh-contents)
+                   (apply orig-fun args))))))
 
 
 ;; =======================
@@ -95,7 +105,7 @@
 
 (setq ns-pop-up-frames nil)
 
-;; (electric-pair-mode t)
+(electric-pair-mode t)
 (electric-indent-mode t)
 (electric-layout-mode t)
 
@@ -179,6 +189,11 @@
   :config
   (put 'dired-find-alternate-file 'disabled nil))
 
+(use-package savehist
+  :ensure nil
+  :config
+  (savehist-mode 1))
+
 (use-package server
   :ensure nil
   :config
@@ -214,7 +229,10 @@
   :bind (("C-'" . er/expand-region)
          ("C-\"" . er/contract-region)))
 
-(use-package exec-path-from-shell)
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :config
+  (exec-path-from-shell-initialize))
 
 (use-package markdown-mode
   :mode "\\.md\\'")

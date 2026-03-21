@@ -46,9 +46,9 @@ Evaluated against Emacs 29.3.
 - [ ] Use **project.el** (built-in) for project-scoped find-file, grep, and compile.
 - [x] Move remaining `global-set-key` calls in `james-bindings.el` into `use-package` `:bind` blocks for consistency.
 - [ ] Install solarized theme from MELPA instead of vendoring it in `external/`.
-- [ ] Enable `savehist-mode` to persist minibuffer history across sessions.
-- [ ] Configure or remove `exec-path-from-shell` — currently loaded but never called.
-- [ ] Enable `electric-pair-mode` for automatic delimiter pairing.
+- [x] Enable `savehist-mode` to persist minibuffer history across sessions.
+- [x] Configure or remove `exec-path-from-shell` — configured to run on GUI frames.
+- [x] Enable `electric-pair-mode` for automatic delimiter pairing.
 
 ### Low Impact
 - [ ] Replace `fset` keyboard macros (`indent-all`, `find-todo` in `james-functions.el`) with normal defuns.
