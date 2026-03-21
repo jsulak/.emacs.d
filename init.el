@@ -148,7 +148,11 @@
          ("C-c i" . consult-imenu)
          ("<M-f10>" . consult-imenu)
          ("C-c o" . consult-line)
-         ("C-x M-b" . consult-buffer-other-window)))
+         ("C-x M-b" . consult-buffer-other-window))
+  :config
+  (consult-customize
+   consult-buffer consult-buffer-other-window
+   :preview-key "M-."))
 
 (use-package recentf
   :ensure nil
