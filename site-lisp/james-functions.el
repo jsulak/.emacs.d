@@ -1,18 +1,19 @@
+(require 'cl-lib)
 
-
-(defadvice kill-ring-save (before slick-copy activate compile)
+(defun slick-copy-advice (orig-fun &rest args)
   "When called interactively with no active region, copy a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-	 (message "Copied line")
-	 (list (line-beginning-position)
-	   (line-end-position)))))
-(defadvice kill-region (before slick-cut activate compile)
+  (if (use-region-p)
+      (apply orig-fun args)
+    (message "Copied line")
+    (kill-ring-save (line-beginning-position) (line-end-position))))
+(advice-add 'kill-ring-save :around #'slick-copy-advice)
+
+(defun slick-cut-advice (orig-fun &rest args)
   "When called interactively with no active region, kill a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-	 (list (line-beginning-position)
-	   (line-end-position)))))
+  (if (use-region-p)
+      (apply orig-fun args)
+    (kill-region (line-beginning-position) (line-end-position))))
+(advice-add 'kill-region :around #'slick-cut-advice)
 
 
 ;; Adds extra keybinding to interactive search that sends the current term to occur
@@ -30,8 +31,8 @@
 (defun swap-windows ()
  "If you have 2 windows, it swaps them." (interactive) (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
  (t
- (let* ((w1 (first (window-list)))
-	 (w2 (second (window-list)))
+ (let* ((w1 (car (window-list)))
+	 (w2 (cadr (window-list)))
 	 (b1 (window-buffer w1))
 	 (b2 (window-buffer w2))
 	 (s1 (window-start w1))
@@ -151,10 +152,10 @@ When called twice restore the window configuration before the split."
 (defun dired-launch-command ()
   (interactive)
   (dired-do-shell-command 
-   (case system-type       
-     (gnu/linux "gnome-open") ;right for gnome (ubuntu), not for other systems
-     (darwin "open")
-     (windows-nt "open"))
+   (pcase system-type
+     ('gnu/linux "xdg-open")
+     ('darwin "open")
+     ('windows-nt "open"))
    nil
    (dired-get-marked-files t current-prefix-arg)))
 
@@ -177,7 +178,7 @@ When called twice restore the window configuration before the split."
   (let ((str (buffer-substring (region-beginning) (region-end))))
     (when commentfirst
     (comment-region (region-beginning) (region-end)))
-    (insert-string
+    (insert
       (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
     (forward-line -1)))
 
@@ -256,22 +257,22 @@ If point was already at that position, move point to beginning of line."
   (imenu--make-index-alist)
   (let ((name-and-pos '())
         (symbol-names '()))
-    (flet ((addsymbols (symbol-list)
+    (cl-labels ((addsymbols (symbol-list)
                        (when (listp symbol-list)
                          (dolist (symbol symbol-list)
                            (let ((name nil) (position nil))
                              (cond
                               ((and (listp symbol) (imenu--subalist-p symbol))
                                (addsymbols symbol))
-   
+
                               ((listp symbol)
                                (setq name (car symbol))
                                (setq position (cdr symbol)))
-   
+
                               ((stringp symbol)
                                (setq name symbol)
                                (setq position (get-text-property 1 'org-imenu-marker symbol))))
-   
+
                              (unless (or (null position) (null name))
                                (add-to-list 'symbol-names name)
                                (add-to-list 'name-and-pos (cons name position))))))))

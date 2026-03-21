@@ -17,7 +17,7 @@
 
 
 ;; Define package repositories
-(defvar gnu '("gnu" . "http://elpa.gnu.org/packages/"))
+(defvar gnu '("gnu" . "https://elpa.gnu.org/packages/"))
 (defvar melpa '("melpa" . "https://melpa.org/packages/"))
 (defvar melpa-stable '("melpa-stable" . "https://stable.melpa.org/packages/"))
 
@@ -188,9 +188,9 @@
 (require 'undo-tree)
 (global-undo-tree-mode)
 
-;; Multiple cursors
-(require 'sgml-mode)
-(define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
+;; Multiple cursors (requires multiple-cursors package)
+;; (require 'sgml-mode)
+;; (define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)
 
 
 ;; (electric-pair-mode t)
@@ -269,7 +269,6 @@
 ;; Diminish (clean up) mode line
 ;; ======================
 
-(diminish 'smartparens-mode)
 (diminish 'undo-tree-mode)
 
 

@@ -15,11 +15,11 @@
 
 ;; Prevent issues with the Windows null device (NUL)
 ;; when using cygwin find with rgrep.
-(defadvice grep-compute-defaults (around grep-compute-defaults-advice-null-device)
+(defun grep-cygwin-null-device-advice (orig-fun &rest args)
   "Use cygwin's /dev/null as the null-device."
   (let ((null-device "/dev/null"))
-	ad-do-it))
-(ad-activate 'grep-compute-defaults)
+    (apply orig-fun args)))
+(advice-add 'grep-compute-defaults :around #'grep-cygwin-null-device-advice)
 
 ;; NT-emacs assumes a Windows command shell, which you change
 ;; here.
