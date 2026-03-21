@@ -98,8 +98,6 @@
                       :height
                       (floor (* 0.9
                                   (face-attribute 'default :height)))))
-(global-set-key (kbd "C-+") 'ryan/increase-font-size)
-(global-set-key (kbd "C--") 'ryan/decrease-font-size)
 
 
 
@@ -219,8 +217,6 @@ If point was already at that position, move point to beginning of line."
     (and (= oldpos (point))
          (beginning-of-line))))
 
-(global-set-key [home] 'smart-beginning-of-line)
-
 ;; from http://www.emacswiki.org/emacs/CommentingCode
  (defun comment-dwim-line (&optional arg)
         "Replacement for the comment-dwim command.
@@ -336,6 +332,15 @@ If point was already at that position, move point to beginning of line."
 (defun revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
     (interactive) (revert-buffer t t))
+
+;; From http://irreal.org/blog/?p=5585
+(defun jcs-kill-a-buffer (askp)
+  (interactive "P")
+  (if askp
+      (kill-buffer (funcall completing-read-function
+                            "Kill buffer: "
+                            (mapcar #'buffer-name (buffer-list))))
+    (kill-this-buffer)))
 
 (provide 'james-functions)
 

@@ -119,6 +119,10 @@
 
 (use-package ido
   :ensure nil
+  :bind (("C-x M-f" . ido-find-file-other-window)
+         ("C-x C-b" . ido-switch-buffer-other-window)
+         ("C-c i" . ido-goto-symbol)
+         ("<M-f10>" . ido-goto-symbol))
   :config
   (ido-mode 1)
   (ido-everywhere 1)
@@ -139,6 +143,7 @@
 
 (use-package recentf
   :ensure nil
+  :bind ("C-x C-r" . recentf-open-files)
   :config
   (recentf-mode 1)
   :custom
@@ -147,6 +152,7 @@
 
 (use-package ibuffer
   :ensure nil
+  :bind ("C-x M-b" . ibuffer)
   :custom
   (ibuffer-shrink-to-minimum-size t)
   (ibuffer-always-show-last-buffer nil)
@@ -197,7 +203,8 @@
   :config
   (amx-mode 1))
 
-(use-package browse-kill-ring)
+(use-package browse-kill-ring
+  :bind ("M-y" . browse-kill-ring))
 
 (use-package diminish
   :config
@@ -212,7 +219,9 @@
 (use-package markdown-mode
   :mode "\\.md\\'")
 
-(use-package move-text)
+(use-package move-text
+  :bind (("<C-S-down>" . move-text-down)
+         ("<C-S-up>" . move-text-up)))
 
 (use-package rainbow-mode
   :hook (css-mode . rainbow-mode))
@@ -241,4 +250,67 @@
 ;; Key bindings
 ;; =======================
 
-(require 'james-bindings)
+;; Line editing
+(bind-keys ("<C-return>" . open-line-below)
+           ("<C-S-return>" . open-line-above)
+           ("C-c y" . djcb-duplicate-line)
+           ("C-x C-j" . join-line)
+           ("C-;" . comment-dwim-line)
+           ("C-c ;" . comment-dwim-line)
+           ("C-c d" . delete-enclosed-text))
+
+;; Duplicate line and comment the original
+(global-set-key (kbd "C-c c") (lambda () (interactive) (djcb-duplicate-line t)))
+
+;; Navigation
+(bind-keys ("M-." . xref-find-definitions)
+           ("C-." . xref-go-back)
+           ("<home>" . smart-beginning-of-line)
+           ("C-a" . smart-beginning-of-line)
+           ("C-c [" . beginning-of-defun)
+           ("C-c ]" . end-of-defun)
+           ("C-c g" . goto-line)
+           ("C-c o" . occur)
+           ("C-x C-i" . imenu))
+
+;; Kill, copy, undo
+(bind-keys ("C-z" . undo)
+           ("C-w" . kill-word)
+           ("C-x C-k" . kill-region)
+           ("C-c C-k" . kill-region)
+           ("C-q" . backward-kill-word)
+           ("C-c C-q" . quoted-insert)
+           ("M-z" . zap-up-to-char)
+           ("C-c z" . zap-up-to-char)
+           ("C-x k" . jcs-kill-a-buffer))
+
+;; Completion
+(bind-keys ("M-;" . hippie-expand)
+           ("C-=" . hippie-expand))
+
+;; Shell / eshell
+(bind-keys ("C-c e" . eshell)
+           ("C-c j" . dired-jump)
+           ("C-c s" . shell-command))
+(global-set-key (kbd "C-c E") (lambda () (interactive) (eshell t)))
+(when (eq system-type 'darwin)
+  (global-set-key (kbd "C-c l") 'open-current-buffer-mac))
+
+;; Function keys
+(bind-keys ("<f4>" . call-last-kbd-macro)
+           ("<f5>" . revert-buffer)
+           ("<C-f5>" . revert-buffer-no-confirm)
+           ("<f6>" . swap-windows)
+           ("<f7>" . vc-diff)
+           ("<f8>" . indent-region))
+
+;; Windows
+(bind-keys ("S-<left>" . windmove-left)
+           ("S-<right>" . windmove-right)
+           ("S-<up>" . windmove-up)
+           ("S-<down>" . windmove-down)
+           ("C-x 5" . xsteve-split-window))
+
+;; Font size
+(bind-keys ("C-+" . ryan/increase-font-size)
+           ("C--" . ryan/decrease-font-size))
