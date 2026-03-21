@@ -64,7 +64,9 @@
 
 (require 'james-functions)
 
+
 (use-package solarized-theme)
+
 
 
 ;; ================================

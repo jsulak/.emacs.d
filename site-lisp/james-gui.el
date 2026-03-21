@@ -1,5 +1,5 @@
-;;(load-theme 'wombat)
-
+;; (load-theme 'wombat)
+(load-theme 'modus-vivendi t)
 
 ;; Mouse behavior
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
