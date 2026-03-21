@@ -4,9 +4,7 @@ An ever-changing set of Emacs settings.
 
 ## Setup
 
-To grab all the dependencies:
-
-    git clone --recursive git://github.com/jsulak/.emacs.d.git
+    git clone git://github.com/jsulak/.emacs.d.git
 
 The first time you start Emacs, it will install some additional packages
 that are best handled by the package manager.

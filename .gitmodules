@@ -1,3 +1,0 @@
-[submodule "external/solarized"]
-	path = external/solarized
-	url = https://github.com/jsulak/emacs-color-theme-solarized.git

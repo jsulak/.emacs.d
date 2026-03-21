@@ -48,8 +48,6 @@
 (load custom-file 'noerror)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/external"))
-
 ;; Environment-specific configurations
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
@@ -66,7 +64,7 @@
 
 (require 'james-functions)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
+(use-package solarized-theme)
 
 
 ;; ================================

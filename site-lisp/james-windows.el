@@ -79,7 +79,6 @@
 ;; (require 'color-theme-solarized)
 ;; (color-theme-solarized-dark)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
 (load-theme 'solarized-dark)
 
 ;; (load-file "~/.emacs.d/external/ruby-blue-theme.el")
