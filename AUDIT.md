@@ -51,7 +51,7 @@ Evaluated against Emacs 29.3.
 - [x] Enable `electric-pair-mode` for automatic delimiter pairing.
 
 ### Low Impact
-- [ ] Replace `fset` keyboard macros (`indent-all`, `find-todo` in `james-functions.el`) with normal defuns.
-- [ ] Enable `pixel-scroll-precision-mode` (Emacs 29) for smooth scrolling.
-- [ ] Enable `display-line-numbers-mode` in `prog-mode-hook`.
+- [x] Replace `fset` keyboard macros (`indent-all`, `find-todo` in `james-functions.el`) with normal defuns.
+- [x] Enable `pixel-scroll-precision-mode` (Emacs 29) for smooth scrolling.
+- [x] Enable `display-line-numbers-mode` in `prog-mode-hook`.
 - [ ] Add **yasnippet** or **tempel** for snippet/template support.

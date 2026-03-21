@@ -117,6 +117,9 @@
 ;; Enable camel-case awareness in all programming modes
 ;; http://emacsredux.com/blog/2013/04/21/camelcase-aware-editing/
 (add-hook 'prog-mode-hook 'subword-mode)
+;; (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+(pixel-scroll-precision-mode t)
 
 ;; This removes unsightly ^M characters that would otherwise
 ;; appear in the output of java applications.
