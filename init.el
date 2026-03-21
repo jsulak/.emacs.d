@@ -127,47 +127,34 @@
 ;; Built-in packages
 ;; ==============================
 
-(use-package ido
-  :ensure nil
-  :bind (("C-x M-f" . ido-find-file-other-window)
-         ("C-x C-b" . ido-switch-buffer-other-window)
-         ("C-c i" . ido-goto-symbol)
-         ("<M-f10>" . ido-goto-symbol))
-  :config
-  (ido-mode 1)
-  (ido-everywhere 1)
-  :custom
-  (ido-enable-prefix nil)
-  (ido-enable-flex-matching t)
-  (ido-auto-merge-work-directories-length nil)
-  (ido-create-new-buffer 'always)
-  (ido-use-filename-at-point nil)
-  (ido-use-virtual-buffers t)
-  (ido-handle-duplicate-virtual-buffers 2)
-  (ido-max-prospects 15))
+(use-package vertico
+  :init
+  (vertico-mode))
 
-(use-package ido-completing-read+
-  :after ido
-  :config
-  (ido-ubiquitous-mode 1))
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
+(use-package consult
+  :bind (("C-x b" . consult-buffer)
+         ("C-x C-r" . consult-recent-file)
+         ("C-c i" . consult-imenu)
+         ("<M-f10>" . consult-imenu)
+         ("C-c o" . consult-line)
+         ("C-x M-b" . consult-buffer-other-window)))
 
 (use-package recentf
   :ensure nil
-  :bind ("C-x C-r" . recentf-open-files)
   :config
   (recentf-mode 1)
   :custom
   (recentf-max-saved-items 500)
   (recentf-max-menu-items 25))
-
-(use-package ibuffer
-  :ensure nil
-  :bind ("C-x M-b" . ibuffer)
-  :custom
-  (ibuffer-shrink-to-minimum-size t)
-  (ibuffer-always-show-last-buffer nil)
-  (ibuffer-sorting-mode 'recency)
-  (ibuffer-use-header-line t))
 
 (use-package winner
   :ensure nil
@@ -209,14 +196,6 @@
 ;; ==============================
 ;; External packages
 ;; ==============================
-
-(use-package amx
-  :bind (("M-x" . amx)
-         ("C-x C-m" . amx)
-         ("C-x m" . amx)
-         ("M-X" . amx-major-mode-commands))
-  :config
-  (amx-mode 1))
 
 (use-package browse-kill-ring
   :bind ("M-y" . browse-kill-ring))
@@ -305,8 +284,7 @@
            ("C-c [" . beginning-of-defun)
            ("C-c ]" . end-of-defun)
            ("C-c g" . goto-line)
-           ("C-c o" . occur)
-           ("C-x C-i" . imenu))
+           ("C-x C-m" . execute-extended-command))
 
 ;; Kill, copy, undo
 (bind-keys ("C-z" . undo)

@@ -32,7 +32,7 @@ Evaluated against Emacs 29.3.
 
 ## Remaining TODOs
 
-- [ ] Consider replacing ido + amx with vertico + consult + orderless + marginalia.
+- [x] Consider replacing ido + amx with vertico + consult + orderless + marginalia.
 
 ## Suggested Modernizations
 
