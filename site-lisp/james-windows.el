@@ -5,7 +5,7 @@
         (vertical-scroll-bars . right)))
 
 
-(require 'w32-browser)
+(require 'w32-browser nil t) ; optional, may not be present
 
 ;; This assumes that Cygwin is installed in C:\cygwin (the
 ;; default) and that C:\cygwin\bin is not already in your

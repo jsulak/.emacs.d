@@ -17,9 +17,9 @@
 ;; (global-set-key (kbd "C-c SPC") 'set-rectangular-region-anchor)
 ;; (global-set-key (kbd "C-c C-SPC") 'set-rectangular-region-anchor)
 
-;; Tag navigation
-(global-set-key (kbd "M-.") 'find-tag)
-(global-set-key (kbd "C-.") 'pop-tag-mark)
+;; Tag/xref navigation
+(global-set-key (kbd "M-.") 'xref-find-definitions)
+(global-set-key (kbd "C-.") 'xref-go-back)
 
 ;; Expand region
 (global-set-key (kbd "C-'") 'er/expand-region)

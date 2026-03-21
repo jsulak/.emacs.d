@@ -50,7 +50,7 @@
    (cons 'exec-path-from-shell melpa)
    (cons 'move-text melpa)
    (cons 'markdown-mode melpa)
-   (cons 'smex melpa)
+   (cons 'amx melpa)
    (cons 'undo-tree gnu)
    (cons 'rainbow-mode gnu)
    (cons 'which-key melpa)
@@ -127,7 +127,7 @@
 (add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
 
 ;;; Make all yes-or-no questions as y-or-n
-(fset 'yes-or-no-p 'y-or-n-p)
+(setopt use-short-answers t)
 (column-number-mode 1)
 
 
@@ -177,12 +177,9 @@
 (require 'uniquify)
 (setq
  uniquify-buffer-name-style 'post-forward
- uniquify-seperator ":"
+ uniquify-separator ":"
  uniquify-after-kill-buffer-p t
  uniquify-ignore-buffers-re "^\\*")
-
-(require 'etags)
-(setq tags-revert-without-query 1)
 
 ;; Undo tree
 (require 'undo-tree)
@@ -205,16 +202,8 @@
 (add-hook 'js-mode-hook (lambda ()
 						  (require 'js-mode-expansions)
 						  (er/add-js-mode-expansions)))
-(setq pending-delete-mode t)
 
 
-
-;; Add more file types to find-file-in-project
-(defvar ffip-patterns
-  '("*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.js" "*.pl"
-	"*.sh" "*.erl" "*.hs" "*.ml" "*.py" "*.xslt" "*.xsl" "*.xpl" "*.cs" "*.zsh"
-	"*.erb" "*.coffee" "*.xml" "*.xqy" "*.xqm")
-  "List of patterns to look for with `find-file-in-project'.")
 
 (setq ns-pop-up-frames nil)
 
@@ -282,13 +271,13 @@
 
 
 ;; =======================
-;; Smex.  Must be at end of .emacs
+;; Amx (maintained smex fork)
 ;; =======================
 
-(require 'smex)
-(smex-initialize)
+(require 'amx)
+(amx-mode 1)
 
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key "\C-x\C-m" 'smex)
-(global-set-key (kbd "C-x m") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(global-set-key (kbd "M-x") 'amx)
+(global-set-key "\C-x\C-m" 'amx)
+(global-set-key (kbd "C-x m") 'amx)
+(global-set-key (kbd "M-X") 'amx-major-mode-commands)

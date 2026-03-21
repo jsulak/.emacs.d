@@ -15,12 +15,13 @@ Evaluated against Emacs 29.3.
 
 ## Medium Priority
 
-- [ ] `find-tag` is obsolete (`james-bindings.el:22`). Emacs 25+ uses `xref-find-definitions`. The `etags` require and `my-ido-find-tag` are also outdated.
-- [ ] Smex is unmaintained (last update 2015). Consider `amx` (drop-in fork) or the vertico + consult + orderless + marginalia stack.
-- [ ] `uniquify-seperator` is a typo (`init.el:180`) — should be `uniquify-separator`.
-- [ ] `pending-delete-mode` (`init.el:208`) is redundant with `delete-selection-mode` (line 124).
-- [ ] Clean up unused files in `external/`: `smart-tab.el`, `color-theme-blue.el`, `xquery-mode.el`, `jshint-mode` submodule, `w32-browser.el` (Windows-only).
-- [ ] `fset 'yes-or-no-p` hack (`init.el:130`) — Emacs 28+ supports `(setopt use-short-answers t)`.
+- [x] `find-tag` is obsolete (`james-bindings.el:22`). Replaced with `xref-find-definitions`/`xref-go-back`. Removed `etags` require and `my-ido-find-tag`.
+- [x] Smex is unmaintained (last update 2015) — replaced with `amx` (drop-in fork).
+- [ ] **TODO:** Consider replacing ido + amx with the vertico + consult + orderless + marginalia stack for a more modern completion experience.
+- [x] `uniquify-seperator` is a typo (`init.el:180`) — fixed to `uniquify-separator`.
+- [x] `pending-delete-mode` (`init.el:208`) is redundant with `delete-selection-mode` — removed.
+- [x] Clean up unused files in `external/`: removed `smart-tab.el`, `color-theme-blue.el`, `xquery-mode.el`, `w32-browser.el`, and `jshint-mode` submodule.
+- [x] `fset 'yes-or-no-p` hack (`init.el:130`) — replaced with `(setopt use-short-answers t)`.
 
 ## Low Priority
 
