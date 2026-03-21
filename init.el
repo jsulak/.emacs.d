@@ -58,9 +58,6 @@
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/external/solarized")
 
-;(require 'spaceline-config)
-;(spaceline-emacs-theme)
-
 
 ;; ================================
 ;; Behavior modifications
@@ -230,17 +227,6 @@
   (which-key-mode))
 
 (use-package yaml-mode)
-
-;; Multiple cursors (requires multiple-cursors package)
-;; (use-package multiple-cursors
-;;   :bind (("C-<" . mc/mark-previous-like-this)
-;;          ("C->" . mc/mark-next-like-this)
-;;          ("C-*" . mc/mark-all-like-this-dwim)
-;;          ("C-S-c C-S-c" . mc/edit-lines)
-;;          ("C-S-c C-e" . mc/edit-ends-of-lines)
-;;          ("C-S-c C-a" . mc/edit-beginnings-of-lines)
-;;          ("C-c SPC" . set-rectangular-region-anchor)
-;;          ("C-c C-SPC" . set-rectangular-region-anchor)))
 
 
 ;; ========================

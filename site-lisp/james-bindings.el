@@ -6,17 +6,6 @@
 (global-set-key (kbd "<C-S-up>") 'move-text-up)
 
 
-;; Multiple cursors (requires multiple-cursors package)
-;; Uncomment if multiple-cursors is installed:
-;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-;; (global-set-key (kbd "C-*") 'mc/mark-all-like-this-dwim)
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;; (global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
-;; (global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
-;; (global-set-key (kbd "C-c SPC") 'set-rectangular-region-anchor)
-;; (global-set-key (kbd "C-c C-SPC") 'set-rectangular-region-anchor)
-
 ;; Tag/xref navigation
 (global-set-key (kbd "M-.") 'xref-find-definitions)
 (global-set-key (kbd "C-.") 'xref-go-back)
@@ -83,8 +72,6 @@
 (global-set-key [(f7)] 'vc-diff)
 (global-set-key [(f8)] 'indent-region)
 
-;;Set keybinding for functions in efunc.el
-;; (global-set-key (kbd "C-x f") 'ffip) ; requires find-file-in-project
 (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer-other-window)
 (global-set-key (kbd "C-x M-b") 'ibuffer)
@@ -97,9 +84,6 @@
 
 (global-set-key (kbd "\C-x 5") 'xsteve-split-window)
 
-;; (global-set-key [(C-return)] 'dabbrev-expand)
-
-
 ;; Misc keybindings
 (global-set-key (kbd "C-c g") 'goto-line)
 (global-set-key (kbd "C-c o") 'occur)
@@ -111,21 +95,6 @@
 
 (global-set-key (kbd "C-c [") 'beginning-of-defun)
 (global-set-key (kbd "C-c ]") 'end-of-defun)
-
-;; (global-set-key [f9] 'pn-open-todays-entry) ; requires custom function
-;; (global-set-key (kbd "C-<f9>") 'deft) ; requires deft package
-
-;; Git gutter keybindings (requires git-gutter+ package)
-;; Uncomment if git-gutter+ is installed:
-;; (global-set-key (kbd "C-x n") 'git-gutter+-next-hunk)
-;; (global-set-key (kbd "C-x p") 'git-gutter+-previous-hunk)
-;; (global-set-key (kbd "C-x v =") 'git-gutter+-popup-hunk)
-;; (global-set-key (kbd "C-x v r") 'git-gutter+-revert-hunk)
-;; (global-set-key (kbd "C-x t") 'git-gutter+-stage-hunks)
-;; (global-set-key (kbd "C-x c") 'git-gutter+-commit)
-;; (global-set-key (kbd "C-x C") 'git-gutter+-stage-and-commit)
-;; (global-set-key (kbd "C-x g") 'git-gutter+-mode)
-;; (global-set-key (kbd "C-x G") 'global-git-gutter+-mode)
 
 ;; From http://irreal.org/blog/?p=5585
 (defun jcs-kill-a-buffer (askp)
