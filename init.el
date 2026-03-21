@@ -251,6 +251,15 @@
 
 (use-package yaml-mode)
 
+(use-package magit
+  :bind ("C-x g" . magit-status))
+
+(use-package eglot
+  :ensure nil
+  :hook ((python-mode . eglot-ensure)
+         (js-mode . eglot-ensure)
+         (css-mode . eglot-ensure)))
+
 
 ;; ========================
 ;; Major modes
