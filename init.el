@@ -266,6 +266,11 @@
   (treesit-auto-add-to-auto-mode-alist '(typescript tsx))
   (global-treesit-auto-mode))
 
+(use-package eat
+  :custom
+  (eat-term-name "xterm-256color")
+  :bind ("C-x t e" . eat-project))
+
 (use-package eglot
   :ensure nil
   :hook ((python-mode . eglot-ensure)
