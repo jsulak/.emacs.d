@@ -54,7 +54,8 @@
    (cons 'undo-tree gnu)
    (cons 'rainbow-mode gnu)
    (cons 'which-key melpa)
-   (cons 'yaml-mode melpa)))
+   (cons 'yaml-mode melpa)
+   (cons 'ido-completing-read+ melpa)))
 
 (condition-case nil
 	(init--install-packages)
