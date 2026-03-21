@@ -11,3 +11,9 @@ custom.el
 eshell/*
 server/server
 url/cookies
+eln-cache/
+amx-items
+smex-items
+ido.last
+recentf
+history
