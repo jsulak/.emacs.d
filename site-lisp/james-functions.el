@@ -296,7 +296,7 @@ If point was already at that position, move point to beginning of line."
   (shell-command-on-region
    b
    e
-   "python -mjson.tool"
+   "python3 -mjson.tool"
    (current-buffer)
    t))
 

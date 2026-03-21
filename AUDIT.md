@@ -25,6 +25,11 @@ Evaluated against Emacs 29.3.
 
 ## Low Priority
 
-- [ ] `python -mjson.tool` in `pretty-print-json` — consider `python3` or `jq`.
-- [ ] Adopt `use-package` (built into Emacs 29) for cleaner config management.
-- [ ] Consider replacing ido with vertico + consult + orderless + marginalia.
+- [x] `python -mjson.tool` in `pretty-print-json` — updated to `python3`.
+- [x] Adopt `use-package` (built into Emacs 29) for cleaner config management.
+- [x] `C-c l` binding for `open-current-buffer-mac` — guarded with `(eq system-type 'darwin)`.
+- [x] Unnecessary `dired-jump` autoloads — removed (bundled since Emacs 28).
+
+## Remaining TODOs
+
+- [ ] Consider replacing ido + amx with vertico + consult + orderless + marginalia.

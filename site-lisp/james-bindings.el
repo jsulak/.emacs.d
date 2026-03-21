@@ -21,15 +21,12 @@
 (global-set-key (kbd "M-.") 'xref-find-definitions)
 (global-set-key (kbd "C-.") 'xref-go-back)
 
-;; Expand region
-(global-set-key (kbd "C-'") 'er/expand-region)
-(global-set-key (kbd "C-\"") 'er/contract-region)
-
 ;; Eshell
 ;; Start eshell or switch to it if it's active.
 (global-set-key (kbd "C-c e") 'eshell)
 (global-set-key (kbd "C-c j") 'dired-jump)
-(global-set-key (kbd "C-c l") 'open-current-buffer-mac)
+(when (eq system-type 'darwin)
+  (global-set-key (kbd "C-c l") 'open-current-buffer-mac))
 
 ;; Start a new eshell even if one is active.
 (global-set-key (kbd "C-c E") (lambda () (interactive) (eshell t)))
@@ -67,7 +64,7 @@
 ;; delete enclosed text
 (global-set-key (kbd "C-c d") 'delete-enclosed-text)
 
-;; Browse kill ring
+;; Browse kill ring (browse-kill-ring loaded via use-package)
 (global-set-key (kbd "M-y") 'browse-kill-ring)
 
 ;; Jump to a definition in the current file.
