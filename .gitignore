@@ -12,6 +12,9 @@ eshell/*
 server/server
 url/cookies
 eln-cache/
+.cache/
+projects
+tree-sitter/
 amx-items
 smex-items
 ido.last
