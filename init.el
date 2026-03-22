@@ -248,20 +248,21 @@
 (use-package magit
   :bind ("C-x g" . magit-status))
 
-(defun treemacs-toggle-current-project ()
-  "Toggle treemacs. When opening, show the current project."
-  (interactive)
-  (if (treemacs-get-local-window)
-      (treemacs)
-    (treemacs-add-and-display-current-project-exclusively)))
-
 (use-package treemacs
   :bind (("<f9>" . treemacs-toggle-current-project)
          ("C-x t t" . treemacs-toggle-current-project)
          ("C-x t 1" . treemacs-select-window))
+  :commands (treemacs-toggle-current-project)
   :custom
   (treemacs-width 35)
-  (treemacs-is-never-other-window t))
+  (treemacs-is-never-other-window t)
+  :config
+  (defun treemacs-toggle-current-project ()
+    "Toggle treemacs. When opening, show the current project."
+    (interactive)
+    (if (treemacs-get-local-window)
+        (treemacs)
+      (treemacs-add-and-display-current-project-exclusively))))
 
 (use-package treesit-auto
   :custom
