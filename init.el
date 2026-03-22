@@ -133,10 +133,20 @@
   :init
   (vertico-mode))
 
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  :bind (:map vertico-map
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word)
+              ("RET" . vertico-directory-enter))
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles partial-completion)))))
+  (completion-category-overrides '((file (styles orderless basic))))
+  (orderless-matching-styles '(orderless-flex orderless-literal orderless-regexp)))
 
 (use-package marginalia
   :init
