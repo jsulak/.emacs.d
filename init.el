@@ -199,7 +199,8 @@
   :config
   (when (equal window-system 'w32)
     (defun server-ensure-safe-dir (dir) "Noop" t))
-  (server-start))
+  (when (display-graphic-p)
+    (server-start)))
 
 (add-hook 'js-mode-hook (lambda ()
                           (require 'js-mode-expansions)
