@@ -86,6 +86,9 @@
 ;; do not confirm file creation
 (setq confirm-nonexistent-file-or-buffer nil)
 
+;; Kill whole line including newline when at beginning of line
+(setq kill-whole-line t)
+
 ;; Delete files into trash
 (setq delete-by-moving-to-trash t)
 

@@ -2,17 +2,17 @@
 
 (defun slick-copy-advice (orig-fun &rest args)
   "When called interactively with no active region, copy a single line instead."
-  (if (use-region-p)
+  (if (or (use-region-p) (not (called-interactively-p 'interactive)))
       (apply orig-fun args)
     (message "Copied line")
-    (funcall orig-fun (line-beginning-position) (line-end-position))))
+    (funcall orig-fun (line-beginning-position) (line-beginning-position 2))))
 (advice-add 'kill-ring-save :around #'slick-copy-advice)
 
 (defun slick-cut-advice (orig-fun &rest args)
   "When called interactively with no active region, kill a single line instead."
-  (if (use-region-p)
+  (if (or (use-region-p) (not (called-interactively-p 'interactive)))
       (apply orig-fun args)
-    (funcall orig-fun (line-beginning-position) (line-end-position))))
+    (funcall orig-fun (line-beginning-position) (line-beginning-position 2))))
 (advice-add 'kill-region :around #'slick-cut-advice)
 
 
