@@ -154,6 +154,7 @@
 
 (use-package consult
   :bind (("C-x b" . consult-buffer)
+		 ("C-x C-b" . consult-buffer)
          ("C-x C-r" . consult-recent-file)
          ("C-c i" . consult-imenu)
          ("<M-f10>" . consult-imenu)
@@ -300,28 +301,60 @@
          (tsx-ts-mode . eglot-ensure)
          (css-mode . eglot-ensure)))
 
+
 (use-package corfu
   :custom
   (corfu-auto t)
   (corfu-auto-delay 0.2)
   (corfu-auto-prefix 2)
+  (global-corfu-modes '(not org-mode))
   :init
   (global-corfu-mode))
 
 
-;; ========================
-;; Major modes
-;; ========================
+;; ======================
+;; Org mode
+;; ======================
 
-;; Add support for scss to css mode
-(setq auto-mode-alist
-	  (cons '("\\.\\(scss\\)\\'" . css-mode)
-			auto-mode-alist))
+(setq org-directory "~/OneDrive - Raytheon Technologies/org")
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "|" "DONE" "OBE")))
+(setq org-startup-indented t)
+;; (add-hook 'org-mode-hook (lambda () (corfu-mode -1)))
+
+(defun my/org-return ()
+  "In a checkbox list item, RET creates a new checkbox item.
+On an empty checkbox item, remove it and insert a newline.
+Otherwise, normal return."
+  (interactive)
+  (if (and (org-in-item-p)
+           (save-excursion
+             (beginning-of-line)
+             (looking-at "\\s-*- \\[.\\]")))
+      (if (save-excursion
+            (beginning-of-line)
+            (looking-at "\\s-*- \\[.\\]\\s-*$"))
+          ;; Empty checkbox item — remove it and exit
+          (progn
+            (delete-region (line-beginning-position) (line-end-position))
+            (delete-char -1)  ; remove the trailing newline
+            (org-return))
+        ;; Non-empty checkbox item — create a new one
+        (org-insert-item 'checkbox))
+    (org-return)))
+
+(org-defkey org-mode-map (kbd "RET") #'my/org-return)
 
 
 ;; =======================
 ;; Key bindings
 ;; =======================
+
+;; Org mode
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c l") 'org-store-link)
+
 
 ;; Line editing
 (bind-keys ("<C-return>" . open-line-below)
