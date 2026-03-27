@@ -96,6 +96,12 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
+;; Speed up file opening by limiting VC backends
+(setq vc-handled-backends '(Git))
+
+;; Don't create lock files (.#filename) - slow on network/synced drives
+(setq create-lockfiles nil)
+
 ;; Have typing get rid of the active selection
 (delete-selection-mode t)
 
