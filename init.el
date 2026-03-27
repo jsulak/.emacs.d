@@ -328,13 +328,13 @@
   (setq org-download-method 'directory
         org-download-image-dir "./images"
         org-download-heading-lvl nil
-        org-download-timestamp "%Y%m%d%H%M%S-")
+        org-download-timestamp "%Y%m%d%H%M%S-"
         org-download-annotate-function (lambda (_link) ""))  ;; No downloaded comment
   ;; Enable drag-and-drop on macOS
   (setq dnd-protocol-alist
         '(("^file:" . org-download-dnd)
           ("^http" . org-download-dnd)))
-:hook (org-mode . org-download-enable))
+  :hook (org-mode . org-download-enable))
 (setq org-image-actual-width '(600))
 
 
