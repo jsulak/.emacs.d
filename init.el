@@ -315,15 +315,39 @@
   (global-corfu-mode))
 
 
+
 ;; ======================
 ;; Org mode
 ;; ======================
 
+
+(use-package org-download
+  :ensure t
+  :after org
+  :config
+  (setq org-download-method 'directory
+        org-download-image-dir "./images"
+        org-download-heading-lvl nil
+        org-download-timestamp "%Y%m%d%H%M%S-")
+        org-download-annotate-function (lambda (_link) ""))  ;; No downloaded comment
+  ;; Enable drag-and-drop on macOS
+  (setq dnd-protocol-alist
+        '(("^file:" . org-download-dnd)
+          ("^http" . org-download-dnd)))
+:hook (org-mode . org-download-enable))
+(setq org-image-actual-width '(600))
+
+
 (setq org-directory "~/OneDrive - Raytheon Technologies/org")
+(setq org-agenda-files '("~/OneDrive - Raytheon Technologies/org"))
 (setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "|" "DONE" "OBE")))
+      '((sequence "TODO" "WAITING" "|" "DONE" "OBE")))
 (setq org-startup-indented t)
-;; (add-hook 'org-mode-hook (lambda () (corfu-mode -1)))
+(setq org-startup-with-inline-images t)
+(setq org-download-screenshot-method "screncapture -i %s")
+(add-hook 'org-mode-hook 'auto-save-visited-mode)
+(add-hook 'org-mode-hook (lambda () (setq line-spacing 0.2)))
+
 
 (defun my/org-return ()
   "In a checkbox list item, RET creates a new checkbox item.
@@ -350,9 +374,26 @@ Otherwise, normal return."
   (define-key org-mode-map (kbd "RET") #'my/org-return))
 
 
+(defun my/org-sort-checkboxes ()
+  "Sort checkbox list, unchecked first."
+  (interactive)
+  (org-sort-list nil ?f
+    (lambda ()
+      (if (looking-at ".*\\[X\\]") 1 0))
+    #'<))
+
+(with-eval-after-load 'org-agenda
+  (add-to-list 'org-agenda-custom-commands
+    '("w" "Waiting/Owed to me"
+      todo "WAITING"
+      ((org-agenda-sorting-strategy '(deadline-up scheduled-up))))))
+
 ;; =======================
 ;; Key bindings
 ;; =======================
+
+;; Rip grep
+(global-set-key (kbd "C-c r") #'consult-ripgrep)
 
 ;; Org mode
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -384,6 +425,7 @@ Otherwise, normal return."
 
 ;; Kill, copy, undo
 (bind-keys ("C-z" . undo)
+		   ("H-v" . yank)
            ("C-w" . kill-word)
            ("C-x C-k" . kill-region)
            ("C-c C-k" . kill-region)
