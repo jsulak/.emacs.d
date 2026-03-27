@@ -346,7 +346,8 @@ Otherwise, normal return."
         (org-insert-item 'checkbox))
     (org-return)))
 
-(org-defkey org-mode-map (kbd "RET") #'my/org-return)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "RET") #'my/org-return))
 
 
 ;; =======================
