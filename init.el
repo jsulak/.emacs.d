@@ -1,3 +1,12 @@
+;; Speed up startup: suppress GC and file-name-handler overhead
+(setq gc-cons-threshold most-positive-fixnum)
+(defvar default-file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq gc-cons-threshold (* 16 1024 1024))
+    (setq file-name-handler-alist default-file-name-handler-alist)))
+
 ;; Turn off mouse interface early in startup to avoid momentary display
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -122,6 +131,7 @@
 
 (pixel-scroll-precision-mode t)
 (which-key-mode t)
+(global-so-long-mode 1)
 
 
 ;; ==============================
@@ -218,8 +228,7 @@
 
 
 (use-package diminish
-  :config
-  (diminish 'subword-mode))
+  :hook (after-init . (lambda () (diminish 'subword-mode))))
 
 (use-package expand-region
   :bind (("C-'" . er/expand-region)
@@ -245,7 +254,8 @@
 (use-package vundo
   :bind ("C-x u" . vundo))
 
-(use-package yaml-mode)
+(use-package yaml-mode
+  :defer t)
 
 (use-package magit
   :bind ("C-x g" . magit-status))
@@ -298,7 +308,7 @@
   (corfu-auto-delay 0.2)
   (corfu-auto-prefix 2)
   (global-corfu-modes '(not org-mode))
-  :init
+  :config
   (global-corfu-mode))
 
 
