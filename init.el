@@ -227,6 +227,10 @@
 ;; ==============================
 
 
+(use-package mood-line
+  :config
+  (mood-line-mode))
+
 (use-package diminish
   :hook (after-init . (lambda () (diminish 'subword-mode))))
 
