@@ -74,7 +74,6 @@
 
 ;; Set tabs up for source files that already have tabs
 (setq-default tab-width 4)
-(setq tab-stop-list (number-sequence 4 200 4))
 
 ;; Set initial mode to text-mode
 (setq-default initial-major-mode 'text-mode)
@@ -118,18 +117,13 @@
 (setq ns-pop-up-frames nil)
 
 (electric-pair-mode t)
-(electric-layout-mode t)
-
-;;  electric layout doesn't work right with js-mode
-(defun james-js-mode-hook ()
-  (electric-layout-mode -1))
-(add-hook 'js-mode-hook 'james-js-mode-hook)
 
 ;; Enable camel-case awareness in all programming modes
 ;; http://emacsredux.com/blog/2013/04/21/camelcase-aware-editing/
 (add-hook 'prog-mode-hook 'subword-mode)
 
 (pixel-scroll-precision-mode t)
+(which-key-mode t)
 
 
 ;; ==============================
@@ -252,10 +246,6 @@
 
 (use-package vundo
   :bind ("C-x u" . vundo))
-
-(use-package which-key
-  :config
-  (which-key-mode))
 
 (use-package yaml-mode)
 

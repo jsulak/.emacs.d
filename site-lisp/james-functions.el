@@ -229,14 +229,6 @@ If point was already at that position, move point to beginning of line."
         (e (if (region-active-p) (region-end) (point-max))))
     (shell-command-on-region b e "python3 -mjson.tool" (current-buffer) t)))
 
-(defun toggle-indent-style ()
-  (interactive)
-  (if indent-tabs-mode
-      (setq indent-tabs-mode nil)
-    (setq indent-tabs-mode 1))
-  )
-
-  
 ;; http://whattheemacsd.com//editing-defuns.el-01.html
 (defun open-line-below ()
   (interactive)
