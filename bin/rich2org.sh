@@ -29,7 +29,9 @@ ORG=$(pandoc -f html -t org --wrap=none "$TMPFILE" \
   | grep -v 'data:image' \
   | sed '/:PROPERTIES:/,/:END:/d' \
   | sed 's/^\(#+begin_src\) .*/\1/' \
-  | sed '/^[[:space:]]*$/N;/^\n$/d')
+  | sed $'s/\xC2\xA0/ /g' \
+  | sed 's/  */ /g' \
+  | awk 'NF{blank=0} !NF{blank++} blank<=1')
 
 case "${1:-}" in
     -o)
