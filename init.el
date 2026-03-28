@@ -98,8 +98,8 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-;; Disable VC entirely - magit handles git; VC checks slow down every file open
-(setq vc-handled-backends nil)
+;; Limit VC to Git only (needed for diff-hl); magit handles interactive git
+(setq vc-handled-backends '(Git))
 
 ;; Don't create lock files (.#filename) - slow on network/synced drives
 (setq create-lockfiles nil)
@@ -174,6 +174,12 @@
   (consult-customize
    consult-buffer consult-buffer-other-window
    :preview-key "M-."))
+
+(use-package consult-dir
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
 
 (use-package recentf
   :ensure nil
@@ -263,6 +269,10 @@
 
 (use-package magit
   :bind ("C-x g" . magit-status))
+
+(use-package diff-hl
+  :hook ((after-init . global-diff-hl-mode)
+         (magit-post-refresh . diff-hl-magit-post-refresh)))
 
 (use-package treemacs
   :bind (("<f9>" . treemacs-toggle-current-project)
