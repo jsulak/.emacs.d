@@ -8,6 +8,9 @@
 ;; window frame title
 (setq frame-title-format "Emacs %f")
 
+(setq frame-resize-pixelwise t)
+(setq window-resize-pixelwise t)
+
 
 (provide 'james-gui)
 

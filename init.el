@@ -432,10 +432,19 @@ Otherwise, normal return."
            ("C-x C-m" . execute-extended-command))
 
 ;; Kill, copy, undo
+(defun james/kill-buffer-quick ()
+  "Kill current buffer immediately if unmodified, otherwise prompt."
+  (interactive)
+  (if (buffer-modified-p)
+      (kill-buffer (current-buffer))
+    (set-buffer-modified-p nil)
+    (kill-buffer (current-buffer))))
+
 (bind-keys ("C-z" . undo)
 		   ("H-v" . yank)
            ("C-w" . kill-word)
            ("C-x C-k" . kill-region)
+           ("C-x k" . james/kill-buffer-quick)
            ("C-c C-k" . kill-region)
            ("C-q" . backward-kill-word)
            ("C-c C-q" . quoted-insert)
