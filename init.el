@@ -421,11 +421,10 @@ Otherwise, normal return."
 (bind-keys ("M-;" . hippie-expand)
            ("C-=" . hippie-expand))
 
-;; Shell / eshell
-(bind-keys ("C-c e" . eshell)
+;; Shell / dired
+(bind-keys ("C-c e" . eat)
            ("C-c j" . dired-jump)
            ("C-c s" . shell-command))
-(global-set-key (kbd "C-c E") (lambda () (interactive) (eshell t)))
 
 ;; Function keys
 (bind-keys ("<f4>" . call-last-kbd-macro)
