@@ -24,10 +24,6 @@
      (interactive)
      (let ((file-name (dired-get-file-for-visit)))
      (open-file-mac file-name)))
- 
-(defun open-current-buffer-mac ()
-  (interactive)
-  (open-file-mac buffer-file-name))
 
 
 ;; Defer tramp loading until it's actually needed

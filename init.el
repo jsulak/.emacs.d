@@ -1,7 +1,7 @@
 ;; Turn off mouse interface early in startup to avoid momentary display
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 
 ;; Turn off splash screens, etc.
 (setq inhibit-startup-message t)
@@ -166,7 +166,8 @@
          ("C-c i" . consult-imenu)
          ("<M-f10>" . consult-imenu)
          ("C-c o" . consult-line)
-         ("C-x M-b" . consult-buffer-other-window))
+         ("C-x M-b" . consult-buffer-other-window)
+         ("M-y" . consult-yank-from-kill-ring))
   :config
   (consult-customize
    consult-buffer consult-buffer-other-window
@@ -194,11 +195,7 @@
   (uniquify-ignore-buffers-re "^\\*"))
 
 (use-package project
-  :ensure nil
-  :bind (("C-x p f" . project-find-file)
-         ("C-x p g" . project-find-regexp)
-         ("C-x p c" . project-compile)
-         ("C-x p d" . project-dired)))
+  :ensure nil)
 
 (use-package dired
   :ensure nil
@@ -215,8 +212,6 @@
 (use-package server
   :ensure nil
   :config
-  (when (equal window-system 'w32)
-    (defun server-ensure-safe-dir (dir) "Noop" t))
   (when (display-graphic-p)
     (server-start)))
 
@@ -229,8 +224,6 @@
 ;; External packages
 ;; ==============================
 
-(use-package browse-kill-ring
-  :bind ("M-y" . browse-kill-ring))
 
 (use-package diminish
   :config
@@ -350,7 +343,7 @@
       '((sequence "TODO" "WAITING" "|" "DONE" "OBE")))
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
-(setq org-download-screenshot-method "screncapture -i %s")
+(setq org-download-screenshot-method "screencapture -i %s")
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
 (add-hook 'org-mode-hook (lambda () (setq line-spacing 0.2)))
 
@@ -417,8 +410,7 @@ Otherwise, normal return."
            ("C-c d" . delete-enclosed-text))
 
 ;; Navigation
-(bind-keys ("M-." . xref-find-definitions)
-           ("C-." . xref-go-back)
+(bind-keys ("C-." . xref-go-back)
            ("<home>" . smart-beginning-of-line)
            ("C-a" . smart-beginning-of-line)
            ("C-c [" . beginning-of-defun)

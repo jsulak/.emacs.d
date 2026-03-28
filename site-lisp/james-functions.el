@@ -152,8 +152,6 @@ When called twice restore the window configuration before the split."
       (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
     (forward-line -1)))
 
-;; or choose some better bindings....
-
 (defun indent-all ()
   "Indent the entire buffer."
   (interactive)
@@ -227,20 +225,9 @@ If point was already at that position, move point to beginning of line."
 ;; else does entire buffer.
 (defun pretty-print-json ()
   (interactive)
-  (setq b
-        (if (region-active-p)
-            (region-beginning)
-          (point-min)))
-  (setq e
-        (if (region-active-p)
-            (region-end)
-          (point-max)))
-  (shell-command-on-region
-   b
-   e
-   "python3 -mjson.tool"
-   (current-buffer)
-   t))
+  (let ((b (if (region-active-p) (region-beginning) (point-min)))
+        (e (if (region-active-p) (region-end) (point-max))))
+    (shell-command-on-region b e "python3 -mjson.tool" (current-buffer) t)))
 
 (defun toggle-indent-style ()
   (interactive)
