@@ -16,7 +16,7 @@
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 
-
+ 
 ;; ==============================
 ;; Package management
 ;; ==============================
@@ -341,6 +341,9 @@
 (setq org-image-actual-width '(600))
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
 (add-hook 'org-mode-hook (lambda () (setq line-spacing 0.2)))
+
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(require 'rich2org)
 
 (use-package org-download
   :ensure t
