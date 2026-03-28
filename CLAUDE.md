@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Personal Emacs configuration targeting Emacs 29+. Uses `use-package` (built-in) with `package.el` for package management. Packages auto-install from MELPA/MELPA-stable via `use-package-always-ensure t`.
+Personal Emacs configuration targeting Emacs 30+. Uses `use-package` (built-in) with `package.el` for package management. Packages auto-install from MELPA via `use-package-always-ensure t`.
 
 ## Architecture
 
 - **`init.el`** — Main entry point. All package declarations and keybindings live here.
 - **`site-lisp/james-functions.el`** — Custom elisp functions (~25 utilities for editing, navigation, window management, text formatting).
-- **`site-lisp/james-{linux,osx,windows}.el`** — Platform-specific configuration, loaded conditionally.
+- **`site-lisp/james-{linux,osx}.el`** — Platform-specific configuration, loaded conditionally.
 - **`site-lisp/james-gui.el`** — GUI-only settings (loaded when `display-graphic-p`).
 - **`custom.el`** — Emacs customize output (separate from init.el).
 - **`local.el`** — Optional machine-local overrides (not tracked in git).
@@ -25,6 +25,4 @@ Personal Emacs configuration targeting Emacs 29+. Uses `use-package` (built-in) 
 
 When changes require system-level setup (apt packages, npm global/local installs, PATH modifications, etc.), document them in `ANSIBLE-TODO.md` with the corresponding Ansible YAML snippets so the provisioning playbook can be updated.
 
-## Modernization Roadmap
-
-See `AUDIT.md` for the planned modernization path (vertico/consult stack, magit, eglot, corfu, etc.). When making changes, prefer modern Emacs 29+ idioms and built-in packages where possible.
+When making changes, prefer modern Emacs 30+ idioms and built-in packages where possible.
