@@ -96,11 +96,18 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-;; Speed up file opening by limiting VC backends
-(setq vc-handled-backends '(Git))
+;; Disable VC entirely - magit handles git; VC checks slow down every file open
+(setq vc-handled-backends nil)
 
 ;; Don't create lock files (.#filename) - slow on network/synced drives
 (setq create-lockfiles nil)
+
+;; Skip bidirectional text scanning (not editing RTL languages)
+(setq-default bidi-display-reordering nil)
+(setq-default bidi-paragraph-direction 'left-to-right)
+
+;; Increase subprocess read buffer for better LSP/eglot throughput
+(setq read-process-output-max (* 1024 1024))
 
 ;; Have typing get rid of the active selection
 (delete-selection-mode t)
