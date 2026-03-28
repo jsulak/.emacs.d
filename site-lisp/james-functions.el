@@ -1,5 +1,3 @@
-(require 'cl-lib)
-
 (defun slick-copy-advice (orig-fun &rest args)
   "When called interactively with no active region, copy a single line instead."
   (if (or (use-region-p) (not (called-interactively-p 'interactive)))
@@ -131,18 +129,6 @@ When called twice restore the window configuration before the split."
       (pop-to-buffer cur-buf)
       (other-window '1))))
 
-;;; Hack dired to launch files with 'l' key.  Put this in your ~/.emacs file
-;;; From http://omniorthogonal.blogspot.com/2008/05/useful-emacs-dired-launch-hack.html
-(defun dired-launch-command ()
-  (interactive)
-  (dired-do-shell-command 
-   (pcase system-type
-     ('gnu/linux "xdg-open")
-     ('darwin "open")
-     ('windows-nt "open"))
-   nil
-   (dired-get-marked-files t current-prefix-arg)))
-
 ;; Filter files in dired down to a regex
 ;; From http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/acb20ee78c00e4ec#
 (defun dired-show-only (regexp)
@@ -167,16 +153,6 @@ When called twice restore the window configuration before the split."
     (forward-line -1)))
 
 ;; or choose some better bindings....
-
-
-;; Open a windows explorer window at the location of the current buffer
-;; from http://zhangda.wordpress.com/2010/02/03/open-the-path-of-the-current-buffer-within-emacs/
-(defun open-buffer-path ()
-"Run explorer on the directory of the current buffer."
-(interactive)
-(shell-command (concat "explorer " (replace-regexp-in-string "/" "\\\\" (file-name-directory (buffer-file-name)) t t))))
-
-
 
 (defun indent-all ()
   "Indent the entire buffer."
@@ -235,40 +211,6 @@ If point was already at that position, move point to beginning of line."
 
 
 
-
-(defun ido-goto-symbol ()
-  "Will update the imenu index and then use ido to select a 
-   symbol to navigate to"
-  (interactive)
-  (imenu--make-index-alist)
-  (let ((name-and-pos '())
-        (symbol-names '()))
-    (cl-labels ((addsymbols (symbol-list)
-                       (when (listp symbol-list)
-                         (dolist (symbol symbol-list)
-                           (let ((name nil) (position nil))
-                             (cond
-                              ((and (listp symbol) (imenu--subalist-p symbol))
-                               (addsymbols symbol))
-
-                              ((listp symbol)
-                               (setq name (car symbol))
-                               (setq position (cdr symbol)))
-
-                              ((stringp symbol)
-                               (setq name symbol)
-                               (setq position (get-text-property 1 'org-imenu-marker symbol))))
-
-                             (unless (or (null position) (null name))
-                               (add-to-list 'symbol-names name)
-                               (add-to-list 'name-and-pos (cons name position))))))))
-      (addsymbols imenu--index-alist))
-    (let* ((selected-symbol (ido-completing-read "Symbol? " symbol-names))
-           (position (cdr (assoc selected-symbol name-and-pos))))
-      (goto-char position))))
-
-(autoload 'zap-up-to-char "misc"
-  "Kill up to, but not including ARGth occurence of CHAR.")
 
 (defun delete-enclosed-text ()
   "Delete texts between any pair of delimiters."

@@ -5,7 +5,6 @@
 
 ;; Turn off splash screens, etc.
 (setq inhibit-startup-message t)
-(setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 
 
@@ -65,9 +64,6 @@
 (require 'james-functions)
 
 
-(use-package solarized-theme)
-
-
 
 ;; ================================
 ;; Behavior modifications
@@ -122,7 +118,6 @@
 (setq ns-pop-up-frames nil)
 
 (electric-pair-mode t)
-(electric-indent-mode t)
 (electric-layout-mode t)
 
 ;;  electric layout doesn't work right with js-mode
@@ -135,10 +130,6 @@
 (add-hook 'prog-mode-hook 'subword-mode)
 
 (pixel-scroll-precision-mode t)
-
-;; This removes unsightly ^M characters that would otherwise
-;; appear in the output of java applications.
-(add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
 
 
 ;; ==============================
@@ -309,7 +300,7 @@
 (use-package claude-code
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
   :config (claude-code-mode)
-  :bind-keymap ("C-c c" . claude-code-command-map))
+  :bind-keymap ("C-c C" . claude-code-command-map))
 
 (use-package eglot
   :ensure nil
@@ -425,9 +416,6 @@ Otherwise, normal return."
            ("C-c ;" . comment-dwim-line)
            ("C-c d" . delete-enclosed-text))
 
-;; Duplicate line and comment the original
-(global-set-key (kbd "C-c c") (lambda () (interactive) (djcb-duplicate-line t)))
-
 ;; Navigation
 (bind-keys ("M-." . xref-find-definitions)
            ("C-." . xref-go-back)
@@ -459,15 +447,12 @@ Otherwise, normal return."
            ("C-c j" . dired-jump)
            ("C-c s" . shell-command))
 (global-set-key (kbd "C-c E") (lambda () (interactive) (eshell t)))
-(when (eq system-type 'darwin)
-  (global-set-key (kbd "C-c l") 'open-current-buffer-mac))
 
 ;; Function keys
 (bind-keys ("<f4>" . call-last-kbd-macro)
            ("<f5>" . revert-buffer)
            ("<C-f5>" . revert-buffer-no-confirm)
            ("<f6>" . swap-windows)
-           ("<f7>" . vc-diff)
            ("<f8>" . indent-region))
 
 ;; Windows
