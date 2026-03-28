@@ -244,6 +244,8 @@
 
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
+  :custom
+  (exec-path-from-shell-arguments '("-l"))  ; login shell only, skip -i for speed
   :config
   (exec-path-from-shell-initialize))
 

@@ -23,7 +23,7 @@
 ;; (set-face-attribute 'default nil :font "Inconsolata-13")
 ;; (set-face-attribute 'default nil :font "Letter Gothic-14")
 
-(exec-path-from-shell-initialize)
+;; exec-path-from-shell-initialize is already called via use-package in init.el
 
 (setq ispell-program-name "aspell")
 (setq ispell-list-command "list")
@@ -54,8 +54,9 @@
   (open-file-mac buffer-file-name))
 
 
-(require 'tramp)
-(setenv "TMPDIR" "/tmp")
+;; Defer tramp loading until it's actually needed
+(with-eval-after-load 'tramp
+  (setenv "TMPDIR" "/tmp"))
 
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'hyper)
