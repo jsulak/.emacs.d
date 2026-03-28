@@ -52,9 +52,7 @@
 	  (eq system-type 'linux))
 	   (load-file "~/.emacs.d/site-lisp/james-linux.el"))
 	  ((eq system-type 'darwin)
-	   (load-file "~/.emacs.d/site-lisp/james-osx.el"))
-	  ((eq system-type 'windows-nt)
-	   (load-file "~/.emacs.d/site-lisp/james-windows.el")))
+	   (load-file "~/.emacs.d/site-lisp/james-osx.el")))
 
 ;; Local initialization options can be saved in local.el
 (setq local-init (concat user-emacs-directory "local.el"))
@@ -310,6 +308,16 @@
 ;; ======================
 
 
+(setq org-directory "~/OneDrive - Raytheon Technologies/org")
+(setq org-agenda-files '("~/OneDrive - Raytheon Technologies/org"))
+(setq org-todo-keywords
+      '((sequence "TODO" "WAITING" "|" "DONE" "OBE")))
+(setq org-startup-indented t)
+(setq org-startup-with-inline-images t)
+(setq org-image-actual-width '(600))
+(add-hook 'org-mode-hook 'auto-save-visited-mode)
+(add-hook 'org-mode-hook (lambda () (setq line-spacing 0.2)))
+
 (use-package org-download
   :ensure t
   :after org
@@ -318,24 +326,13 @@
         org-download-image-dir "./images"
         org-download-heading-lvl nil
         org-download-timestamp "%Y%m%d%H%M%S-"
-        org-download-annotate-function (lambda (_link) ""))  ;; No downloaded comment
+        org-download-screenshot-method "screencapture -i %s"
+        org-download-annotate-function (lambda (_link) ""))
   ;; Enable drag-and-drop on macOS
   (setq dnd-protocol-alist
         '(("^file:" . org-download-dnd)
           ("^http" . org-download-dnd)))
   :hook (org-mode . org-download-enable))
-(setq org-image-actual-width '(600))
-
-
-(setq org-directory "~/OneDrive - Raytheon Technologies/org")
-(setq org-agenda-files '("~/OneDrive - Raytheon Technologies/org"))
-(setq org-todo-keywords
-      '((sequence "TODO" "WAITING" "|" "DONE" "OBE")))
-(setq org-startup-indented t)
-(setq org-startup-with-inline-images t)
-(setq org-download-screenshot-method "screencapture -i %s")
-(add-hook 'org-mode-hook 'auto-save-visited-mode)
-(add-hook 'org-mode-hook (lambda () (setq line-spacing 0.2)))
 
 
 (defun my/org-return ()
