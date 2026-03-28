@@ -342,7 +342,6 @@
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
 (add-hook 'org-mode-hook (lambda () (setq line-spacing 0.2)))
 
-(add-to-list 'load-path "~/.emacs.d/lisp/")
 (require 'rich2org)
 
 (use-package org-download
@@ -362,7 +361,7 @@
   :hook (org-mode . org-download-enable))
 
 
-(defun my/org-return ()
+(defun james/org-return ()
   "In a checkbox list item, RET creates a new checkbox item.
 On an empty checkbox item, remove it and insert a newline.
 Otherwise, normal return."
@@ -384,10 +383,10 @@ Otherwise, normal return."
     (org-return)))
 
 (with-eval-after-load 'org
-  (define-key org-mode-map (kbd "RET") #'my/org-return))
+  (define-key org-mode-map (kbd "RET") #'james/org-return))
 
 
-(defun my/org-sort-checkboxes ()
+(defun james/org-sort-checkboxes ()
   "Sort checkbox list, unchecked first."
   (interactive)
   (org-sort-list nil ?f
@@ -415,18 +414,18 @@ Otherwise, normal return."
 
 
 ;; Line editing
-(bind-keys ("<C-return>" . open-line-below)
-           ("<C-S-return>" . open-line-above)
-           ("C-c y" . djcb-duplicate-line)
+(bind-keys ("<C-return>" . james/open-line-below)
+           ("<C-S-return>" . james/open-line-above)
+           ("C-c y" . james/duplicate-line)
            ("C-x C-j" . join-line)
-           ("C-;" . comment-dwim-line)
-           ("C-c ;" . comment-dwim-line)
-           ("C-c d" . delete-enclosed-text))
+           ("C-;" . james/comment-dwim-line)
+           ("C-c ;" . james/comment-dwim-line)
+           ("C-c d" . james/delete-enclosed-text))
 
 ;; Navigation
 (bind-keys ("C-." . xref-go-back)
-           ("<home>" . smart-beginning-of-line)
-           ("C-a" . smart-beginning-of-line)
+           ("<home>" . james/smart-beginning-of-line)
+           ("C-a" . james/smart-beginning-of-line)
            ("C-c [" . beginning-of-defun)
            ("C-c ]" . end-of-defun)
            ("C-c g" . goto-line)
@@ -442,7 +441,7 @@ Otherwise, normal return."
            ("C-c C-q" . quoted-insert)
            ("M-z" . zap-up-to-char)
            ("C-c z" . zap-up-to-char)
-           ("C-x k" . jcs-kill-a-buffer))
+)
 
 ;; Completion
 (bind-keys ("M-;" . hippie-expand)
@@ -456,8 +455,8 @@ Otherwise, normal return."
 ;; Function keys
 (bind-keys ("<f4>" . call-last-kbd-macro)
            ("<f5>" . revert-buffer)
-           ("<C-f5>" . revert-buffer-no-confirm)
-           ("<f6>" . swap-windows)
+           ("<C-f5>" . james/revert-buffer-no-confirm)
+           ("<f6>" . james/swap-windows)
            ("<f8>" . indent-region))
 
 ;; Windows
@@ -465,8 +464,8 @@ Otherwise, normal return."
            ("S-<right>" . windmove-right)
            ("S-<up>" . windmove-up)
            ("S-<down>" . windmove-down)
-           ("C-x 5" . xsteve-split-window))
+           ("C-x 5" . james/split-window))
 
 ;; Font size
-(bind-keys ("C-+" . ryan/increase-font-size)
-           ("C--" . ryan/decrease-font-size))
+(bind-keys ("C-+" . james/increase-font-size)
+           ("C--" . james/decrease-font-size))

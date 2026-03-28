@@ -1,17 +1,17 @@
-(defun slick-copy-advice (orig-fun &rest args)
+(defun james/slick-copy-advice (orig-fun &rest args)
   "When called interactively with no active region, copy a single line instead."
   (if (or (use-region-p) (not (called-interactively-p 'interactive)))
       (apply orig-fun args)
     (message "Copied line")
     (funcall orig-fun (line-beginning-position) (line-beginning-position 2))))
-(advice-add 'kill-ring-save :around #'slick-copy-advice)
+(advice-add 'kill-ring-save :around #'james/slick-copy-advice)
 
-(defun slick-cut-advice (orig-fun &rest args)
+(defun james/slick-cut-advice (orig-fun &rest args)
   "When called interactively with no active region, kill a single line instead."
   (if (or (use-region-p) (not (called-interactively-p 'interactive)))
       (apply orig-fun args)
     (funcall orig-fun (line-beginning-position) (line-beginning-position 2))))
-(advice-add 'kill-region :around #'slick-cut-advice)
+(advice-add 'kill-region :around #'james/slick-cut-advice)
 
 
 ;; Adds extra keybinding to interactive search that sends the current term to occur
@@ -26,7 +26,7 @@
 
 ;;These are from Steve Yegge's blog post
 
-(defun swap-windows ()
+(defun james/swap-windows ()
  "If you have 2 windows, it swaps them." (interactive) (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
  (t
  (let* ((w1 (car (window-list)))
@@ -40,10 +40,8 @@
  (set-window-start w1 s2)
  (set-window-start w2 s1)))))
 
-;;
-;; Never understood why Emacs doesn't have this function.
-;;
-(defun rename-file-and-buffer ()
+
+(defun james/rename-file-and-buffer ()
   "Renames current buffer and file it is visiting."
   (interactive)
   (let ((name (buffer-name))
@@ -60,10 +58,7 @@
                (set-buffer-modified-p nil)))))))
 
 
-
-;; Never understood why Emacs doesn't have this function, either.
-;;
-(defun move-buffer-file (dir)
+(defun james/move-buffer-file (dir)
  "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
  (let* ((name (buffer-name))
 	 (filename (buffer-file-name))
@@ -82,14 +77,14 @@
 ;;; Increase/Decrease font size on the fly
 ;;; Taken from: http://is.gd/iaAo
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun ryan/increase-font-size ()
+(defun james/increase-font-size ()
   (interactive)
   (set-face-attribute 'default
                       nil
                       :height
                       (ceiling (* 1.10
                                   (face-attribute 'default :height)))))
-(defun ryan/decrease-font-size ()
+(defun james/decrease-font-size ()
   (interactive)
   (set-face-attribute 'default
                       nil
@@ -100,7 +95,7 @@
 
 
 ;Reload .emacs on the fly
-(defun reload-dot-emacs()
+(defun james/reload-dot-emacs()
   (interactive)
   (if(bufferp (get-file-buffer "init.el"))
       (save-buffer(get-buffer "init.el")))
@@ -109,17 +104,17 @@
 
 
 ;; XSteve functions
-(defun xsteve-split-window ()
+(defun james/split-window ()
   "Split the current window and show in the window below the next buffer in the buffer list.
 When called twice restore the window configuration before the split."
   (interactive)
-  (if (eq last-command 'xsteve-split-window)
+  (if (eq last-command 'james/split-window)
       (progn
-        (set-window-configuration xsteve-split-window-configuration)
-        (setq this-command 'xsteve-unsplit-window))
+        (set-window-configuration james/split-window-configuration)
+        (setq this-command 'james/unsplit-window))
     (let ((buf-list)
           (cur-buf (current-buffer)))
-      (setq xsteve-split-window-configuration (current-window-configuration))
+      (setq james/split-window-configuration (current-window-configuration))
       (delete-other-windows)
       (split-window-horizontally)
       (setq buf-list (buffer-list))
@@ -131,7 +126,7 @@ When called twice restore the window configuration before the split."
 
 ;; Filter files in dired down to a regex
 ;; From http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/acb20ee78c00e4ec#
-(defun dired-show-only (regexp)
+(defun james/dired-show-only (regexp)
   (interactive "sFiles to show (regexp): ")
   (dired-mark-files-regexp regexp)
   (dired-toggle-marks)
@@ -139,7 +134,7 @@ When called twice restore the window configuration before the split."
 
 
 ;; Duplicate and (optionally) comment out a line:
-(defun djcb-duplicate-line (&optional commentfirst)
+(defun james/duplicate-line (&optional commentfirst)
   "comment line at point; if COMMENTFIRST is non-nil, comment the original" 
   (interactive)
   (beginning-of-line)
@@ -152,39 +147,14 @@ When called twice restore the window configuration before the split."
       (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
     (forward-line -1)))
 
-(defun indent-all ()
+(defun james/indent-all ()
   "Indent the entire buffer."
   (interactive)
   (indent-region (point-min) (point-max)))
 
-(defun find-todo ()
-  "Find all TODO and NOTE items in the current buffer."
-  (interactive)
-  (occur "TODO\\|NOTE:"))
-
-;; From: http://blog.bookworm.at/2007/03/pretty-print-xml-with-emacs.html
-(defun pretty-print-xml (begin end)
-  "Pretty format XML markup in region. You need to have nxml-mode
-http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
-this.  The function inserts linebreaks to separate tags that have
-nothing but whitespace between them.  It then indents the markup
-by using nxml's indentation rules."
-  (interactive "r")
-  (save-excursion
-      (nxml-mode)
-      (goto-char begin)
-      (while (search-forward-regexp "\>[ \\t]*\<" nil t) 
-        (backward-char) (insert "\n"))
-      (indent-region begin end)))
-
-(defun indent-all-xml ()
-  "Pretty-print the entire buffer as XML."
-  (interactive)
-  (pretty-print-xml (point-min) (point-max)))
-
 
 ;; Frim http://stackoverflow.com/questions/145291/smart-home-in-emacs/145359
-(defun smart-beginning-of-line ()
+(defun james/smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line.
 
 Move point to the first non-whitespace character on this line.
@@ -196,7 +166,7 @@ If point was already at that position, move point to beginning of line."
          (beginning-of-line))))
 
 ;; from http://www.emacswiki.org/emacs/CommentingCode
- (defun comment-dwim-line (&optional arg)
+ (defun james/comment-dwim-line (&optional arg)
         "Replacement for the comment-dwim command.
         If no region is selected and current line is not blank and we are not at the end of the line,
         then comment current line.
@@ -209,8 +179,7 @@ If point was already at that position, move point to beginning of line."
 
 
 
-
-(defun delete-enclosed-text ()
+(defun james/delete-enclosed-text ()
   "Delete texts between any pair of delimiters."
   (interactive)
   (save-excursion
@@ -223,20 +192,20 @@ If point was already at that position, move point to beginning of line."
 ;; Pretty-prints a json string
 ;; if region is selected, then uses that,
 ;; else does entire buffer.
-(defun pretty-print-json ()
+(defun james/pretty-print-json ()
   (interactive)
   (let ((b (if (region-active-p) (region-beginning) (point-min)))
         (e (if (region-active-p) (region-end) (point-max))))
     (shell-command-on-region b e "python3 -mjson.tool" (current-buffer) t)))
 
 ;; http://whattheemacsd.com//editing-defuns.el-01.html
-(defun open-line-below ()
+(defun james/open-line-below ()
   (interactive)
   (end-of-line)
   (newline) 
   (indent-for-tab-command))
 
-(defun open-line-above ()
+(defun james/open-line-above ()
   (interactive)
   (beginning-of-line)
   (newline)
@@ -245,27 +214,18 @@ If point was already at that position, move point to beginning of line."
 
 
 ;; http://emacsredux.com/blog/2013/07/24/highlight-comment-annotations/
-(defun font-lock-comment-annotations ()
+(defun james/font-lock-comment-annotations ()
   "Highlight a bunch of well known comment annotations.
    This functions should be added to the hooks of major modes for programming."
   (font-lock-add-keywords
    nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\):"
           1 font-lock-warning-face t))))
 
-(add-hook 'prog-mode-hook 'font-lock-comment-annotations)
+(add-hook 'prog-mode-hook 'james/font-lock-comment-annotations)
 
-(defun revert-buffer-no-confirm ()
+(defun james/revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
     (interactive) (revert-buffer t t))
-
-;; From http://irreal.org/blog/?p=5585
-(defun jcs-kill-a-buffer (askp)
-  (interactive "P")
-  (if askp
-      (kill-buffer (funcall completing-read-function
-                            "Kill buffer: "
-                            (mapcar #'buffer-name (buffer-list))))
-    (kill-this-buffer)))
 
 (provide 'james-functions)
 

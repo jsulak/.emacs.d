@@ -12,18 +12,18 @@
 
 ;; Dired mode
 (with-eval-after-load 'dired
-  (define-key dired-mode-map "l" 'dired-open-mac)
-  (define-key dired-mode-map "f" 'dired-show-only))
+  (define-key dired-mode-map "l" 'james/dired-open-mac)
+  (define-key dired-mode-map "f" 'james/dired-show-only))
 
 
-(defun open-file-mac (file-name)
+(defun james/open-file-mac (file-name)
   (if (file-exists-p file-name)
       (call-process "/usr/bin/open" nil 0 nil file-name)))
 
-(defun dired-open-mac ()
+(defun james/dired-open-mac ()
      (interactive)
      (let ((file-name (dired-get-file-for-visit)))
-     (open-file-mac file-name)))
+     (james/open-file-mac file-name)))
 
 
 ;; Defer tramp loading until it's actually needed
