@@ -10,6 +10,7 @@
 
 (server-start)
 
-(require 'james-gui)
+(if window-system
+    (require 'james-gui))
 
 (provide 'james-linux)
