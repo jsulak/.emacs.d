@@ -58,11 +58,6 @@
 	  ((eq system-type 'darwin)
 	   (load-file "~/.emacs.d/site-lisp/james-osx.el")))
 
-;; Local initialization options can be saved in local.el
-(setq local-init (concat user-emacs-directory "local.el"))
-(when (file-exists-p local-init)
-  (load local-init))
-
 (require 'james-functions)
 
 
@@ -485,3 +480,8 @@ Otherwise, normal return."
 ;; Font size
 (bind-keys ("C-+" . james/increase-font-size)
            ("C--" . james/decrease-font-size))
+
+;; Local machine-specific overrides (loaded last so they take precedence)
+(setq local-init (concat user-emacs-directory "local.el"))
+(when (file-exists-p local-init)
+  (load local-init))
