@@ -118,7 +118,7 @@ When called twice restore the window configuration before the split."
           (cur-buf (current-buffer)))
       (setq james/split-window-configuration (current-window-configuration))
       (delete-other-windows)
-      (split-window-horizontally)
+      (split-window-vertically)
       (setq buf-list (buffer-list))
       (delq (get-buffer " *Minibuf-0*") buf-list)
       (delq (get-buffer " *Minibuf-1*") buf-list)
