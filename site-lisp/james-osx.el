@@ -1,3 +1,5 @@
+;;; james-osx.el --- macOS-specific configuration -*- lexical-binding: t; -*-
+
 (menu-bar-mode 1)
 
 (setq ring-bell-function 'ignore)

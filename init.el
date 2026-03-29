@@ -325,96 +325,7 @@
 
 
 
-;; ======================
-;; Org mode
-;; ======================
-
-;; Set org directories in local.el
-;;(setq org-directory "~/org")
-;;(setq org-agenda-files '("~/org"))
-
-
-(setq org-agenda-span 10)
-(setq org-todo-keywords
-      '((sequence "TODO" "WAITING" "|" "DONE" "OBE")))
-(setq org-startup-indented t)
-(setq org-startup-with-inline-images t)
-(setq org-image-actual-width '(600))
-(add-hook 'org-mode-hook 'auto-save-visited-mode)
-(add-hook 'org-mode-hook (lambda () (setq line-spacing 0.2)))
-
-(require 'rich2org)
-
-;; (use-package org-modern
-;;   :hook ((org-mode . org-modern-mode)
-;;          (org-agenda-finalize . org-modern-agenda)))
-
-(use-package org-download
-  :ensure t
-  :after org
-  :config
-  (setq org-download-method 'directory
-        org-download-image-dir "./images"
-        org-download-heading-lvl nil
-        org-download-timestamp "%Y%m%d%H%M%S-"
-        org-download-screenshot-method "screencapture -i %s"
-        org-download-annotate-function (lambda (_link) ""))
-  ;; Enable drag-and-drop on macOS
-  (setq dnd-protocol-alist
-        '(("^file:" . org-download-dnd)
-          ("^http" . org-download-dnd)))
-
-  ;; Open image files in Preview.app when clicked or via C-c C-o
-  (with-eval-after-load 'org
-    (dolist (ext '("\\.png\\'" "\\.jpg\\'" "\\.jpeg\\'" "\\.gif\\'" "\\.webp\\'"))
-      (add-to-list 'org-file-apps (cons ext "open -a Preview.app %s")))
-    (define-key org-mode-map [double-mouse-1]
-      (lambda (event)
-        (interactive "e")
-        (mouse-set-point event)
-        (when (get-char-property (point) 'org-image-overlay)
-          (org-open-at-point)))))
-  :hook (org-mode . org-download-enable))
-
-
-(defun james/org-return ()
-  "In a checkbox list item, RET creates a new checkbox item.
-On an empty checkbox item, remove it and insert a newline.
-Otherwise, normal return."
-  (interactive)
-  (if (and (org-in-item-p)
-           (save-excursion
-             (beginning-of-line)
-             (looking-at "\\s-*- \\[.\\]")))
-      (if (save-excursion
-            (beginning-of-line)
-            (looking-at "\\s-*- \\[.\\]\\s-*$"))
-          ;; Empty checkbox item — remove it and exit
-          (progn
-            (delete-region (line-beginning-position) (line-end-position))
-            (delete-char -1)  ; remove the trailing newline
-            (org-return))
-        ;; Non-empty checkbox item — create a new one
-        (org-insert-item 'checkbox))
-    (org-return)))
-
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "RET") #'james/org-return))
-
-
-(defun james/org-sort-checkboxes ()
-  "Sort checkbox list, unchecked first."
-  (interactive)
-  (org-sort-list nil ?f
-    (lambda ()
-      (if (looking-at ".*\\[X\\]") 1 0))
-    #'<))
-
-(with-eval-after-load 'org-agenda
-  (add-to-list 'org-agenda-custom-commands
-    '("w" "Waiting/Owed to me"
-      todo "WAITING"
-      ((org-agenda-sorting-strategy '(deadline-up scheduled-up))))))
+(require 'james-org)
 
 ;; =======================
 ;; Key bindings
@@ -422,11 +333,6 @@ Otherwise, normal return."
 
 ;; Rip grep
 (global-set-key (kbd "C-c r") #'consult-ripgrep)
-
-;; Org mode
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "C-c l") 'org-store-link)
 
 
 ;; Line editing

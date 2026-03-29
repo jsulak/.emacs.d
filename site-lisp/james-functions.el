@@ -1,3 +1,5 @@
+;;; james-functions.el --- Custom utility functions -*- lexical-binding: t; -*-
+
 (defun james/slick-copy-advice (orig-fun &rest args)
   "When called interactively with no active region, copy a single line instead."
   (if (or (use-region-p) (not (called-interactively-p 'interactive)))

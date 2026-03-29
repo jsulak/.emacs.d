@@ -1,3 +1,4 @@
+;;; james-linux.el --- Linux-specific configuration -*- lexical-binding: t; -*-
 
 ;; Bind custom dired functions and fix search
 (setq dired-load-hook

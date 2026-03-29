@@ -1,3 +1,5 @@
+;;; james-gui.el --- GUI-only settings -*- lexical-binding: t; -*-
+
 ;; Make default text a bit muted
 (setq modus-vivendi-palette-overrides
       '((fg-main "#d0d0d0")))
