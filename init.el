@@ -347,6 +347,10 @@
 
 (require 'rich2org)
 
+(use-package org-modern
+  :hook ((org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-agenda)))
+
 (use-package org-download
   :ensure t
   :after org

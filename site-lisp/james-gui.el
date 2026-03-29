@@ -1,7 +1,7 @@
 ;; Make default text a bit muted
 (setq modus-vivendi-palette-overrides
       '((fg-main "#d0d0d0")))
-(load-theme 'modus-vivendi-tinted t)
+(load-theme 'modus-vivendi t)
 
 (set-face-attribute 'default nil :font "JetBrains Mono-14")
 
