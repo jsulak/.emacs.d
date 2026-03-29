@@ -109,6 +109,15 @@
 ;; Have typing get rid of the active selection
 (delete-selection-mode t)
 
+;; Auto-focus help windows when they open
+(setq help-window-select t)
+
+;; Save bookmarks after every change (no loss on crash)
+(setq bookmark-save-flag 1)
+
+;; Allow repeating certain key sequences (e.g. C-x o o o to switch windows)
+(repeat-mode 1)
+
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'fundamental-mode-hook 'turn-on-visual-line-mode)
 
