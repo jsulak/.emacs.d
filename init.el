@@ -7,11 +7,6 @@
     (setq gc-cons-threshold (* 16 1024 1024))
     (setq file-name-handler-alist default-file-name-handler-alist)))
 
-;; Turn off mouse interface early in startup to avoid momentary display
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
 ;; Turn off splash screens, etc.
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
@@ -314,7 +309,6 @@
          (typescript-ts-mode . eglot-ensure)
          (tsx-ts-mode . eglot-ensure)
          (css-mode . eglot-ensure)))
-
 
 (use-package corfu
   :custom
