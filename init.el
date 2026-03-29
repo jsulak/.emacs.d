@@ -267,7 +267,9 @@
   :defer t)
 
 (use-package magit
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status)
+  :custom
+  (magit-bury-buffer-function #'magit-restore-window-configuration))
 
 (use-package diff-hl
   :hook ((after-init . global-diff-hl-mode)
