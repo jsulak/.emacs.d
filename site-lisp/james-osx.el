@@ -7,9 +7,10 @@
 (if window-system
     (require 'james-gui))
 
-(setq ispell-program-name "aspell")
-(setq ispell-list-command "list")
-(setq ispell-extra-args '("--sug-mode=ultra"))
+(with-eval-after-load 'ispell
+  (setq ispell-program-name "aspell")
+  (setq ispell-list-command "list")
+  (setq ispell-extra-args '("--sug-mode=ultra")))
 
 
 ;; Dired mode
@@ -21,6 +22,8 @@
 (defun james/open-file-mac (file-name)
   (if (file-exists-p file-name)
       (call-process "/usr/bin/open" nil 0 nil file-name)))
+
+(declare-function dired-get-file-for-visit "dired")
 
 (defun james/dired-open-mac ()
      (interactive)

@@ -1,5 +1,7 @@
 ;;; james-functions.el --- Custom utility functions -*- lexical-binding: t; -*-
 
+(require 'dired)
+
 (defun james/slick-copy-advice (orig-fun &rest args)
   "When called interactively with no active region, copy a single line instead."
   (if (or (use-region-p) (not (called-interactively-p 'interactive)))
@@ -106,8 +108,11 @@
 
 
 ;; XSteve functions
+(defvar james/split-window-configuration nil
+  "Window configuration before `james/split-window' was called.")
+
 (defun james/split-window ()
-  "Split the current window and show in the window below the next buffer in the buffer list.
+  "Split the window and show the next buffer below.
 When called twice restore the window configuration before the split."
   (interactive)
   (if (eq last-command 'james/split-window)
@@ -169,10 +174,8 @@ If point was already at that position, move point to beginning of line."
 
 ;; from http://www.emacswiki.org/emacs/CommentingCode
  (defun james/comment-dwim-line (&optional arg)
-        "Replacement for the comment-dwim command.
-        If no region is selected and current line is not blank and we are not at the end of the line,
-        then comment current line.
-        Replaces default behaviour of comment-dwim, when it inserts comment at the end of the line."
+        "Comment or uncomment the current line or region.
+Replaces default `comment-dwim' end-of-line behavior."
           (interactive "*P")
           (comment-normalize-vars)
           (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))

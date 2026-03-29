@@ -1,5 +1,7 @@
 ;;; james-org.el --- Org mode configuration -*- lexical-binding: t; -*-
 
+(require 'org)
+
 ;; Set org directories in local.el
 ;;(setq org-directory "~/org")
 ;;(setq org-agenda-files '("~/org"))
