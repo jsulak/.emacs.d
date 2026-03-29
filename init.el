@@ -363,6 +363,17 @@
   (setq dnd-protocol-alist
         '(("^file:" . org-download-dnd)
           ("^http" . org-download-dnd)))
+
+  ;; Open image files in Preview.app when clicked or via C-c C-o
+  (with-eval-after-load 'org
+    (dolist (ext '("\\.png\\'" "\\.jpg\\'" "\\.jpeg\\'" "\\.gif\\'" "\\.webp\\'"))
+      (add-to-list 'org-file-apps (cons ext "open -a Preview.app %s")))
+    (define-key org-mode-map [double-mouse-1]
+      (lambda (event)
+        (interactive "e")
+        (mouse-set-point event)
+        (when (get-char-property (point) 'org-image-overlay)
+          (org-open-at-point)))))
   :hook (org-mode . org-download-enable))
 
 
