@@ -86,6 +86,23 @@ Otherwise, normal return."
       todo "WAITING"
       ((org-agenda-sorting-strategy '(deadline-up scheduled-up))))))
 
+;; Auto-convert markdown links to org links on paste
+(defun james/markdown-to-org-link-on-yank (orig-fun &rest args)
+  "After yanking in org-mode, convert [title](url) to [[url][title]]."
+  (apply orig-fun args)
+  (when (derived-mode-p 'org-mode)
+    (let ((end (point))
+          (beg (mark t)))
+      (when (and beg end)
+        (save-excursion
+          (goto-char (min beg end))
+          (while (re-search-forward "\\[\\([^]]+\\)](\\([^)]+\\))" (max beg end) t)
+            (let* ((title (match-string 1))
+                   (url (match-string 2)))
+              (replace-match (format "[[%s][%s]]" url title) t t))))))))
+
+(advice-add 'yank :around #'james/markdown-to-org-link-on-yank)
+
 ;; Keybindings
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
