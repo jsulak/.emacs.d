@@ -329,9 +329,12 @@
 ;; Org mode
 ;; ======================
 
+;; Set org directories in local.el
+;;(setq org-directory "~/org")
+;;(setq org-agenda-files '("~/org"))
 
-(setq org-directory "~/OneDrive - Raytheon Technologies/org")
-(setq org-agenda-files '("~/OneDrive - Raytheon Technologies/org"))
+
+(setq org-agenda-span 10)
 (setq org-todo-keywords
       '((sequence "TODO" "WAITING" "|" "DONE" "OBE")))
 (setq org-startup-indented t)
@@ -342,9 +345,9 @@
 
 (require 'rich2org)
 
-(use-package org-modern
-  :hook ((org-mode . org-modern-mode)
-         (org-agenda-finalize . org-modern-agenda)))
+;; (use-package org-modern
+;;   :hook ((org-mode . org-modern-mode)
+;;          (org-agenda-finalize . org-modern-agenda)))
 
 (use-package org-download
   :ensure t
