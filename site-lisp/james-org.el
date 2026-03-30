@@ -115,18 +115,18 @@ Otherwise, normal return."
 ;; Capture templates
 ;; =======================
 
-;; (with-eval-after-load 'org
-;;   (add-to-list 'org-capture-templates
-;;                '("l" "Open Loop" entry
-;;                  (file+headline "open-loops.org" "Open Loops")
-;;                  "** WAITING %^{Who} - %^{What}\nSCHEDULED: %^t\n"
-;;                  :empty-lines 1))
+(with-eval-after-load 'org-capture
+  (add-to-list 'org-capture-templates
+               '("l" "Open Loop" entry
+                 (file+headline "open-loops.org" "Open Loops")
+                 "* WAITING %^{Who} - %^{What}\nSCHEDULED: %^t\n"
+                 :empty-lines 1))
 
-;;   (add-to-list 'org-capture-templates
-;;                '("L" "Open Loop (deadline)" entry
-;;                  (file+headline "open-loops.org" "Open Loops")
-;;                  "** WAITING %^{Who} - %^{What}\nDEADLINE: %^t\n"
-;;                  :empty-lines 1)))
+  (add-to-list 'org-capture-templates
+               '("L" "Open Loop (deadline)" entry
+                 (file+headline "open-loops.org" "Open Loops")
+                 "* WAITING %^{Who} - %^{What}\nDEADLINE: %^t\n"
+                 :empty-lines 1)))
 
 ;; Keybindings
 (global-set-key (kbd "C-c a") 'org-agenda)
