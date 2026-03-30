@@ -126,7 +126,16 @@ Otherwise, normal return."
                '("L" "Open Loop (deadline)" entry
                  (file+headline "open-loops.org" "Open Loops")
                  "* WAITING %^{Who} - %^{What}\nDEADLINE: %^t\n"
-                 :empty-lines 1)))
+                 :empty-lines 1))
+
+  (add-to-list 'org-capture-templates
+               `("n" "New file" plain
+                 (file ,(lambda ()
+                          (let ((name (read-string "Name: ")))
+                            (setq james/--capture-file-title name)
+                            (expand-file-name (concat name ".org") org-directory))))
+                 "#+TITLE: %(identity james/--capture-file-title)\n#+DATE: %t\n#+FILETAGS: %(let ((tags (read-string \"Tags (comma-separated): \"))) (concat \":\" (mapconcat #'string-trim (split-string tags \",\") \":\") \":\"))\n\n%?"
+                 :immediate-finish nil)))
 
 ;; Keybindings
 (global-set-key (kbd "C-c a") 'org-agenda)
