@@ -5,7 +5,8 @@
 ;; Make default text a bit muted
 (setq modus-vivendi-palette-overrides
       '((fg-main "#d0d0d0")))
-
+(setq org-todo-keyword-faces
+      '(("ON HOLD" . (:foreground "#a8a8a8" :weight bold))))
 (load-theme 'modus-vivendi t)
 
 (set-face-attribute 'default nil :font "JetBrains Mono-14")
