@@ -8,7 +8,7 @@
 
 (setq org-agenda-span 10)
 (setq org-todo-keywords
-      '((sequence "TODO" "WAITING" "|" "DONE" "OBE")))
+      '((sequence "TODO(t)" "WAITING(w)" "ON HOLD(h)" "|" "DONE(d)" "OBE(c)")))
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
 (setq org-image-actual-width '(600))
@@ -110,6 +110,23 @@ Otherwise, normal return."
               (replace-match (format "[[%s][%s]]" url title) t t))))))))
 
 (advice-add 'yank :around #'james/markdown-to-org-link-on-yank)
+
+;; =======================
+;; Capture templates
+;; =======================
+
+;; (with-eval-after-load 'org
+;;   (add-to-list 'org-capture-templates
+;;                '("l" "Open Loop" entry
+;;                  (file+headline "open-loops.org" "Open Loops")
+;;                  "** WAITING %^{Who} - %^{What}\nSCHEDULED: %^t\n"
+;;                  :empty-lines 1))
+
+;;   (add-to-list 'org-capture-templates
+;;                '("L" "Open Loop (deadline)" entry
+;;                  (file+headline "open-loops.org" "Open Loops")
+;;                  "** WAITING %^{Who} - %^{What}\nDEADLINE: %^t\n"
+;;                  :empty-lines 1)))
 
 ;; Keybindings
 (global-set-key (kbd "C-c a") 'org-agenda)
