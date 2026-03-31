@@ -232,5 +232,36 @@ Replaces default `comment-dwim' end-of-line behavior."
     "Revert buffer without confirmation."
     (interactive) (revert-buffer t t))
 
+(defun james/paste-markdown-as-org ()
+  "Convert clipboard contents from Markdown to Org and insert at point.
+Requires pandoc to be installed."
+  (interactive)
+  (let ((md-text (current-kill 0 t)))
+    (unless md-text
+      (user-error "Nothing on the kill ring"))
+    (let ((org-text
+           (with-temp-buffer
+             (insert md-text)
+             (when (zerop
+                    (shell-command-on-region
+                     (point-min) (point-max)
+                     "pandoc -f markdown -t org --wrap=preserve"
+                     (current-buffer) t))
+               (goto-char (point-min))
+               (while (re-search-forward
+                       "^[ \t]*:PROPERTIES:\n\\(?:.*\n\\)*?[ \t]*:END:\n"
+                       nil t)
+                 (replace-match ""))
+               ;; Ensure a blank line after headings
+               (goto-char (point-min))
+               (while (re-search-forward
+                       "^\\(\\*+ .*\\)\n\\([^*\n]\\)"
+                       nil t)
+                 (replace-match "\\1\n\n\\2"))
+               (buffer-string)))))
+      (unless org-text
+        (user-error "Pandoc conversion failed"))
+      (insert org-text))))
+
 (provide 'james-functions)
 

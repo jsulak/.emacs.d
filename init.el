@@ -403,6 +403,9 @@
 (bind-keys ("C-+" . james/increase-font-size)
            ("C--" . james/decrease-font-size))
 
+;; Conversion
+(bind-keys ("C-c m" . james/paste-markdown-as-org))
+
 ;; Local machine-specific overrides (loaded last so they take precedence)
 (setq local-init (concat user-emacs-directory "local.el"))
 (when (file-exists-p local-init)
