@@ -12,8 +12,10 @@
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
 (setq org-image-actual-width '(600))
+(setq org-hide-emphasis-markers t)
+(setq org-pretty-entities t)
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
-(add-hook 'org-mode-hook (lambda () (setq line-spacing 0.2)))
+(add-hook 'org-mode-hook (lambda () (setq line-spacing 0.3)))
 
 (use-package visual-fill-column
   :hook (org-mode . visual-fill-column-mode)
@@ -22,10 +24,6 @@
   (visual-fill-column-center-text t))
 
 (require 'rich2org)
-
-;; (use-package org-modern
-;;   :hook ((org-mode . org-modern-mode)
-;;          (org-agenda-finalize . org-modern-agenda)))
 
 (use-package org-download
   :ensure t
