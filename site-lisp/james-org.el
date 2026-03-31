@@ -135,10 +135,26 @@ Otherwise, normal return."
                  "#+TITLE: %(identity james/--capture-file-title)\n#+DATE: %t\n#+FILETAGS: %(let ((tags (read-string \"Tags (comma-separated): \"))) (concat \":\" (mapconcat #'string-trim (split-string tags \",\") \":\") \":\"))\n\n%?"
                  :immediate-finish nil)))
 
+(defun james/org-insert-file-link ()
+  "Insert an org link to a file in `org-directory' using minibuffer completion.
+Uses the file's #+TITLE as the link description, falling back to the filename."
+  (interactive)
+  (let* ((files (directory-files org-directory nil "\\.org\\'"))
+         (choice (completing-read "Link to org file: " files nil t))
+         (path (expand-file-name choice org-directory))
+         (title (with-temp-buffer
+                  (insert-file-contents path nil 0 1024)
+                  (goto-char (point-min))
+                  (if (re-search-forward "^#\\+TITLE:[ \t]+\\(.+\\)" nil t)
+                      (match-string 1)
+                    (file-name-sans-extension choice)))))
+    (insert (format "[[file:%s][%s]]" choice title))))
+
 ;; Keybindings
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c f") 'james/org-insert-file-link)
 
 (provide 'james-org)
 ;;; james-org.el ends here
