@@ -20,3 +20,7 @@ smex-items
 ido.last
 recentf
 history
+org-persist/
+.org-id-locations
+bookmarks
+transient/
