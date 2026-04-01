@@ -11,7 +11,7 @@
       '((sequence "TODO(t)" "WAITING(w)" "ON HOLD(h)" "|" "DONE(d)" "OBE(c)")))
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
-(setq org-image-actual-width '(600))
+(setq org-image-actual-width '(500))
 (setq org-hide-emphasis-markers t)
 (setq org-pretty-entities t)
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
@@ -24,6 +24,10 @@
   (visual-fill-column-center-text t))
 
 (require 'rich2org)
+
+(setq org-file-apps
+      '((directory . "open %s")
+        (auto-mode . emacs)))
 
 (use-package org-download
   :ensure t

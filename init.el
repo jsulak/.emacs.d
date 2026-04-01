@@ -203,6 +203,7 @@
 
 (use-package project
   :ensure nil)
+(setq project-vc-extra-root-markers '(".project"))
 
 (use-package dired
   :ensure nil
