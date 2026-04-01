@@ -58,25 +58,30 @@
 
 
 (defun james/org-return ()
-  "In a checkbox list item, RET creates a new checkbox item.
-On an empty checkbox item, remove it and insert a newline.
+  "In a list item, RET creates a new list item of the same type.
+Checkbox items get a new checkbox, ordered/unordered items get a plain item.
+On an empty list item, remove it and insert a newline.
 Otherwise, normal return."
   (interactive)
-  (if (and (org-in-item-p)
-           (save-excursion
-             (beginning-of-line)
-             (looking-at "\\s-*- \\[.\\]")))
-      (if (save-excursion
-            (beginning-of-line)
-            (looking-at "\\s-*- \\[.\\]\\s-*$"))
-          ;; Empty checkbox item — remove it and exit
-          (progn
-            (delete-region (line-beginning-position) (line-end-position))
-            (delete-char -1)  ; remove the trailing newline
-            (org-return))
-        ;; Non-empty checkbox item — create a new one
-        (org-insert-item 'checkbox))
-    (org-return)))
+  (let ((on-list-line (save-excursion
+                        (beginning-of-line)
+                        (looking-at "\\s-*\\([-+*]\\|[0-9]+[.)]\\)\\( \\[.\\]\\)?\\s-"))))
+    (if (and (org-in-item-p) on-list-line)
+        (let ((checkbox-p (save-excursion
+                            (beginning-of-line)
+                            (looking-at "\\s-*[-+*] \\[.\\]\\|\\s-*[0-9]+[.)] \\[.\\]")))
+              (empty-p (save-excursion
+                         (beginning-of-line)
+                         (looking-at "\\s-*\\([-+*]\\|[0-9]+[.)]\\)\\( \\[.\\]\\)?\\s-*$"))))
+          (if empty-p
+              ;; Empty list item — remove it and exit
+              (progn
+                (delete-region (line-beginning-position) (line-end-position))
+                (delete-char -1)
+                (org-return))
+            ;; Non-empty list item — create a new one
+            (org-insert-item checkbox-p)))
+      (org-return))))
 
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "RET") #'james/org-return))
