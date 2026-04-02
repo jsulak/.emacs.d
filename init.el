@@ -154,7 +154,7 @@
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles orderless basic))))
-  (orderless-matching-styles '(orderless-flex orderless-literal orderless-regexp)))
+  (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex)))
 
 (use-package marginalia
   :init
