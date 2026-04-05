@@ -1,15 +1,18 @@
 ;;; james-gui.el --- GUI-only settings -*- lexical-binding: t; -*-
 
-(defvar modus-vivendi-palette-overrides)
+;; Register custom theme directory
+(add-to-list 'custom-theme-load-path
+             (expand-file-name "themes" user-emacs-directory))
 
-;; Make default text a bit muted
-(setq modus-vivendi-palette-overrides
-      '((fg-main "#d0d0d0")))
 (setq org-todo-keyword-faces
       '(("ON HOLD" . (:foreground "#a8a8a8" :weight bold))))
-(load-theme 'modus-vivendi t)
+(load-theme 'annex-light t)
 
-(set-face-attribute 'default nil :font "JetBrains Mono-14")
+;; Prefer iA Writer Mono S (Annex's font), fall back to JetBrains Mono
+(set-face-attribute 'default nil :font
+                    (if (find-font (font-spec :name "iA Writer Mono S"))
+                        "iA Writer Mono S-14"
+                      "JetBrains Mono-14"))
 
 ;; window frame title
 (setq frame-title-format
