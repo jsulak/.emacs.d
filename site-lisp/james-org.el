@@ -2,9 +2,9 @@
 
 (require 'org)
 
-;; Set org directories in local.el
-;;(setq org-directory "~/org")
-;;(setq org-agenda-files '("~/org"))
+;; Defaults: Set org directories in local.el
+(setq org-directory "~/org")
+(setq org-agenda-files '("~/org"))
 
 (setq org-agenda-span 10)
 (setq org-todo-keywords
@@ -17,10 +17,15 @@
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
 (add-hook 'org-mode-hook (lambda () (setq line-spacing 0.3)))
 
+(set-face-attribute 'org-level-1 nil :height 1.3 :weight 'bold)
+(set-face-attribute 'org-level-2 nil :height 1.2 :weight 'bold)
+(set-face-attribute 'org-level-3 nil :height 1.1 :weight 'semi-bold)
+(set-face-attribute 'org-level-4 nil :height 1.05 :weight 'semi-bold)
+
 (use-package visual-fill-column
   :hook (org-mode . visual-fill-column-mode)
   :custom
-  (visual-fill-column-width 100)
+  (visual-fill-column-width 90)
   (visual-fill-column-center-text t))
 
 (require 'rich2org)
@@ -57,34 +62,34 @@
   :hook (org-mode . org-download-enable))
 
 
-(defun james/org-return ()
-  "In a list item, RET creates a new list item of the same type.
-Checkbox items get a new checkbox, ordered/unordered items get a plain item.
-On an empty list item, remove it and insert a newline.
-Otherwise, normal return."
-  (interactive)
-  (let ((on-list-line (save-excursion
-                        (beginning-of-line)
-                        (looking-at "\\s-*\\([-+*]\\|[0-9]+[.)]\\)\\( \\[.\\]\\)?\\s-"))))
-    (if (and (org-in-item-p) on-list-line)
-        (let ((checkbox-p (save-excursion
-                            (beginning-of-line)
-                            (looking-at "\\s-*[-+*] \\[.\\]\\|\\s-*[0-9]+[.)] \\[.\\]")))
-              (empty-p (save-excursion
-                         (beginning-of-line)
-                         (looking-at "\\s-*\\([-+*]\\|[0-9]+[.)]\\)\\( \\[.\\]\\)?\\s-*$"))))
-          (if empty-p
-              ;; Empty list item — remove it and exit
-              (progn
-                (delete-region (line-beginning-position) (line-end-position))
-                (delete-char -1)
-                (org-return))
-            ;; Non-empty list item — create a new one
-            (org-insert-item checkbox-p)))
-      (org-return))))
+;; (defun james/org-return ()
+;;   "In a list item, RET creates a new list item of the same type.
+;; Checkbox items get a new checkbox, ordered/unordered items get a plain item.
+;; On an empty list item, remove it and insert a newline.
+;; Otherwise, normal return."
+;;   (interactive)
+;;   (let ((on-list-line (save-excursion
+;;                         (beginning-of-line)
+;;                         (looking-at "\\s-*\\([-+*]\\|[0-9]+[.)]\\)\\( \\[.\\]\\)?\\s-"))))
+;;     (if (and (org-in-item-p) on-list-line)
+;;         (let ((checkbox-p (save-excursion
+;;                             (beginning-of-line)
+;;                             (looking-at "\\s-*[-+*] \\[.\\]\\|\\s-*[0-9]+[.)] \\[.\\]")))
+;;               (empty-p (save-excursion
+;;                          (beginning-of-line)
+;;                          (looking-at "\\s-*\\([-+*]\\|[0-9]+[.)]\\)\\( \\[.\\]\\)?\\s-*$"))))
+;;           (if empty-p
+;;               ;; Empty list item — remove it and exit
+;;               (progn
+;;                 (delete-region (line-beginning-position) (line-end-position))
+;;                 (delete-char -1)
+;;                 (org-return))
+;;             ;; Non-empty list item — create a new one
+;;             (org-insert-item checkbox-p)))
+;;       (org-return))))
 
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "RET") #'james/org-return))
+;; (with-eval-after-load 'org
+;;   (define-key org-mode-map (kbd "RET") #'james/org-return))
 
 
 (defun james/org-sort-checkboxes ()

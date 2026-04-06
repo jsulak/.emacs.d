@@ -11,8 +11,8 @@
 ;; Prefer iA Writer Mono S (Annex's font), fall back to JetBrains Mono
 (set-face-attribute 'default nil :font
                     (if (find-font (font-spec :name "iA Writer Mono S"))
-                        "iA Writer Mono S-14"
-                      "JetBrains Mono-14"))
+                        "iA Writer Mono S-15"
+                      "JetBrains Mono-15"))
 
 ;; window frame title
 (setq frame-title-format
@@ -21,6 +21,12 @@
 
 (setq frame-resize-pixelwise t)
 (setq window-resize-pixelwise t)
+
+(setq mouse-wheel-follow-point t)
+(setq scroll-conservatively 101)   ; never recenter aggressively
+(setq scroll-margin 3)             ; keep 3 lines of context at edges
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 1)))  ; 3 lines per tick
+(setq mouse-wheel-progressive-speed nil)  ; disable acceleration
 
 
 (provide 'james-gui)
