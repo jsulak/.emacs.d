@@ -302,7 +302,9 @@ Matches exact, then prefix (first name), then substring."
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c f") 'james/org-insert-file-link)
 (global-set-key (kbd "C-c p") #'james/org-agenda-person-view)
-
+(define-key org-mode-map (kbd "C-c b") (lambda () (interactive) (org-emphasize ?*)))
+(define-key org-mode-map (kbd "C-c i") (lambda () (interactive) (org-emphasize ?/)))
+(define-key org-mode-map (kbd "C-c u") (lambda () (interactive) (org-emphasize ?_)))
 
 
 (provide 'james-org)
