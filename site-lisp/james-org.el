@@ -92,6 +92,14 @@
 ;;   (define-key org-mode-map (kbd "RET") #'james/org-return))
 
 
+
+(defun james/org-focus-heading ()
+  "Collapse everything, then reveal current subtree."
+  (interactive)
+  (org-overview)
+  (org-reveal t)
+  (org-show-subtree))
+
 (defun james/org-sort-checkboxes ()
   "Sort checkbox list, unchecked first."
   (interactive)
@@ -294,6 +302,8 @@ Matches exact, then prefix (first name), then substring."
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c f") 'james/org-insert-file-link)
 (global-set-key (kbd "C-c p") #'james/org-agenda-person-view)
+
+
 
 (provide 'james-org)
 ;;; james-org.el ends here

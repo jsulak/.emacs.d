@@ -8,11 +8,7 @@
       '(("ON HOLD" . (:foreground "#a8a8a8" :weight bold))))
 (load-theme 'annex-light t)
 
-;; Prefer iA Writer Mono S (Annex's font), fall back to JetBrains Mono
-(set-face-attribute 'default nil :font
-                    (if (find-font (font-spec :name "iA Writer Mono S"))
-                        "iA Writer Mono S-15"
-                      "JetBrains Mono-15"))
+(set-face-attribute 'default nil :font "JetBrains Mono-15")
 
 ;; window frame title
 (setq frame-title-format

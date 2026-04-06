@@ -132,6 +132,8 @@
 (which-key-mode t)
 (global-so-long-mode 1)
 
+(setq-default cursor-type 'bar)
+
 
 ;; ==============================
 ;; Built-in packages
