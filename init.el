@@ -172,6 +172,7 @@
          ("<M-f10>" . consult-imenu)
          ("C-c o" . consult-line)
          ("C-x M-b" . consult-buffer-other-window)
+		 ("C-c b" . consult-bookmark)
          ("M-y" . consult-yank-from-kill-ring))
   :config
   (consult-customize

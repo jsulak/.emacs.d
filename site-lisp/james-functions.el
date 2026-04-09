@@ -263,5 +263,21 @@ Requires pandoc to be installed."
         (user-error "Pandoc conversion failed"))
       (insert org-text))))
 
+
+(defun james/org-copy-rich-text ()
+  "Copy current Org buffer or region as rich text (HTML) to the macOS clipboard."
+  (interactive)
+  (let* ((beg (if (use-region-p) (region-beginning) (point-min)))
+         (end (if (use-region-p) (region-end) (point-max)))
+         (org-text (buffer-substring-no-properties beg end)))
+    (with-temp-buffer
+      (insert org-text)
+      (shell-command-on-region
+       (point-min) (point-max)
+       "pandoc -f org -t html | textutil -stdin -format html -convert rtf -stdout | pbcopy"
+       nil nil nil nil))
+    (message "Copied as rich text.")))
+
+
 (provide 'james-functions)
 
