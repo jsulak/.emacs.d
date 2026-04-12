@@ -1,11 +1,29 @@
 ;;; james-osx.el --- macOS-specific configuration -*- lexical-binding: t; -*-
 
-(menu-bar-mode 1)
-
 (setq ring-bell-function 'ignore)
 
 (if window-system
-    (require 'james-gui))
+    (require 'james-gui)
+  (require 'james-tty))
+
+;; Sync theme with macOS dark/light appearance
+(defun james/dark-mode-p ()
+  "Return non-nil if macOS is in dark mode."
+  (string-match-p
+   "Dark"
+   (shell-command-to-string "defaults read -g AppleInterfaceStyle 2>/dev/null")))
+
+(defun james/apply-system-theme ()
+  "Load annex-dark or annex-light to match macOS appearance."
+  (let ((desired (if (james/dark-mode-p) 'annex-dark 'annex-light)))
+    (unless (equal (car custom-enabled-themes) desired)
+      (james/apply-theme desired))))
+
+(james/apply-system-theme)
+;; Re-check when Emacs regains focus. Works in GUI; also fires in terminals
+;; that support focus reporting. In other terminals, run M-x
+;; james/apply-system-theme manually after toggling System Settings.
+(add-function :after after-focus-change-function #'james/apply-system-theme)
 
 (with-eval-after-load 'ispell
   (setq ispell-program-name "aspell")

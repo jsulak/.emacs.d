@@ -1,12 +1,14 @@
 ;;; james-gui.el --- GUI-only settings -*- lexical-binding: t; -*-
 
-;; Register custom theme directory
-(add-to-list 'custom-theme-load-path
-             (expand-file-name "themes" user-emacs-directory))
+(require 'james-theme)
+
+(menu-bar-mode 1)
 
 (setq org-todo-keyword-faces
       '(("ON HOLD" . (:foreground "#a8a8a8" :weight bold))))
-(load-theme 'annex-light t)
+
+;; Default to light; james-osx.el overrides with system-aware switching.
+(james/apply-theme 'annex-light)
 
 (set-face-attribute 'default nil :font "JetBrains Mono-15")
 
