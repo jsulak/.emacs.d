@@ -266,6 +266,13 @@
 (use-package vundo
   :bind ("C-x u" . vundo))
 
+;; Kitty keyboard protocol — richer key reporting in capable terminals
+;; (distinguishes C-i from TAB, C-m from RET, supports all modifier combos).
+;; global-kkp-mode only activates on TTY frames; GUI frames are unaffected.
+(use-package kkp
+  :config
+  (global-kkp-mode 1))
+
 (use-package yaml-mode
   :defer t)
 
