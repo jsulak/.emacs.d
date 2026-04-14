@@ -2,7 +2,7 @@
 
 ;; Bind custom dired functions and fix search
 (setq dired-load-hook
-      (lambda (&rest ignore)
+      (lambda (&rest _ignore)
  (define-key dired-mode-map
    "l" 'dired-launch-command)
  (define-key dired-mode-map

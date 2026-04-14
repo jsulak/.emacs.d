@@ -1,3 +1,5 @@
+;;; rich2org.el --- Paste clipboard rich text as Org mode content -*- lexical-binding: t; -*-
+;;
 ;; rich2org.el — Paste clipboard rich text as Org mode content
 ;;
 ;; Drop this in your config (e.g. after (use-package org ...))

@@ -1,3 +1,5 @@
+;;; init.el --- Personal Emacs configuration -*- lexical-binding: t; -*-
+
 ;; Speed up startup: suppress GC and file-name-handler overhead
 (setq gc-cons-threshold most-positive-fixnum)
 (defvar default-file-name-handler-alist file-name-handler-alist)
@@ -417,6 +419,6 @@
 (bind-keys ("C-c m" . james/paste-markdown-as-org))
 
 ;; Local machine-specific overrides (loaded last so they take precedence)
-(setq local-init (concat user-emacs-directory "local.el"))
-(when (file-exists-p local-init)
-  (load local-init))
+(let ((local-init (expand-file-name "local.el" user-emacs-directory)))
+  (when (file-exists-p local-init)
+    (load local-init)))

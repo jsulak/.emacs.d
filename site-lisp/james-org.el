@@ -98,7 +98,7 @@
   (interactive)
   (org-overview)
   (org-reveal t)
-  (org-show-subtree))
+  (org-fold-show-subtree))
 
 (defun james/org-sort-checkboxes ()
   "Sort checkbox list, unchecked first."
