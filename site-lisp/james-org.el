@@ -62,36 +62,6 @@
   :hook (org-mode . org-download-enable))
 
 
-;; (defun james/org-return ()
-;;   "In a list item, RET creates a new list item of the same type.
-;; Checkbox items get a new checkbox, ordered/unordered items get a plain item.
-;; On an empty list item, remove it and insert a newline.
-;; Otherwise, normal return."
-;;   (interactive)
-;;   (let ((on-list-line (save-excursion
-;;                         (beginning-of-line)
-;;                         (looking-at "\\s-*\\([-+*]\\|[0-9]+[.)]\\)\\( \\[.\\]\\)?\\s-"))))
-;;     (if (and (org-in-item-p) on-list-line)
-;;         (let ((checkbox-p (save-excursion
-;;                             (beginning-of-line)
-;;                             (looking-at "\\s-*[-+*] \\[.\\]\\|\\s-*[0-9]+[.)] \\[.\\]")))
-;;               (empty-p (save-excursion
-;;                          (beginning-of-line)
-;;                          (looking-at "\\s-*\\([-+*]\\|[0-9]+[.)]\\)\\( \\[.\\]\\)?\\s-*$"))))
-;;           (if empty-p
-;;               ;; Empty list item — remove it and exit
-;;               (progn
-;;                 (delete-region (line-beginning-position) (line-end-position))
-;;                 (delete-char -1)
-;;                 (org-return))
-;;             ;; Non-empty list item — create a new one
-;;             (org-insert-item checkbox-p)))
-;;       (org-return))))
-
-;; (with-eval-after-load 'org
-;;   (define-key org-mode-map (kbd "RET") #'james/org-return))
-
-
 
 (defun james/org-focus-heading ()
   "Collapse everything, then reveal current subtree."
@@ -158,9 +128,9 @@
                  :immediate-finish nil))
 
   (add-to-list 'org-capture-templates
-               '("o" "1:1 Agenda Item" checkitem
-                 (file+function james/org-1on1-file james/org-1on1-find-person)
-                 "- [ ] %?")))
+               '("o" "1:1 Agenda Item" plain
+                 (file+function james/org-1on1-choose-person-file james/org-1on1-goto-topics)
+                 "- [ ] %?\n")))
 
 (defun james/org-insert-file-link ()
   "Insert an org link to a file in `org-directory' using minibuffer completion.
@@ -181,9 +151,6 @@ Uses the file's #+TITLE as the link description, falling back to the filename."
 ;; 1:1 Agenda System
 ;; =======================
 
-(defvar james/org-1on1-file (expand-file-name "agendas.org" org-directory)
-  "File for 1:1 agenda items.")
-
 (defvar james/org-agenda-person nil
   "Current person search term for agenda TODO filtering.")
 
@@ -191,25 +158,58 @@ Uses the file's #+TITLE as the link description, falling back to the filename."
   "Full heading name resolved from `james/org-agenda-person'.")
 
 (defun james/org-1on1-people ()
-  "Return list of people from agendas.org headings."
-  (org-map-entries
-   (lambda () (nth 4 (org-heading-components)))
-   "LEVEL=1" (list james/org-1on1-file)))
+  "Return list of people from org files tagged with :person:."
+  (let (people)
+    (dolist (file (directory-files org-directory t "\\.org\\'"))
+      (with-temp-buffer
+        (insert-file-contents file nil 0 512)
+        (goto-char (point-min))
+        (when (re-search-forward "^#\\+FILETAGS:.*:person:" nil t)
+          (goto-char (point-min))
+          (push (if (re-search-forward "^#\\+TITLE:[ \t]+\\(.+\\)" nil t)
+                    (string-trim (match-string 1))
+                  (file-name-sans-extension (file-name-nondirectory file)))
+                people))))
+    (nreverse people)))
 
-(defun james/org-1on1-find-person ()
-  "Jump to a person's heading in agendas.org, creating if needed."
+(defun james/org-1on1-person-file (person)
+  "Return path to PERSON's org file, creating it if needed."
+  (let ((file (expand-file-name (concat person ".org") org-directory)))
+    (unless (file-exists-p file)
+      (with-temp-file file
+        (insert (format "#+TITLE: %s\n#+FILETAGS: :person:\n\n* Topics\n\n" person))))
+    file))
+
+(defvar james/org-1on1--capture-file nil
+  "Temporary storage for the person file path during capture.")
+
+(defun james/org-1on1-choose-person-file ()
+  "Prompt for a person and return their org file path."
   (let* ((people (james/org-1on1-people))
          (person (completing-read "Person: " people nil nil)))
-    (goto-char (point-min))
-    (if (re-search-forward (format "^\\* %s" (regexp-quote person)) nil t)
-        (org-end-of-subtree t)
-      (goto-char (point-max))
-      (unless (bolp) (insert "\n"))
-      (insert (format "* %s\n" person)))))
+    (setq james/org-1on1--capture-file (james/org-1on1-person-file person))
+    james/org-1on1--capture-file))
+
+(defun james/org-1on1-goto-topics ()
+  "Position point for new item under Topics heading, creating if needed.
+Ensures a blank line after the heading, then positions at end of list."
+  (goto-char (point-min))
+  (unless (re-search-forward "^\\* Topics" nil t)
+    (goto-char (point-max))
+    (unless (bolp) (insert "\n"))
+    (insert "* Topics"))
+  (end-of-line)
+  (let ((has-items (re-search-forward "^- \\[" (save-excursion (org-end-of-subtree t) (point)) t)))
+    (if has-items
+        (progn
+          (org-end-of-subtree t)
+          (unless (bolp) (insert "\n")))
+      (insert "\n\n"))))
 
 (defun james/org-agenda-skip-unless-person ()
   "Skip entry unless its heading or body mentions the current person.
 Matches any word from the person's name (first or last)."
+  (james/org-1on1-ensure-person)
   (let ((end (save-excursion (org-end-of-subtree t)))
         (case-fold-search t)
         (words (split-string james/org-agenda-person)))
@@ -223,13 +223,14 @@ Matches any word from the person's name (first or last)."
 
 (defun james/org-1on1-agenda-block ()
   "Custom agenda block showing unchecked items for `james/org-agenda-person'."
+  (james/org-1on1-ensure-person)
   (let ((inhibit-read-only t)
+        (file (james/org-1on1-person-file james/org-agenda-person-full))
         items)
-    (with-current-buffer (find-file-noselect james/org-1on1-file)
+    (with-current-buffer (find-file-noselect file)
       (org-with-wide-buffer
        (goto-char (point-min))
-       (when (re-search-forward
-              (format "^\\* %s" (regexp-quote james/org-agenda-person-full)) nil t)
+       (when (re-search-forward "^\\* Topics" nil t)
          (let ((end (save-excursion (org-end-of-subtree t))))
            (while (re-search-forward "^\\s-*- \\[ \\] \\(.*\\)" end t)
              (push (cons (match-string 1)
@@ -270,31 +271,42 @@ Matches exact, then prefix (first name), then substring."
       (cl-find-if (lambda (p) (string-match-p (regexp-quote input) p)) people)
       input))
 
+(defun james/org-1on1-ensure-person ()
+  "Ensure `james/org-agenda-person' variables are set, prompting if needed."
+  (unless james/org-agenda-person-full
+    (let* ((people (james/org-1on1-people))
+           (input (completing-read "Person: " people nil nil))
+           (full (james/org-1on1-resolve-person input people)))
+      (setq james/org-agenda-person input
+            james/org-agenda-person-full full))))
+
 (defun james/org-agenda-person-view ()
   "Show agenda filtered to a specific person."
   (interactive)
-  (let* ((people (james/org-1on1-people))
-         (input (completing-read "Person: " people nil nil))
-         (full (james/org-1on1-resolve-person input people)))
-    (setq james/org-agenda-person input
-          james/org-agenda-person-full full)
-    (org-agenda nil "p")))
+  (setq james/org-agenda-person nil
+        james/org-agenda-person-full nil)
+  (james/org-1on1-ensure-person)
+  (org-agenda nil "p"))
 
 (defun james/org-1on1-add-item (person item)
-  "Add ITEM under PERSON in agendas.org non-interactively."
-  (with-current-buffer (find-file-noselect james/org-1on1-file)
-    (org-with-wide-buffer
-     (goto-char (point-min))
-     (if (re-search-forward (format "^\\* %s" (regexp-quote person)) nil t)
-         (progn
-           (org-end-of-subtree t)
-           (unless (bolp) (insert "\n")))
-       (goto-char (point-max))
-       (unless (bolp) (insert "\n"))
-       (insert (format "* %s\n" person)))
-     (insert (format "- [ ] %s\n" item))
-     (save-buffer))
-    (format "Added to %s: %s" person item)))
+  "Add ITEM under PERSON's Topics heading non-interactively.
+Creates the person's file if it doesn't exist."
+  (let ((file (james/org-1on1-person-file person)))
+    (with-current-buffer (find-file-noselect file)
+      (org-with-wide-buffer
+       (goto-char (point-min))
+       (if (re-search-forward "^\\* Topics" nil t)
+           (progn
+             (org-end-of-subtree t)
+             (unless (bolp) (insert "\n"))
+             (when (save-excursion (forward-line -1) (looking-at-p "^\\* "))
+               (insert "\n")))
+         (goto-char (point-max))
+         (unless (bolp) (insert "\n"))
+         (insert "* Topics\n\n"))
+       (insert (format "- [ ] %s\n" item))
+       (save-buffer))
+      (format "Added to %s: %s" person item))))
 
 ;; Keybindings
 (global-set-key (kbd "C-c a") 'org-agenda)
