@@ -25,12 +25,6 @@
 ;; james/apply-system-theme manually after toggling System Settings.
 (add-function :after after-focus-change-function #'james/apply-system-theme)
 
-(with-eval-after-load 'ispell
-  (setq ispell-program-name "aspell")
-  (setq ispell-list-command "list")
-  (setq ispell-extra-args '("--sug-mode=ultra")))
-
-
 ;; Dired mode
 (with-eval-after-load 'dired
   (define-key dired-mode-map "l" 'james/dired-open-mac)
