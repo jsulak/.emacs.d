@@ -154,6 +154,17 @@ Uses the file's #+TITLE as the link description, falling back to the filename."
                     (file-name-sans-extension choice)))))
     (insert (format "[[file:%s][%s]]" choice title))))
 
+
+(defun james/org-archive-done-tasks ()
+  "Archive all tasks with a DONE state in the current buffer."
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
+   "/DONE" 'file))
+
+
 ;; =======================
 ;; 1:1 Agenda System
 ;; =======================
@@ -324,7 +335,7 @@ Creates the person's file if it doesn't exist."
 (define-key org-mode-map (kbd "C-c b") (lambda () (interactive) (org-emphasize ?*)))
 (define-key org-mode-map (kbd "C-c i") (lambda () (interactive) (org-emphasize ?/)))
 (define-key org-mode-map (kbd "C-c u") (lambda () (interactive) (org-emphasize ?_)))
-
+(define-key org-mode-map (kbd "C-C s") #'james/org-sort-checkboxes)
 
 (provide 'james-org)
 ;;; james-org.el ends here
