@@ -185,6 +185,14 @@
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
 
+(use-package jinx
+  :hook ((text-mode . jinx-mode)
+         (prog-mode . jinx-mode))
+  :bind (("M-$" . jinx-correct)
+         ("C-M-$" . jinx-languages)
+         :map org-mode-map
+         ("C-;" . jinx-correct)))
+
 (use-package recentf
   :ensure nil
   :config

@@ -17,12 +17,6 @@
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
 (add-hook 'org-mode-hook (lambda () (setq line-spacing 0.3)))
 
-;; Spell checking (aspell) — only enabled in org buffers
-(with-eval-after-load 'ispell
-  (setq ispell-program-name "aspell")
-  (setq ispell-list-command "list")
-  (setq ispell-extra-args '("--sug-mode=ultra")))
-(add-hook 'org-mode-hook 'flyspell-mode)
 
 (set-face-attribute 'org-level-1 nil :height 1.3 :weight 'bold)
 (set-face-attribute 'org-level-2 nil :height 1.2 :weight 'bold)
