@@ -193,6 +193,15 @@
          :map org-mode-map
          ("C-;" . jinx-correct)))
 
+(use-package avy
+  :bind (("M-j" . avy-goto-char-timer)
+         ("M-g g" . avy-goto-line)
+         ("M-g w" . avy-goto-word-1)
+         :map isearch-mode-map
+         ("M-j" . avy-isearch))
+  :custom
+  (avy-timeout-seconds 0.3))
+
 (use-package recentf
   :ensure nil
   :config
