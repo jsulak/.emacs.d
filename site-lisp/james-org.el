@@ -45,11 +45,6 @@
         org-download-timestamp "%Y%m%d%H%M%S-"
         org-download-screenshot-method "screencapture -i %s"
         org-download-annotate-function (lambda (_link) ""))
-  ;; Enable drag-and-drop on macOS
-  (setq dnd-protocol-alist
-        '(("^file:" . org-download-dnd)
-          ("^http" . org-download-dnd)))
-
   ;; Open image files in Preview.app when clicked or via C-c C-o
   (with-eval-after-load 'org
     (dolist (ext '("\\.png\\'" "\\.jpg\\'" "\\.jpeg\\'" "\\.gif\\'" "\\.webp\\'"))
