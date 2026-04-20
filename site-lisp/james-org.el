@@ -14,6 +14,7 @@
 (setq org-image-actual-width '(500))
 (setq org-hide-emphasis-markers t)
 (setq org-pretty-entities t)
+(setq org-use-sub-superscripts nil)
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
 (add-hook 'org-mode-hook (lambda () (setq line-spacing 0.3)))
 
