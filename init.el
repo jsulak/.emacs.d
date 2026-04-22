@@ -274,7 +274,9 @@
   (exec-path-from-shell-initialize))
 
 (use-package markdown-mode
-  :mode "\\.md\\'")
+  :mode "\\.md\\'"
+  :config
+  (require 'james-markdown))
 
 (use-package move-text
   :bind (("<C-S-down>" . move-text-down)
