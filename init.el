@@ -192,6 +192,8 @@
          ("C-M-$" . jinx-languages)
          :map org-mode-map
          ("C-;" . jinx-correct)))
+(setq jinx-languages "en_US")
+
 
 (use-package avy
   :bind (("M-j" . avy-goto-char-timer)
