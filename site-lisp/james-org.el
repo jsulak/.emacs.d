@@ -58,6 +58,10 @@
           (org-open-at-point)))))
   :hook (org-mode . org-download-enable))
 
+(use-package ox-clip
+  :ensure t
+  :bind (:map org-mode-map
+              ("C-c w" . ox-clip-formatted-copy)))
 
 
 (defun james/org-focus-heading ()
