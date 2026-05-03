@@ -433,6 +433,9 @@
            ("S-<down>" . windmove-down)
            ("C-x 5" . james/split-window))
 
+(advice-add 'split-window-below :after
+            (lambda (&rest _) (other-window 1)))
+
 ;; Font size
 (bind-keys ("C-+" . james/increase-font-size)
            ("C--" . james/decrease-font-size))
