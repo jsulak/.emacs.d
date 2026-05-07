@@ -39,6 +39,9 @@
 (use-package org-download
   :ensure t
   :after org
+  :bind (:map org-mode-map
+              ("C-c i s" . org-download-screenshot)
+              ("C-c i y" . org-download-clipboard))
   :config
   (setq org-download-method 'directory
         org-download-image-dir "./images"
