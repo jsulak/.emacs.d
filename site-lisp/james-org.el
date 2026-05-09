@@ -153,13 +153,13 @@ Uses the file's #+TITLE as the link description, falling back to the filename."
 
 
 (defun james/org-archive-done-tasks ()
-  "Archive all tasks with a DONE state in the current buffer."
+  "Archive all tasks with a DONE or OBE state in the current buffer."
   (interactive)
   (org-map-entries
    (lambda ()
      (org-archive-subtree)
      (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
-   "/DONE" 'file))
+   "/DONE|OBE" 'file))
 
 
 ;; =======================
