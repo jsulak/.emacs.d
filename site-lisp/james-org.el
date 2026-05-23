@@ -34,6 +34,7 @@
 
 (setq org-file-apps
       '((directory . "open %s")
+        ("\\.pdf\\'" . default)
         (auto-mode . emacs)))
 
 (use-package org-download
