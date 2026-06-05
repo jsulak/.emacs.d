@@ -145,6 +145,28 @@
   :init
   (vertico-mode))
 
+(use-package vertico-posframe
+  :after vertico
+  :if (display-graphic-p)
+  :custom
+  (vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
+  (vertico-posframe-width 100)
+  (vertico-posframe-min-width 100)
+  (vertico-posframe-border-width 1)
+  :config
+  (defun james/vertico-posframe-update-border-face (&rest _)
+    "Set the Vertico posframe border color from the active theme."
+    (let ((color (or (face-foreground 'border nil t)
+                     (face-foreground 'vertical-border nil t)
+                     (face-foreground 'shadow nil t)
+                     "gray70")))
+      (set-face-background 'vertico-posframe-border color)))
+
+  (james/vertico-posframe-update-border-face)
+  (add-hook 'after-load-theme-functions
+            #'james/vertico-posframe-update-border-face)
+  (vertico-posframe-mode 1))
+
 (use-package vertico-directory
   :after vertico
   :ensure nil
@@ -162,7 +184,10 @@
 
 (use-package marginalia
   :init
-  (marginalia-mode))
+  (marginalia-mode)
+  :config
+  (dolist (category '(file project-file buffer project-buffer))
+    (setf (alist-get category marginalia-annotators) '(none))))
 
 (use-package consult
   :bind (("C-x b" . consult-buffer)
