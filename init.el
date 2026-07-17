@@ -165,6 +165,18 @@
   (james/vertico-posframe-update-border-face)
   (add-hook 'after-load-theme-functions
             #'james/vertico-posframe-update-border-face)
+
+  (defun james/vertico-posframe-reset-after-frame-move (frame)
+    "Recreate Vertico's posframe after its parent FRAME moves."
+    (when (and (frame-live-p frame)
+               (not (frame-parameter frame 'parent-frame))
+               (buffer-live-p vertico-posframe--buffer))
+      (posframe-delete-frame vertico-posframe--buffer)))
+
+  ;; Posframe caches relative coordinates, which can leave its native child
+  ;; frame at the old screen position after the parent is moved on macOS.
+  (add-hook 'move-frame-functions
+            #'james/vertico-posframe-reset-after-frame-move)
   (vertico-posframe-mode 1))
 
 (use-package vertico-directory
