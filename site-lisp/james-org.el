@@ -1,5 +1,6 @@
 ;;; james-org.el --- Org mode configuration -*- lexical-binding: t; -*-
 
+(require 'cl-lib)
 (require 'org)
 
 ;; Defaults: Set org directories in local.el
@@ -37,6 +38,11 @@
         ("\\.pdf\\'" . default)
         (auto-mode . emacs)))
 
+(defun james/org-download-clipboard-without-id-property (orig-fun &rest args)
+  "Call ORIG-FUN with ARGS without adding an Org ID property drawer."
+  (cl-letf (((symbol-function 'org-id-get-create) #'ignore))
+    (apply orig-fun args)))
+
 (use-package org-download
   :ensure t
   :after org
@@ -47,6 +53,8 @@
         org-download-timestamp "%Y%m%d%H%M%S-"
         org-download-screenshot-method "screencapture -i %s"
         org-download-annotate-function (lambda (_link) ""))
+  (advice-add 'org-download-clipboard :around
+              #'james/org-download-clipboard-without-id-property)
   ;; Open image files in Preview.app when clicked or via C-c C-o
   (with-eval-after-load 'org
     (dolist (ext '("\\.png\\'" "\\.jpg\\'" "\\.jpeg\\'" "\\.gif\\'" "\\.webp\\'"))
