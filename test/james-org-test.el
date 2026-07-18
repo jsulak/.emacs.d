@@ -36,6 +36,14 @@ FUNCTION receives the collection root and the absolute Org filename."
       (equal (james/org-image-directory)
              (expand-file-name "images/projects/alpha" root))))))
 
+(ert-deftest james/org-attachment-directory-for-nested-note ()
+  (james-test/call-with-org-file
+   "projects/alpha.org"
+   (lambda (root _org-file)
+     (should
+      (equal (james/org-attachment-directory)
+             (expand-file-name "attachments/projects/alpha" root))))))
+
 (ert-deftest james/org-image-directory-requires-collection-file ()
   (let ((org-directory (make-temp-file "james-org-root-" t)))
     (unwind-protect
@@ -77,6 +85,80 @@ FUNCTION receives the collection root and the absolute Org filename."
          (should
           (equal (james/org-download-file-name "System Architecture.PNG")
                  "20260718-143522-system-architecture-3.png")))))))
+
+(ert-deftest james/org-attachment-insert-copies-and-links-file ()
+  (james-test/call-with-org-file
+   "projects/alpha.org"
+   (lambda (root _org-file)
+     (let* ((source-directory (expand-file-name "incoming" root))
+            (source (expand-file-name "Design Review (Final).PDF"
+                                      source-directory))
+            (target-directory
+             (expand-file-name "attachments/projects/alpha" root))
+            (target-name "20260718-143522-design-review-final.pdf")
+            (target (expand-file-name target-name target-directory)))
+       (make-directory source-directory t)
+       (with-temp-file source (insert "pdf data"))
+       (cl-letf (((symbol-function 'format-time-string)
+                  (lambda (&rest _) "20260718-143522-")))
+         (should (equal (james/org-attachment-insert source) target)))
+       (should (file-exists-p source))
+       (should (equal (with-temp-buffer
+                        (insert-file-contents target)
+                        (buffer-string))
+                      "pdf data"))
+       (should
+        (string-match-p
+         (regexp-quote
+          (format "[[file:../attachments/projects/alpha/%s]]" target-name))
+         (buffer-string)))
+       (should-not (string-match-p ":PROPERTIES:" (buffer-string)))))))
+
+(ert-deftest james/org-drag-drop-routes-attachments-and-images ()
+  (james-test/call-with-org-file
+   "notes/example.org"
+   (lambda (root _org-file)
+     (let* ((source-directory (expand-file-name "incoming" root))
+            (attachment (expand-file-name "Agenda.PDF" source-directory))
+            (image (expand-file-name "Diagram.PNG" source-directory))
+            (fallback-calls nil))
+       (make-directory source-directory t)
+       (with-temp-file attachment (insert "attachment"))
+       (with-temp-file image (insert "image"))
+       (cl-labels ((fallback (uri action)
+                     (push (list uri action) fallback-calls)
+                     'fallback))
+         (cl-letf (((symbol-function 'format-time-string)
+                    (lambda (&rest _) "20260718-143522-"))
+                   ((symbol-function 'url-copy-file)
+                    (lambda (_uri target &optional _ok-if-exists)
+                      (with-temp-file target (insert "downloaded")))))
+           (should
+            (eq (james/org-download-dnd-with-attachments
+                 #'fallback (concat "file://" attachment) 'copy)
+                'copy))
+           (should
+            (eq (james/org-download-dnd-with-attachments
+                 #'fallback "https://example.test/Board%20Packet.PDF" 'copy)
+                'copy)))
+         (should
+          (eq (james/org-download-dnd-with-attachments
+               #'fallback (concat "file://" image) 'copy)
+              'fallback)))
+       (should (= (length fallback-calls) 1))
+       (should
+        (file-exists-p
+         (expand-file-name
+          "attachments/notes/example/20260718-143522-agenda.pdf" root)))
+       (should
+        (file-exists-p
+         (expand-file-name
+          "attachments/notes/example/20260718-143522-board-packet.pdf" root)))
+       (should
+        (string-match-p
+         (regexp-quote
+          "[[file:../attachments/notes/example/20260718-143522-agenda.pdf]]")
+         (buffer-string)))))))
 
 (ert-deftest james/org-download-clipboard-uses-clean-name-without-id ()
   (let (received-name id-result)

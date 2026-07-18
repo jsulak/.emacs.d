@@ -67,6 +67,23 @@ added. This prevents images from silently being written outside the collection.
 Renaming an Org file does not move its existing image directory; existing links
 continue to work, and newly added images use the renamed file's new path.
 
+## Org attachment storage
+
+PDFs, office documents, archives, and other non-image files added through
+drag-and-drop or `C-c v a` are copied beneath `attachments/`. The Org file's
+relative path is mirrored in the same way as image storage:
+
+```text
+~/org/meeting-notes.org  ->  ~/org/attachments/meeting-notes/
+~/org/projects/alpha.org ->  ~/org/attachments/projects/alpha/
+```
+
+Attachment filenames use `YYYYMMDD-HHMMSS-sanitized-source-name.ext`, and
+links remain relative plain `file:` links without Org ID property drawers.
+Images continue to use the `images/` workflow. Shared migrated attachments are
+stored once in `attachments/_shared/`; unreferenced attachments are preserved
+under `attachments/_orphans/`.
+
 ## Key bindings
 
 `C-h` is rebound to backspace; help is on `F1`.

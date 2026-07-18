@@ -1,8 +1,11 @@
 ;;; james-org.el --- Org mode configuration -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
+(require 'dnd)
 (require 'org)
 (require 'subr-x)
+(require 'url-parse)
+(require 'url-util)
 
 ;; Defaults: Set org directories in local.el
 (setq org-directory "~/org")
@@ -42,21 +45,34 @@
 (defvar james/org-download-source-name nil
   "Source name override used while formatting an Org image filename.")
 
-(defun james/org-image-directory (&optional org-file)
-  "Return the image directory for ORG-FILE under `org-directory'.
+(defconst james/org-image-extensions
+  '("avif" "bmp" "gif" "heic" "jpeg" "jpg" "png" "svg" "tif" "tiff"
+    "webp")
+  "Filename extensions routed through the Org image workflow.")
+
+(defun james/org-storage-directory (kind &optional org-file)
+  "Return the KIND storage directory for ORG-FILE under `org-directory'.
 ORG-FILE defaults to `buffer-file-name'.  Its path relative to the Org
-collection is mirrored below the collection's images directory."
+collection is mirrored below the collection's KIND directory."
   (let* ((org-file (or org-file buffer-file-name))
          (root (file-name-as-directory (expand-file-name org-directory))))
     (unless org-file
-      (user-error "Save this Org buffer before adding images"))
+      (user-error "Save this Org buffer before adding files"))
     (let* ((relative (file-relative-name (expand-file-name org-file) root))
            (first-component (car (split-string relative "[/\\\\]" t))))
       (when (equal first-component "..")
         (user-error "Org file is outside org-directory: %s" org-file))
       (expand-file-name
        (file-name-sans-extension relative)
-       (expand-file-name "images/" root)))))
+       (expand-file-name (file-name-as-directory kind) root)))))
+
+(defun james/org-image-directory (&optional org-file)
+  "Return the image directory for ORG-FILE under `org-directory'."
+  (james/org-storage-directory "images" org-file))
+
+(defun james/org-attachment-directory (&optional org-file)
+  "Return the attachment directory for ORG-FILE under `org-directory'."
+  (james/org-storage-directory "attachments" org-file))
 
 (defun james/org-image--sanitized-name (filename)
   "Return a lowercase, filesystem-friendly image name for FILENAME."
@@ -96,6 +112,99 @@ collection is mirrored below the collection's images directory."
                               sanitized)))
     (james/org-image--unique-name (james/org-image-directory) timestamped)))
 
+(defun james/org-attachment-file-name (filename)
+  "Format FILENAME using the Org attachment naming convention."
+  (let* ((sanitized (james/org-image--sanitized-name filename))
+         (timestamped (concat (format-time-string "%Y%m%d-%H%M%S-")
+                              sanitized)))
+    (james/org-image--unique-name
+     (james/org-attachment-directory) timestamped)))
+
+(defun james/org-image-file-p (filename)
+  "Return non-nil when FILENAME has a supported image extension."
+  (member (downcase (or (file-name-extension filename) ""))
+          james/org-image-extensions))
+
+(defun james/org-attachment-file-p (filename)
+  "Return non-nil when FILENAME should use the attachment workflow."
+  (let ((extension (downcase (or (file-name-extension filename) ""))))
+    (and (not (string-empty-p extension))
+         (not (james/org-image-file-p filename))
+         (not (member extension '("org" "org_archive"))))))
+
+(defun james/org-attachment--local-file (uri)
+  "Return the local filename represented by URI, or nil."
+  (let* ((parsed (url-generic-parse-url uri))
+         (host (url-host parsed)))
+    (when (and (equal (url-type parsed) "file")
+               (member host (list nil "" "localhost" (system-name))))
+      (url-unhex-string (url-filename parsed)))))
+
+(defun james/org-attachment-insert (source)
+  "Copy SOURCE into this Org file's attachment directory and insert a link."
+  (interactive "fAttach file: ")
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Attachments can only be added from an Org buffer"))
+  (let* ((source (expand-file-name source))
+         (directory (james/org-attachment-directory))
+         (source-extension (downcase (or (file-name-extension source) ""))))
+    (unless (file-regular-p source)
+      (user-error "Attachment is not a regular file: %s" source))
+    (when (or (james/org-image-file-p source)
+              (member source-extension '("org" "org_archive")))
+      (user-error "Use the image or Org link workflow for: %s" source))
+    (make-directory directory t)
+    (let ((target
+           (if (file-in-directory-p source directory)
+               source
+             (expand-file-name
+              (james/org-attachment-file-name source) directory))))
+      (unless (file-equal-p source target)
+        (copy-file source target nil t nil t))
+      (insert
+       (format "[[file:%s]]\n"
+               (org-link-escape (file-relative-name target))))
+      target)))
+
+(defun james/org-attachment-download (uri)
+  "Download the attachment at URI and insert a relative Org link."
+  (let* ((parsed (url-generic-parse-url uri))
+         (source-name
+          (file-name-nondirectory (url-unhex-string (url-filename parsed))))
+         (directory (james/org-attachment-directory)))
+    (unless (james/org-attachment-file-p source-name)
+      (user-error "URI does not identify an attachment: %s" uri))
+    (make-directory directory t)
+    (let ((target
+           (expand-file-name
+            (james/org-attachment-file-name source-name) directory)))
+      (url-copy-file uri target nil)
+      (insert
+       (format "[[file:%s]]\n"
+               (org-link-escape (file-relative-name target))))
+      target)))
+
+(defun james/org-download-dnd-with-attachments (orig-fun uri action)
+  "Route non-image URI drops to attachments, otherwise call ORIG-FUN."
+  (let* ((parsed (url-generic-parse-url uri))
+         (source (james/org-attachment--local-file uri))
+         (remote-name
+          (file-name-nondirectory (url-unhex-string (url-filename parsed)))))
+    (cond
+     ((and (derived-mode-p 'org-mode)
+           source
+           (file-regular-p source)
+           (james/org-attachment-file-p source))
+      (james/org-attachment-insert source)
+      action)
+     ((and (derived-mode-p 'org-mode)
+           (member (url-type parsed) '("ftp" "http" "https"))
+           (james/org-attachment-file-p remote-name))
+      (james/org-attachment-download uri)
+      action)
+     (t
+      (funcall orig-fun uri action)))))
+
 (defun james/org-download-directory (orig-fun)
   "Use the collection image directory in Org, otherwise call ORIG-FUN."
   (if (derived-mode-p 'org-mode)
@@ -131,6 +240,8 @@ collection is mirrored below the collection's images directory."
               #'james/org-download-clipboard-without-id-property)
   (advice-add 'org-download-dnd-base64 :around
               #'james/org-download-base64-with-image-name)
+  (advice-add 'org-download-dnd :around
+              #'james/org-download-dnd-with-attachments)
   ;; Open image files in Preview.app when clicked or via C-c C-o
   (with-eval-after-load 'org
     (dolist (ext '("\\.png\\'" "\\.jpg\\'" "\\.jpeg\\'" "\\.gif\\'" "\\.webp\\'"))

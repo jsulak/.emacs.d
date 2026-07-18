@@ -513,6 +513,7 @@
            ("C-c i" . james/org-emphasize-italic)
            ("C-c u" . james/org-emphasize-underline)
            ("C-c s" . james/org-sort-checkboxes)
+           ("C-c v a" . james/org-attachment-insert)
            ("C-c v s" . org-download-screenshot)
            ("C-c v y" . org-download-clipboard)
            ("C-c w" . ox-clip-formatted-copy))
