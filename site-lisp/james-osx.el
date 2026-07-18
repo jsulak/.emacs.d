@@ -6,6 +6,8 @@
 ;;; Code:
 
 (defvar ns-pop-up-frames)
+(defvar mac-option-modifier)
+(defvar mac-command-modifier)
 
 (setq ring-bell-function 'ignore)
 (setq ns-pop-up-frames nil)
