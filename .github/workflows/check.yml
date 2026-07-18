@@ -1,0 +1,23 @@
+name: Check
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: purcell/setup-emacs@master
+        with:
+          version: 30.2
+      - name: Install shell lint dependency
+        run: sudo apt-get update && sudo apt-get install --yes shellcheck
+      - name: Run quality suite
+        run: make check

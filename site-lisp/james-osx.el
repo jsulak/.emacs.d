@@ -1,5 +1,10 @@
 ;;; james-osx.el --- macOS-specific configuration -*- lexical-binding: t; -*-
 
+;;; Commentary:
+;; macOS theme integration, modifier keys, and system file opening.
+
+;;; Code:
+
 (setq ring-bell-function 'ignore)
 
 (if window-system
@@ -26,12 +31,14 @@
 (add-function :after after-focus-change-function #'james/apply-system-theme)
 
 (defun james/open-file-mac (file-name)
+  "Open FILE-NAME with its default macOS application."
   (if (file-exists-p file-name)
       (call-process "/usr/bin/open" nil 0 nil file-name)))
 
 (declare-function dired-get-file-for-visit "dired")
 
 (defun james/dired-open-mac ()
+     "Open the Dired file at point with its default macOS application."
      (interactive)
      (let ((file-name (dired-get-file-for-visit)))
      (james/open-file-mac file-name)))
@@ -44,4 +51,6 @@
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'hyper)
 
+(provide 'james-osx)
 
+;;; james-osx.el ends here

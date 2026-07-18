@@ -1,5 +1,15 @@
 ;;; init.el --- Personal Emacs configuration -*- lexical-binding: t; -*-
 
+(defconst james/config-directory
+  (file-name-directory (or load-file-name user-init-file))
+  "Directory containing this Emacs configuration.")
+
+(defvar james/load-custom-config t
+  "When non-nil, load the Customize-generated configuration file.")
+
+(defvar james/load-local-config t
+  "When non-nil, load machine-local configuration overrides.")
+
 ;; Speed up startup: suppress GC and file-name-handler overhead
 (setq gc-cons-threshold most-positive-fixnum)
 (defvar default-file-name-handler-alist file-name-handler-alist)
@@ -19,6 +29,19 @@
 ;; ==============================
 
 (require 'package)
+(require 'bookmark)
+
+(declare-function consult--customize-put "consult")
+(declare-function er/add-js-mode-expansions "js-mode-expansions")
+(declare-function global-treesit-auto-mode "treesit-auto")
+(declare-function treesit-auto-add-to-auto-mode-alist "treesit-auto")
+(declare-function posframe-delete-frame "posframe")
+(declare-function server-running-p "server")
+(declare-function server-start "server")
+(declare-function treemacs-get-local-window "treemacs")
+(declare-function james/vertico-posframe-reset-after-frame-move "init")
+(declare-function james/vertico-posframe-update-border-face "init")
+(declare-function james/dired-open-mac "james-osx")
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
@@ -53,16 +76,19 @@
 ;; Load path
 ;; =======================
 
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
+(setq custom-file (expand-file-name "custom.el" james/config-directory))
+(when james/load-custom-config
+  (load custom-file 'noerror))
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
+(add-to-list 'load-path (expand-file-name "site-lisp" james/config-directory))
 ;; Environment-specific configurations
 (cond ((or (eq system-type 'gnu/linux)
 	  (eq system-type 'linux))
-	   (load-file "~/.emacs.d/site-lisp/james-linux.el"))
+	   (load-file (expand-file-name "site-lisp/james-linux.el"
+	                                james/config-directory)))
 	  ((eq system-type 'darwin)
-	   (load-file "~/.emacs.d/site-lisp/james-osx.el")))
+	   (load-file (expand-file-name "site-lisp/james-osx.el"
+	                                james/config-directory))))
 
 (require 'james-functions)
 
@@ -431,6 +457,7 @@
 ;; Line editing
 (bind-keys ("<C-return>" . james/open-line-below)
            ("<C-S-return>" . james/open-line-above)
+           ("C-h" . backward-delete-char-untabify)
            ("C-c y" . james/duplicate-line)
            ("C-x C-j" . join-line)
            ("C-;" . james/comment-dwim-line)
@@ -520,6 +547,7 @@
 (define-key org-mode-map [double-mouse-1] #'james/org-open-inline-image)
 
 ;; Local machine-specific overrides (loaded last so they take precedence)
-(let ((local-init (expand-file-name "local.el" user-emacs-directory)))
-  (when (file-exists-p local-init)
+(let ((local-init (expand-file-name "local.el" james/config-directory)))
+  (when (and james/load-local-config
+             (file-exists-p local-init))
     (load local-init)))

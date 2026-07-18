@@ -15,6 +15,11 @@
 ;;   set -g allow-passthrough on
 ;;   set -as terminal-features ',*:extkeys'
 
+;;; Commentary:
+;; Terminal theme, mouse, color, and keyboard protocol configuration.
+
+;;; Code:
+
 (require 'james-theme)
 
 (menu-bar-mode -1)
@@ -26,3 +31,5 @@
 (james/apply-theme 'annex-light)
 
 (provide 'james-tty)
+
+;;; james-tty.el ends here

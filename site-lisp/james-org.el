@@ -1,11 +1,22 @@
 ;;; james-org.el --- Org mode configuration -*- lexical-binding: t; -*-
 
+;;; Commentary:
+;; Org capture, attachment, agenda, and personal workflow configuration.
+
+;;; Code:
+
 (require 'cl-lib)
 (require 'dnd)
 (require 'org)
+(require 'org-element)
 (require 'subr-x)
 (require 'url-parse)
 (require 'url-util)
+
+(defvar org-agenda-custom-commands)
+(defvar org-capture-templates)
+(defvar james/--capture-file-title nil
+  "Title entered while creating a new Org file through capture.")
 
 ;; Defaults: Set org directories in local.el
 (setq org-directory "~/org")
@@ -52,8 +63,8 @@
 
 (defun james/org-storage-directory (kind &optional org-file)
   "Return the KIND storage directory for ORG-FILE under `org-directory'.
-ORG-FILE defaults to `buffer-file-name'.  Its path relative to the Org
-collection is mirrored below the collection's KIND directory."
+ORG-FILE defaults to the variable `buffer-file-name'.  Its path relative
+to the Org collection is mirrored below the collection's KIND directory."
   (let* ((org-file (or org-file buffer-file-name))
          (root (file-name-as-directory (expand-file-name org-directory))))
     (unless org-file
@@ -297,17 +308,18 @@ collection is mirrored below the collection's KIND directory."
 
 ;; Auto-convert markdown links to org links on paste
 (defun james/markdown-to-org-link-on-yank (orig-fun &rest args)
-  "After yanking in org-mode, convert [title](url) to [[url][title]]."
+  "Call ORIG-FUN with ARGS, then convert Markdown links in `org-mode'."
   (apply orig-fun args)
   (when (derived-mode-p 'org-mode)
     (let ((end (point))
           (beg (mark t)))
       (when (and beg end)
-        (save-excursion
-          (goto-char (min beg end))
-          (while (re-search-forward "\\[\\([^]]+\\)](\\([^)]+\\))" (max beg end) t)
-            (let* ((title (match-string 1))
-                   (url (match-string 2)))
+        (save-restriction
+          (narrow-to-region (min beg end) (max beg end))
+          (goto-char (point-min))
+          (while (re-search-forward "\\[\\([^]]+\\)](\\([^)]+\\))" nil t)
+            (let ((title (match-string 1))
+                  (url (match-string 2)))
               (replace-match (format "[[%s][%s]]" url title) t t))))))))
 
 (advice-add 'yank :around #'james/markdown-to-org-link-on-yank)

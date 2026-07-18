@@ -1,9 +1,14 @@
 ;;; james-functions.el --- Custom utility functions -*- lexical-binding: t; -*-
 
+;;; Commentary:
+;; Interactive editing, navigation, window, and conversion helpers.
+
+;;; Code:
+
 (require 'dired)
 
 (defun james/slick-copy-advice (orig-fun &rest args)
-  "When called interactively with no active region, copy a single line instead."
+  "Call ORIG-FUN with ARGS, copying one line when no region is active."
   (if (or (use-region-p) (not (called-interactively-p 'interactive)))
       (apply orig-fun args)
     (message "Copied line")
@@ -11,7 +16,7 @@
 (advice-add 'kill-ring-save :around #'james/slick-copy-advice)
 
 (defun james/slick-cut-advice (orig-fun &rest args)
-  "When called interactively with no active region, kill a single line instead."
+  "Call ORIG-FUN with ARGS, killing one line when no region is active."
   (if (or (use-region-p) (not (called-interactively-p 'interactive)))
       (apply orig-fun args)
     (funcall orig-fun (line-beginning-position) (line-beginning-position 2))))
@@ -84,6 +89,7 @@
 ;;; Taken from: http://is.gd/iaAo
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun james/increase-font-size ()
+  "Increase the default face height by ten percent."
   (interactive)
   (set-face-attribute 'default
                       nil
@@ -91,6 +97,7 @@
                       (ceiling (* 1.10
                                   (face-attribute 'default :height)))))
 (defun james/decrease-font-size ()
+  "Decrease the default face height by ten percent."
   (interactive)
   (set-face-attribute 'default
                       nil
@@ -140,6 +147,7 @@ When called twice restore the window configuration before the split."
 ;; Filter files in dired down to a regex
 ;; From http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/acb20ee78c00e4ec#
 (defun james/dired-show-only (regexp)
+  "Hide Dired entries whose names do not match REGEXP."
   (interactive "sFiles to show (regexp): ")
   (dired-mark-files-regexp regexp)
   (dired-toggle-marks)
@@ -148,7 +156,7 @@ When called twice restore the window configuration before the split."
 
 ;; Duplicate and (optionally) comment out a line:
 (defun james/duplicate-line (&optional commentfirst)
-  "comment line at point; if COMMENTFIRST is non-nil, comment the original" 
+  "Duplicate the current line, commenting the original if COMMENTFIRST is non-nil."
   (interactive)
   (beginning-of-line)
   (push-mark)
@@ -204,6 +212,7 @@ Replaces default `comment-dwim' end-of-line behavior."
 ;; if region is selected, then uses that,
 ;; else does entire buffer.
 (defun james/pretty-print-json ()
+  "Pretty-print the active JSON region, or the entire buffer."
   (interactive)
   (let ((b (if (region-active-p) (region-beginning) (point-min)))
         (e (if (region-active-p) (region-end) (point-max))))
@@ -211,12 +220,14 @@ Replaces default `comment-dwim' end-of-line behavior."
 
 ;; http://whattheemacsd.com//editing-defuns.el-01.html
 (defun james/open-line-below ()
+  "Open and indent a new line below the current line."
   (interactive)
   (end-of-line)
-  (newline) 
+  (newline)
   (indent-for-tab-command))
 
 (defun james/open-line-above ()
+  "Open and indent a new line above the current line."
   (interactive)
   (beginning-of-line)
   (newline)
@@ -227,7 +238,7 @@ Replaces default `comment-dwim' end-of-line behavior."
 ;; http://emacsredux.com/blog/2013/07/24/highlight-comment-annotations/
 (defun james/font-lock-comment-annotations ()
   "Highlight a bunch of well known comment annotations.
-   This functions should be added to the hooks of major modes for programming."
+This function should be added to hooks for programming major modes."
   (font-lock-add-keywords
    nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\):"
           1 font-lock-warning-face t))))
@@ -286,4 +297,6 @@ Requires pandoc to be installed."
 
 
 (provide 'james-functions)
+
+;;; james-functions.el ends here
 

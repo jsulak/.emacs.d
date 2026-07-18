@@ -1,6 +1,13 @@
 ;;; james-gui.el --- GUI-only settings -*- lexical-binding: t; -*-
 
+;;; Commentary:
+;; Theme, font, frame, mouse, and scrolling behavior for graphical frames.
+
+;;; Code:
+
 (require 'james-theme)
+
+(defvar mouse-wheel-follow-point)
 
 (menu-bar-mode 1)
 
@@ -29,3 +36,4 @@
 
 (provide 'james-gui)
 
+;;; james-gui.el ends here

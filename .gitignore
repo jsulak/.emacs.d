@@ -1,5 +1,7 @@
 *.elc
 *~
+\#*\#
+.#*
 *.orig
 .git
 tramp

@@ -168,8 +168,13 @@ default application; links to Org files continue to open inside Emacs.
 
 ## Tests
 
-Run the ERT suite with the target Emacs executable:
+Run the complete quality suite with the target Emacs executable:
 
 ```sh
-emacs --batch -Q -l test/run-tests.el
+make check
 ```
+
+This runs hermetic ERT tests, a full startup smoke test, strict byte
+compilation, built-in static checks, and shell tests for `rich2org.sh`.
+Individual targets are available as `make test`, `make smoke`,
+`make byte-compile`, `make static`, and `make shell`.

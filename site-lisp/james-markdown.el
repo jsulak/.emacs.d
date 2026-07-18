@@ -1,11 +1,16 @@
 ;;; james-markdown.el --- Markdown and Zettelkasten configuration -*- lexical-binding: t; -*-
 
+;;; Commentary:
+;; Markdown presentation and Zettelkasten navigation helpers.
+
+;;; Code:
+
 (require 'markdown-mode)
 
 ;;; Appearance
 
 (setq markdown-enable-wiki-links t)
-(setq markdown-wiki-link-fontify-missing-links t)
+(setq markdown-wiki-link-fontify-missing t)
 (setq markdown-wiki-link-search-type '(parent-directories))
 (setq markdown-hide-markup t)
 (setq markdown-fontify-code-blocks-natively t)
@@ -29,6 +34,7 @@
 Foreground is set to match the background after theme load.")
 
 (defun james/markdown-indent--update-heading-hide-face ()
+  "Match the hidden Markdown heading marker face to the background."
   (set-face-foreground 'james/markdown-heading-hide (face-background 'default)))
 
 (james/markdown-indent--update-heading-hide-face)
@@ -36,7 +42,7 @@ Foreground is set to match the background after theme load.")
           (lambda (_) (james/markdown-indent--update-heading-hide-face)))
 
 (defun james/markdown-indent--fontify-headings (limit)
-  "Font-lock matcher that fixes heading display properties.
+  "Fix heading display properties through LIMIT during font locking.
 Removes display=\"\" from heading markers, hides leading #s, keeps last # visible."
   (when (re-search-forward "^\\(#\\{1,6\\}\\) " limit t)
     (let* ((hashes-start (match-beginning 1))
@@ -52,7 +58,7 @@ Removes display=\"\" from heading markers, hides leading #s, keeps last # visibl
     t))
 
 (defun james/markdown-indent--jit-lock (start end)
-  "Update line-prefix and wrap-prefix in the region START to END."
+  "Update `line-prefix' and `wrap-prefix' in the region START to END."
   (save-excursion
     (goto-char start)
     (setq start (line-beginning-position))
