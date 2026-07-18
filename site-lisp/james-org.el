@@ -40,9 +40,6 @@
 (use-package org-download
   :ensure t
   :after org
-  :bind (:map org-mode-map
-              ("C-c v s" . org-download-screenshot)
-              ("C-c v y" . org-download-clipboard))
   :config
   (setq org-download-method 'directory
         org-download-image-dir "./images"
@@ -53,19 +50,11 @@
   ;; Open image files in Preview.app when clicked or via C-c C-o
   (with-eval-after-load 'org
     (dolist (ext '("\\.png\\'" "\\.jpg\\'" "\\.jpeg\\'" "\\.gif\\'" "\\.webp\\'"))
-      (add-to-list 'org-file-apps (cons ext "open -a Preview.app %s")))
-    (define-key org-mode-map [double-mouse-1]
-      (lambda (event)
-        (interactive "e")
-        (mouse-set-point event)
-        (when (get-char-property (point) 'org-image-overlay)
-          (org-open-at-point)))))
+      (add-to-list 'org-file-apps (cons ext "open -a Preview.app %s"))))
   :hook (org-mode . org-download-enable))
 
 (use-package ox-clip
-  :ensure t
-  :bind (:map org-mode-map
-              ("C-c w" . ox-clip-formatted-copy)))
+  :ensure t)
 
 
 (defun james/org-focus-heading ()
@@ -74,6 +63,28 @@
   (org-overview)
   (org-reveal t)
   (org-fold-show-subtree))
+
+(defun james/org-open-inline-image (event)
+  "Open the inline Org image clicked in EVENT."
+  (interactive "e")
+  (mouse-set-point event)
+  (when (get-char-property (point) 'org-image-overlay)
+    (org-open-at-point)))
+
+(defun james/org-emphasize-bold ()
+  "Emphasize the active Org region using bold markup."
+  (interactive)
+  (org-emphasize ?*))
+
+(defun james/org-emphasize-italic ()
+  "Emphasize the active Org region using italic markup."
+  (interactive)
+  (org-emphasize ?/))
+
+(defun james/org-emphasize-underline ()
+  "Emphasize the active Org region using underline markup."
+  (interactive)
+  (org-emphasize ?_))
 
 (defun james/org-sort-checkboxes ()
   "Sort checkbox list, unchecked first."
@@ -323,17 +334,6 @@ Creates the person's file if it doesn't exist."
        (insert (format "- [ ] %s\n" item))
        (save-buffer))
       (format "Added to %s: %s" person item))))
-
-;; Keybindings
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c f") 'james/org-insert-file-link)
-(global-set-key (kbd "C-c p") #'james/org-agenda-person-view)
-(define-key org-mode-map (kbd "C-c b") (lambda () (interactive) (org-emphasize ?*)))
-(define-key org-mode-map (kbd "C-c i") (lambda () (interactive) (org-emphasize ?/)))
-(define-key org-mode-map (kbd "C-c u") (lambda () (interactive) (org-emphasize ?_)))
-(define-key org-mode-map (kbd "C-C s") #'james/org-sort-checkboxes)
 
 (provide 'james-org)
 ;;; james-org.el ends here

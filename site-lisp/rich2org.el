@@ -46,8 +46,4 @@ Useful when copying from Outlook, OneNote, or any rich-text source."
         (pop-to-buffer buf)
         (message "rich2org: Done. Review and yank what you need.")))))
 
-;; Optional: bind to keys
-;; (global-set-key (kbd "C-c v") #'james/paste-rich-as-org)
-;; (global-set-key (kbd "C-c V") #'james/rich-to-org-buffer)
-
 (provide 'rich2org)

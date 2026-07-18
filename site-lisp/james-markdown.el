@@ -6,8 +6,7 @@
 
 (setq markdown-enable-wiki-links t)
 (setq markdown-wiki-link-fontify-missing-links t)
-(setq markdown-wiki-link-search-subdirectories nil)
-(setq markdown-wiki-link-search-parent-directories t)
+(setq markdown-wiki-link-search-type '(parent-directories))
 (setq markdown-hide-markup t)
 (setq markdown-fontify-code-blocks-natively t)
 (setq markdown-list-item-bullets '("-"))
@@ -121,9 +120,6 @@ Removes display=\"\" from heading markers, hides leading #s, keeps last # visibl
          (uid (james/zk--extract-uid choice)))
     (unless uid (user-error "No UID found in filename"))
     (insert (format "[[%s]]" uid))))
-
-(define-key markdown-mode-map (kbd "C-c z b") #'james/zk-backlinks)
-(define-key markdown-mode-map (kbd "C-c z l") #'james/zk-insert-link)
 
 (provide 'james-markdown)
 ;;; james-markdown.el ends here

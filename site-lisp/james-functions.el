@@ -18,14 +18,13 @@
 (advice-add 'kill-region :around #'james/slick-cut-advice)
 
 
-;; Adds extra keybinding to interactive search that sends the current term to occur
-;; From http://emacsblog.org/page/5/
-(define-key isearch-mode-map (kbd "C-o")
-  (lambda ()
-	(interactive)
-	(let ((case-fold-search isearch-case-fold-search))
-	  (occur (if isearch-regexp isearch-string
-			   (regexp-quote isearch-string))))))
+(defun james/isearch-occur ()
+  "Run `occur' using the current isearch string."
+  (interactive)
+  (let ((case-fold-search isearch-case-fold-search))
+    (occur (if isearch-regexp
+               isearch-string
+             (regexp-quote isearch-string)))))
 
 
 ;;These are from Steve Yegge's blog post
@@ -46,34 +45,37 @@
 
 
 (defun james/rename-file-and-buffer ()
-  "Renames current buffer and file it is visiting."
+  "Rename the current buffer and the file it is visiting."
   (interactive)
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (message "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " filename)))
-        (cond ((get-buffer new-name)
-               (message "A buffer named '%s' already exists!" new-name))
-              (t
-               (rename-file name new-name 1)
-               (rename-buffer new-name)
-               (set-visited-file-name new-name)
-               (set-buffer-modified-p nil)))))))
+  (let ((filename (buffer-file-name)))
+    (unless (and filename (file-exists-p filename))
+      (user-error "Current buffer is not visiting an existing file"))
+    (let ((new-name (read-file-name "New name: " filename)))
+      (when-let ((other-buffer (find-buffer-visiting new-name)))
+        (unless (eq other-buffer (current-buffer))
+          (user-error "File is already visited by buffer %s"
+                      (buffer-name other-buffer))))
+      (unless (file-equal-p filename new-name)
+        (rename-file filename new-name 1)
+        (set-visited-file-name new-name nil t)
+        (set-buffer-modified-p nil)))))
 
 
 (defun james/move-buffer-file (dir)
- "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
- (let* ((name (buffer-name))
-	 (filename (buffer-file-name))
-	 (dir
-	 (if (string-match dir "\\(?:/\\|\\\\)$")
-	 (substring dir 0 -1) dir))
-	 (newname (concat dir "/" name)))
-
- (if (not filename)
-	(message "Buffer '%s' is not visiting a file!" name)
- (progn 	(copy-file filename newname 1) 	(delete-file filename) 	(set-visited-file-name newname) 	(set-buffer-modified-p nil) 	t)))) 
+  "Move the current buffer's visited file to DIR."
+  (interactive "DNew directory: ")
+  (let ((filename (buffer-file-name)))
+    (unless (and filename (file-exists-p filename))
+      (user-error "Current buffer is not visiting an existing file"))
+    (let ((new-name (expand-file-name (file-name-nondirectory filename) dir)))
+      (when-let ((other-buffer (find-buffer-visiting new-name)))
+        (unless (eq other-buffer (current-buffer))
+          (user-error "File is already visited by buffer %s"
+                      (buffer-name other-buffer))))
+      (unless (file-equal-p filename new-name)
+        (rename-file filename new-name 1)
+        (set-visited-file-name new-name nil t)
+        (set-buffer-modified-p nil)))))
 
 
 
@@ -98,13 +100,17 @@
 
 
 
-;Reload .emacs on the fly
-(defun james/reload-dot-emacs()
+;; Reload init.el on the fly.
+(defun james/reload-dot-emacs ()
+  "Save and reload `user-init-file'."
   (interactive)
-  (if(bufferp (get-file-buffer "init.el"))
-      (save-buffer(get-buffer "init.el")))
-  (load-file "~/.emacs.d/init.el")
-  (message ".emacs reloaded successfully"))
+  (let ((init-file (or user-init-file
+                       (expand-file-name "init.el" user-emacs-directory))))
+    (when-let ((init-buffer (find-buffer-visiting init-file)))
+      (with-current-buffer init-buffer
+        (save-buffer)))
+    (load-file init-file)
+    (message "Emacs configuration reloaded successfully")))
 
 
 ;; XSteve functions

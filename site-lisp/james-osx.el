@@ -25,12 +25,6 @@
 ;; james/apply-system-theme manually after toggling System Settings.
 (add-function :after after-focus-change-function #'james/apply-system-theme)
 
-;; Dired mode
-(with-eval-after-load 'dired
-  (define-key dired-mode-map "l" 'james/dired-open-mac)
-  (define-key dired-mode-map "f" 'james/dired-show-only))
-
-
 (defun james/open-file-mac (file-name)
   (if (file-exists-p file-name)
       (call-process "/usr/bin/open" nil 0 nil file-name)))
@@ -49,6 +43,5 @@
 
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'hyper)
-
 
 

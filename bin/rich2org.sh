@@ -3,11 +3,27 @@
 # Requires: pandoc
 #
 # Usage:
-#   rich2org.sh           → prints Org to stdout
-#   rich2org.sh -i        → inserts into current tmux pane (for terminal use)
-#   rich2org.sh -o FILE   → writes to file
+#   rich2org.sh           -> prints Org to stdout
+#   rich2org.sh -o FILE   -> writes to file
 
 set -euo pipefail
+
+case "${1:-}" in
+    "")
+        OUTPUT_FILE=""
+        ;;
+    -o)
+        [[ $# -eq 2 && -n $2 ]] || {
+            printf 'Usage: %s [-o OUTPUT_FILE]\n' "${0##*/}" >&2
+            exit 2
+        }
+        OUTPUT_FILE=$2
+        ;;
+    *)
+        printf 'Usage: %s [-o OUTPUT_FILE]\n' "${0##*/}" >&2
+        exit 2
+        ;;
+esac
 
 TMPFILE=$(mktemp /tmp/rich2org_XXXXXX.html)
 trap 'rm -f "$TMPFILE"' EXIT
@@ -30,15 +46,11 @@ ORG=$(pandoc -f html -t org --wrap=none "$TMPFILE" \
   | sed '/:PROPERTIES:/,/:END:/d' \
   | sed 's/^\(#+begin_src\) .*/\1/' \
   | sed $'s/\xC2\xA0/ /g' \
-  | sed 's/  */ /g' \
   | awk 'NF{blank=0} !NF{blank++} blank<=1')
 
-case "${1:-}" in
-    -o)
-        echo "$ORG" > "${2:?Usage: rich2org.sh -o OUTPUT_FILE}"
-        echo "Written to $2"
-        ;;
-    *)
-        echo "$ORG"
-        ;;
-esac
+if [[ -n "$OUTPUT_FILE" ]]; then
+    printf '%s\n' "$ORG" > "$OUTPUT_FILE"
+    printf 'Written to %s\n' "$OUTPUT_FILE"
+else
+    printf '%s\n' "$ORG"
+fi

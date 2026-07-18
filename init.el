@@ -34,15 +34,19 @@
 
 ;; Automatically refresh archives if a package install fails
 (defvar james--package-refreshed nil)
-(advice-add 'package-install :around
-            (lambda (orig-fun &rest args)
-              (condition-case nil
-                  (apply orig-fun args)
-                (error
-                 (unless james--package-refreshed
-                   (setq james--package-refreshed t)
-                   (package-refresh-contents)
-                   (apply orig-fun args))))))
+
+(defun james/package-install-refresh-once (orig-fun &rest args)
+  "Refresh package archives once before retrying ORIG-FUN with ARGS."
+  (condition-case err
+      (apply orig-fun args)
+    (error
+     (if james--package-refreshed
+         (signal (car err) (cdr err))
+       (setq james--package-refreshed t)
+       (package-refresh-contents)
+       (apply orig-fun args)))))
+
+(advice-add 'package-install :around #'james/package-install-refresh-once)
 
 
 ;; =======================
@@ -268,10 +272,14 @@
 
 (use-package dired
   :ensure nil
+  :bind (:map dired-mode-map
+              ("f" . james/dired-show-only))
   :custom
   (dired-isearch-filenames t)
   :config
-  (put 'dired-find-alternate-file 'disabled nil))
+  (put 'dired-find-alternate-file 'disabled nil)
+  (when (eq system-type 'darwin)
+    (keymap-set dired-mode-map "l" #'james/dired-open-mac)))
 
 (use-package savehist
   :ensure nil
@@ -281,7 +289,9 @@
 (use-package server
   :ensure nil
   :config
-  (when (display-graphic-p)
+  (when (and (or (display-graphic-p)
+                 (eq system-type 'gnu/linux))
+             (not (server-running-p)))
     (server-start)))
 
 (add-hook 'js-mode-hook (lambda ()
@@ -314,6 +324,9 @@
 
 (use-package markdown-mode
   :mode "\\.md\\'"
+  :bind (:map markdown-mode-map
+              ("C-c z b" . james/zk-backlinks)
+              ("C-c z l" . james/zk-insert-link))
   :config
   (require 'james-markdown))
 
@@ -404,6 +417,9 @@
 
 (require 'james-org)
 
+(declare-function org-download-clipboard "org-download")
+(declare-function org-download-screenshot "org-download")
+
 ;; =======================
 ;; Key bindings
 ;; =======================
@@ -429,6 +445,8 @@
            ("C-c ]" . end-of-defun)
            ("C-c g" . goto-line)
            ("C-x C-m" . execute-extended-command))
+(bind-keys :map isearch-mode-map
+           ("C-o" . james/isearch-occur))
 
 ;; Kill, copy, undo
 (defun james/kill-buffer-quick ()
@@ -483,6 +501,22 @@
 
 ;; Conversion
 (bind-keys ("C-c m" . james/paste-markdown-as-org))
+
+;; Org mode
+(bind-keys ("C-c a" . org-agenda)
+           ("C-c c" . org-capture)
+           ("C-c l" . org-store-link)
+           ("C-c f" . james/org-insert-file-link)
+           ("C-c p" . james/org-agenda-person-view)
+           :map org-mode-map
+           ("C-c b" . james/org-emphasize-bold)
+           ("C-c i" . james/org-emphasize-italic)
+           ("C-c u" . james/org-emphasize-underline)
+           ("C-c s" . james/org-sort-checkboxes)
+           ("C-c v s" . org-download-screenshot)
+           ("C-c v y" . org-download-clipboard)
+           ("C-c w" . ox-clip-formatted-copy))
+(define-key org-mode-map [double-mouse-1] #'james/org-open-inline-image)
 
 ;; Local machine-specific overrides (loaded last so they take precedence)
 (let ((local-init (expand-file-name "local.el" user-emacs-directory)))
