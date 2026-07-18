@@ -26,5 +26,8 @@ jobs:
             libenchant-2-dev \
             pkg-config \
             shellcheck
+          # setup-emacs supplies a Nix-built Emacs, whose dynamic loader does
+          # not search Ubuntu's multiarch directory for Jinx's native module.
+          echo "LD_LIBRARY_PATH=$(pkg-config --variable=libdir enchant-2)" >> "$GITHUB_ENV"
       - name: Run quality suite
         run: make check
