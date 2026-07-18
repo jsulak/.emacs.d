@@ -5,7 +5,10 @@
 
 ;;; Code:
 
+(defvar ns-pop-up-frames)
+
 (setq ring-bell-function 'ignore)
+(setq ns-pop-up-frames nil)
 
 (if window-system
     (require 'james-gui)

@@ -152,8 +152,6 @@
 (setopt use-short-answers t)
 (column-number-mode 1)
 
-(setq ns-pop-up-frames nil)
-
 (electric-pair-mode t)
 
 ;; Enable camel-case awareness in all programming modes
