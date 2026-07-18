@@ -82,7 +82,8 @@ Attachment filenames use `YYYYMMDD-HHMMSS-sanitized-source-name.ext`, and
 links remain relative plain `file:` links without Org ID property drawers.
 Images continue to use the `images/` workflow. Shared migrated attachments are
 stored once in `attachments/_shared/`; unreferenced attachments are preserved
-under `attachments/_orphans/`.
+under `attachments/_orphans/`. Opening an attachment link uses its macOS
+default application; links to Org files continue to open inside Emacs.
 
 ## Key bindings
 

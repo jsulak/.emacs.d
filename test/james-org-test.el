@@ -20,6 +20,23 @@ FUNCTION receives the collection root and the absolute Org filename."
             (funcall function root org-file)))
       (delete-directory root t))))
 
+(defun james-test/org-file-application (filename)
+  "Return the configured Org application for FILENAME."
+  (let* ((apps (org--file-apps-regexp-alist org-file-apps))
+         (extension (file-name-extension filename)))
+    (or (assoc-default (downcase filename) apps #'string-match-p)
+        (cdr (assoc extension org-file-apps))
+        (cdr (assq t org-file-apps)))))
+
+(ert-deftest james/org-attachments-open-with-system-application ()
+  (dolist (filename '("report.pdf" "presentation.pptx" "document.docx"
+                      "workbook.xlsx" "archive.zip" "notes.md"))
+    (should (string-prefix-p "open "
+                             (james-test/org-file-application filename))))
+  (should (eq (james-test/org-file-application "related.org") 'emacs))
+  (should (eq (james-test/org-file-application "history.org_archive")
+              'emacs)))
+
 (ert-deftest james/org-image-directory-for-root-note ()
   (james-test/call-with-org-file
    "meeting-notes.org"

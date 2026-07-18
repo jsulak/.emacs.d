@@ -39,8 +39,8 @@
 
 (setq org-file-apps
       '((directory . "open %s")
-        ("\\.pdf\\'" . default)
-        (auto-mode . emacs)))
+        ("\\.org\\(?:_archive\\)?\\'" . emacs)
+        (t . "open %s")))
 
 (defvar james/org-download-source-name nil
   "Source name override used while formatting an Org image filename.")
