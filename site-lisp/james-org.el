@@ -2,6 +2,7 @@
 
 (require 'cl-lib)
 (require 'org)
+(require 'subr-x)
 
 ;; Defaults: Set org directories in local.el
 (setq org-directory "~/org")
@@ -38,9 +39,81 @@
         ("\\.pdf\\'" . default)
         (auto-mode . emacs)))
 
-(defun james/org-download-clipboard-without-id-property (orig-fun &rest args)
-  "Call ORIG-FUN with ARGS without adding an Org ID property drawer."
-  (cl-letf (((symbol-function 'org-id-get-create) #'ignore))
+(defvar james/org-download-source-name nil
+  "Source name override used while formatting an Org image filename.")
+
+(defun james/org-image-directory (&optional org-file)
+  "Return the image directory for ORG-FILE under `org-directory'.
+ORG-FILE defaults to `buffer-file-name'.  Its path relative to the Org
+collection is mirrored below the collection's images directory."
+  (let* ((org-file (or org-file buffer-file-name))
+         (root (file-name-as-directory (expand-file-name org-directory))))
+    (unless org-file
+      (user-error "Save this Org buffer before adding images"))
+    (let* ((relative (file-relative-name (expand-file-name org-file) root))
+           (first-component (car (split-string relative "[/\\\\]" t))))
+      (when (equal first-component "..")
+        (user-error "Org file is outside org-directory: %s" org-file))
+      (expand-file-name
+       (file-name-sans-extension relative)
+       (expand-file-name "images/" root)))))
+
+(defun james/org-image--sanitized-name (filename)
+  "Return a lowercase, filesystem-friendly image name for FILENAME."
+  (let* ((filename (file-name-nondirectory filename))
+         (extension (file-name-extension filename))
+         (stem (downcase (file-name-base filename))))
+    (setq stem (replace-regexp-in-string "[^[:alnum:]]+" "-" stem)
+          stem (string-trim stem "-+" "-+"))
+    (when extension
+      (setq extension
+            (replace-regexp-in-string "[^[:alnum:]]" "" (downcase extension))))
+    (concat (if (string-empty-p stem) "image" stem)
+            (if (and extension (not (string-empty-p extension)))
+                (concat "." extension)
+              ""))))
+
+(defun james/org-image--unique-name (directory filename)
+  "Return an available FILENAME in DIRECTORY, adding a numeric suffix."
+  (if (not (file-exists-p (expand-file-name filename directory)))
+      filename
+    (let* ((extension (file-name-extension filename t))
+           (stem (file-name-sans-extension filename))
+           (suffix 2)
+           candidate)
+      (while
+          (progn
+            (setq candidate (format "%s-%d%s" stem suffix (or extension ""))
+                  suffix (1+ suffix))
+            (file-exists-p (expand-file-name candidate directory))))
+      candidate)))
+
+(defun james/org-download-file-name (filename)
+  "Format org-download FILENAME using the Org image naming convention."
+  (let* ((source (or james/org-download-source-name filename))
+         (sanitized (james/org-image--sanitized-name source))
+         (timestamped (concat (format-time-string "%Y%m%d-%H%M%S-")
+                              sanitized)))
+    (james/org-image--unique-name (james/org-image-directory) timestamped)))
+
+(defun james/org-download-directory (orig-fun)
+  "Use the collection image directory in Org, otherwise call ORIG-FUN."
+  (if (derived-mode-p 'org-mode)
+      (let ((directory (james/org-image-directory)))
+        (make-directory directory t)
+        directory)
+    (funcall orig-fun)))
+
+(defun james/org-download-clipboard-without-id-property (orig-fun
+                                                         &optional basename)
+  "Call ORIG-FUN without an ID drawer, naming the image from BASENAME."
+  (let ((basename (or basename "clipboard.png")))
+    (cl-letf (((symbol-function 'org-id-get-create) #'ignore))
+      (funcall orig-fun basename))))
+
+(defun james/org-download-base64-with-image-name (orig-fun &rest args)
+  "Call ORIG-FUN with ARGS using image.png as its source filename."
+  (let ((james/org-download-source-name "image.png"))
     (apply orig-fun args)))
 
 (use-package org-download
@@ -48,13 +121,16 @@
   :after org
   :config
   (setq org-download-method 'directory
-        org-download-image-dir "./images"
-        org-download-heading-lvl nil
-        org-download-timestamp "%Y%m%d%H%M%S-"
+        org-download-file-format-function #'james/org-download-file-name
         org-download-screenshot-method "screencapture -i %s"
         org-download-annotate-function (lambda (_link) ""))
+  ;; Resolve the complete directory here so org-download's buffer-local
+  ;; heading setting cannot append another path component.
+  (advice-add 'org-download--dir :around #'james/org-download-directory)
   (advice-add 'org-download-clipboard :around
               #'james/org-download-clipboard-without-id-property)
+  (advice-add 'org-download-dnd-base64 :around
+              #'james/org-download-base64-with-image-name)
   ;; Open image files in Preview.app when clicked or via C-c C-o
   (with-eval-after-load 'org
     (dolist (ext '("\\.png\\'" "\\.jpg\\'" "\\.jpeg\\'" "\\.gif\\'" "\\.webp\\'"))

@@ -44,6 +44,29 @@ Install JetBrains Mono:
 | expand-region | Smart selection expansion |
 | mood-line | Clean mode line |
 
+## Org image storage
+
+Images added to an Org file through the clipboard, screenshots, URL downloads,
+or drag-and-drop are stored beneath the collection-wide `images/` directory.
+The Org file's path relative to `org-directory` is mirrored without its `.org`
+extension:
+
+```text
+~/org/meeting-notes.org  ->  ~/org/images/meeting-notes/
+~/org/projects/alpha.org ->  ~/org/images/projects/alpha/
+```
+
+Image filenames use `YYYYMMDD-HHMMSS-sanitized-source-name.ext`. Clipboard
+images use `clipboard` as the source name, base64 drag-and-drop images use
+`image`, and ordinary drag-and-drop preserves a sanitized lowercase form of
+the original filename. Collisions receive numeric suffixes such as `-2` and
+`-3`. Org links remain relative to the current Org file.
+
+The Org buffer must be saved beneath `org-directory` before an image can be
+added. This prevents images from silently being written outside the collection.
+Renaming an Org file does not move its existing image directory; existing links
+continue to work, and newly added images use the renamed file's new path.
+
 ## Key bindings
 
 `C-h` is rebound to backspace; help is on `F1`.
@@ -124,3 +147,11 @@ Install JetBrains Mono:
 
 - I recommend rebinding Caps Lock to Ctrl.
 - Machine-specific settings go in `local.el`.
+
+## Tests
+
+Run the ERT suite with the target Emacs executable:
+
+```sh
+emacs --batch -Q -l test/run-tests.el
+```
