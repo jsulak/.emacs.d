@@ -1,39 +1,11 @@
 # Ansible TODO
 
-System-level dependencies for this Emacs configuration that should be provisioned via Ansible.
+There are no outstanding Debian/Ubuntu provisioning changes.
 
-## Packages
+The Emacs runtime, build, spelling, search, conversion, linting, and terminal
+terminfo dependencies previously listed here are now provisioned directly by
+[`ansible/emacs.yml`](ansible/emacs.yml).
 
-```yaml
-- name: Install Emacs dependencies
-  package:
-    name:
-      - enchant-2
-      - libenchant-2-dev
-      - hunspell
-      - hunspell-en-us
-      - build-essential
-      - pkg-config
-      - ripgrep
-      - pandoc
-      - python3
-      - git
-      - shellcheck
-    state: present
-```
-
-## Terminal truecolor
-
-The annex theme relies on 24-bit color. For `emacs -nw` to render it
-correctly, the terminal must advertise truecolor via terminfo. Ensure
-`ncurses-term` is installed (provides `xterm-direct` etc.) and set
-`TERM=xterm-direct` (or `tmux-direct`, `alacritty-direct`, etc. matching
-the terminal) in the shell environment used to launch Emacs.
-
-```yaml
-- name: Install extended terminfo entries
-  package:
-    name:
-      - ncurses-term
-    state: present
-```
+Terminal applications must still advertise their actual color capabilities
+through the appropriate `TERM` value. The playbook installs `ncurses-term`, but
+does not set a global `TERM` value because it must match the launching terminal.

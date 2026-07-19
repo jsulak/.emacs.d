@@ -21,14 +21,20 @@ terminal sessions.
 ## Requirements
 
 - Emacs 30+
+- Ansible, if using the included Debian/Ubuntu provisioning playbook
 - Git and a C compiler/toolchain
 - Enchant and a spelling dictionary for Jinx
 - `ripgrep` for project search
 - Pandoc for Markdown/rich-text to Org conversion
 - JetBrains Mono for the configured GUI font
 
-The Linux package list and provisioning snippets are maintained in
-[`ANSIBLE-TODO.md`](ANSIBLE-TODO.md).
+The Debian/Ubuntu dependencies can be installed with
+[`ansible/emacs.yml`](ansible/emacs.yml). Run it locally with:
+
+```sh
+ansible-playbook --ask-become-pass --inventory localhost, \
+  --connection local ansible/emacs.yml
+```
 
 ### macOS
 
@@ -90,6 +96,7 @@ than mixed into `init.el`.
 | `site-lisp/james-{gui,tty}.el` | Display-specific setup |
 | `site-lisp/james-theme.el`, `themes/` | Shared theme loader and Annex themes |
 | `site-lisp/rich2org.el`, `bin/rich2org.sh` | macOS rich-text clipboard conversion |
+| `ansible/emacs.yml` | Debian/Ubuntu system dependency provisioning |
 | `test/`, `Makefile` | Local and CI quality checks |
 | `local.el`, `custom.el` | Untracked local and Customize settings |
 

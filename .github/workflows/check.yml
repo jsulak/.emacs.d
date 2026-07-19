@@ -14,7 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - uses: purcell/setup-emacs@master
+      # master as of 2026-06-29; pin for reproducible, reviewable CI.
+      - uses: purcell/setup-emacs@1f1e9c315c2e3312705e920ae1ddd7e0e2b13c69
         with:
           version: 30.2
       - name: Install system dependencies

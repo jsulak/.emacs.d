@@ -1,0 +1,35 @@
+---
+- name: Provision Emacs system dependencies
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Require a Debian-family host
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.os_family == "Debian"
+        fail_msg: This playbook currently supports Debian and Ubuntu only.
+
+    - name: Install Emacs runtime and development dependencies
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - enchant-2
+          - git
+          - hunspell
+          - hunspell-en-us
+          - libenchant-2-dev
+          - ncurses-term
+          - pandoc
+          - pkg-config
+          - python3
+          - ripgrep
+          - shellcheck
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    # Annex uses 24-bit colors in terminal sessions. ncurses-term supplies
+    # entries such as xterm-direct; the launching terminal should set TERM to
+    # the entry matching its own capabilities.

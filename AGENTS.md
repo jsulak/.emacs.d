@@ -8,10 +8,16 @@ Personal Emacs configuration targeting Emacs 30+. Uses `use-package` (built-in) 
 
 ## Architecture
 
-- **`init.el`** -- Main entry point. All package declarations and keybindings live here.
+- **`early-init.el`** -- Pre-frame startup settings and UI flicker prevention.
+- **`init.el`** -- Main entry point. Shared package declarations, behavior, and centralized keybindings live here.
 - **`site-lisp/james-functions.el`** -- Custom elisp functions (~25 utilities for editing, navigation, window management, text formatting).
+- **`site-lisp/james-org.el`** -- Org capture, agenda, 1:1, image, and attachment workflows.
+- **`site-lisp/james-markdown.el`** -- Markdown presentation and Zettelkasten helpers.
 - **`site-lisp/james-{linux,osx}.el`** -- Platform-specific configuration, loaded conditionally.
-- **`site-lisp/james-gui.el`** -- GUI-only settings (loaded when `display-graphic-p`).
+- **`site-lisp/james-{gui,tty}.el`** -- Display-specific configuration.
+- **`site-lisp/james-theme.el`** and **`themes/`** -- Shared theme loading and the Annex themes.
+- **`ansible/emacs.yml`** -- Debian/Ubuntu system dependency provisioning.
+- **`test/`** and **`Makefile`** -- ERT, startup, byte-compilation, static, and shell checks.
 - **`custom.el`** -- Emacs customize output (separate from init.el).
 - **`local.el`** -- Optional machine-local overrides (not tracked in git).
 
@@ -29,17 +35,21 @@ Personal Emacs configuration targeting Emacs 30+. Uses `use-package` (built-in) 
 - **Capture templates** (`C-c c`):
   - `l` / `L` -- Open loop (scheduled / deadline), stored in `open-loops.org`
   - `n` -- New org file with title, date, and tags
-  - `o` -- 1:1 agenda item (checkbox under a person's heading in `agendas.org`)
+  - `o` -- 1:1 agenda item (checkbox under `Topics` in a selected person's file)
 - **Custom agenda views** (`C-c a`):
   - `w` -- All WAITING items
   - `p` -- Person view: 1:1 checklist items + TODOs/WAITING mentioning that person
 - **1:1 agenda system** (`C-c p`):
-  - `agendas.org` holds per-person checklists with one top-level heading per person
+  - Each person has an Org file tagged `:person:` with a `Topics` heading
   - `james/org-agenda-person-view` prompts for a name (partial match supported) and shows their checklist + related tasks
+  - Missing person files are created with the expected title, tag, and heading structure
   - `james/org-1on1-add-item` provides a non-interactive API for external tools (e.g. Alfred via emacsclient)
 
 ## System-Level Changes
 
-When changes require system-level setup (apt packages, npm global/local installs, PATH modifications, etc.), document them in `ANSIBLE-TODO.md` with the corresponding Ansible YAML snippets so the provisioning playbook can be updated.
+When changes require Debian/Ubuntu system packages, update
+`ansible/emacs.yml`. Document other unfinished system-level setup (npm global
+installs, PATH modifications, macOS provisioning, etc.) in `ANSIBLE-TODO.md`
+with the corresponding Ansible snippets or commands.
 
 When making changes, prefer modern Emacs 30+ idioms and built-in packages where possible.
