@@ -1,8 +1,16 @@
 EMACS ?= emacs
 
-.PHONY: check test smoke byte-compile static shell
+.PHONY: check test smoke byte-compile static shell security ansible
 
-check: smoke static shell test byte-compile
+check: security ansible smoke static shell test byte-compile
+
+security:
+	gitleaks git . --redact
+	zizmor --offline .
+
+ansible:
+	ANSIBLE_LOCAL_TEMP="$${TMPDIR:-/tmp}/emacs-ansible-lint" \
+		ansible-lint --profile=safety ansible/emacs.yml
 
 test:
 	$(EMACS) --batch -Q -l test/run-tests.el

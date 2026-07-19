@@ -7,13 +7,21 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
+    name: Emacs 30.2
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
       # master as of 2026-06-29; pin for reproducible, reviewable CI.
       - uses: purcell/setup-emacs@1f1e9c315c2e3312705e920ae1ddd7e0e2b13c69
         with:
@@ -25,4 +33,7 @@ jobs:
       - name: Run quality suite
         # Keep Jinx's compiler and native libraries in the same Nix environment
         # as the Emacs installed by setup-emacs.
-        run: nix-shell --packages enchant gcc hunspell pkg-config --run 'make check'
+        run: >-
+          nix-shell
+          --packages ansible-lint enchant gcc gitleaks hunspell pkg-config zizmor
+          --run 'make check'

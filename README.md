@@ -22,6 +22,7 @@ terminal sessions.
 
 - Emacs 30+
 - Ansible, if using the included Debian/Ubuntu provisioning playbook
+- Ansible Lint, Gitleaks, and Zizmor for the complete quality suite
 - Git and a C compiler/toolchain
 - Enchant and a spelling dictionary for Jinx
 - `ripgrep` for project search
@@ -42,7 +43,7 @@ This configuration is used with [Emacs for Mac OS X](https://emacsformacosx.com/
 Homebrew can install the external tools and font:
 
 ```sh
-brew install enchant pkg-config ripgrep pandoc
+brew install ansible-lint enchant gitleaks pkg-config ripgrep pandoc zizmor
 brew install --cask font-jetbrains-mono
 ```
 
@@ -203,7 +204,6 @@ default application; Org links stay in Emacs.
 | `F9` | Toggle Treemacs for the current project |
 | `C-x g` | Open Magit status |
 | `C-c e` / `C-x t e` | Open Eat / project Eat |
-| `C-c C` | Claude Code command prefix |
 | `C-+` / `C--` | Increase / decrease font size |
 | `M-x` / `C-x C-m` | Execute a command |
 
@@ -228,8 +228,10 @@ Run the same complete quality suite used by GitHub Actions:
 make check
 ```
 
-This runs hermetic ERT tests, a full startup smoke test, strict byte
-compilation, built-in static checks, and shell tests for `rich2org.sh`.
-Individual targets are available as `make test`, `make smoke`,
-`make byte-compile`, `make static`, and `make shell`. Override the executable
-when needed, for example `make check EMACS=/path/to/emacs`.
+This runs full-history secret detection, GitHub Actions security analysis,
+Ansible safety linting, hermetic ERT tests, a full startup smoke test, strict
+byte compilation, built-in static checks, and shell tests for `rich2org.sh`.
+Individual targets are available as `make security`, `make ansible`,
+`make test`, `make smoke`, `make byte-compile`, `make static`, and `make shell`.
+Override the executable when needed, for example
+`make check EMACS=/path/to/emacs`.

@@ -1,0 +1,13 @@
+title = "Emacs configuration Gitleaks policy"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Generated secrets in a deleted historical Rails test fixture"
+targetRules = ["generic-api-key"]
+condition = "AND"
+commits = ["c96f7174e5bf400af150ef4133294dbf6857695d"]
+paths = [
+  '''^external/rinari/test/rails-app/(app/controllers/application\.rb|config/environment\.rb)$''',
+]
