@@ -117,7 +117,7 @@
    `(org-headline-done                ((t (:foreground ,fg-secondary))))
    `(org-date                         ((t (:foreground ,fg-accent :underline t))))
    `(org-link                         ((t (:foreground ,fg-accent :underline t))))
-   `(org-tag                          ((t (:foreground ,fg-secondary :weight normal))))
+   `(org-tag                          ((t (:foreground ,fg-secondary :weight normal :height 0.85))))
    `(org-block                        ((t (:background ,bg-app))))
    `(org-block-begin-line             ((t (:foreground ,fg-secondary :background ,bg-list))))
    `(org-block-end-line               ((t (:foreground ,fg-secondary :background ,bg-list))))

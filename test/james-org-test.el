@@ -28,6 +28,15 @@ FUNCTION receives the collection root and the absolute Org filename."
         (cdr (assoc extension org-file-apps))
         (cdr (assq t org-file-apps)))))
 
+(ert-deftest james/org-tags-follow-heading-text ()
+  (should (zerop org-tags-column))
+  (with-temp-buffer
+    (insert "* Heading                                      :example:\n")
+    (org-mode)
+    (goto-char (point-min))
+    (org-align-tags)
+    (should (equal (buffer-string) "* Heading :example:\n"))))
+
 (ert-deftest james/org-attachments-open-with-system-application ()
   (dolist (filename '("report.pdf" "presentation.pptx" "document.docx"
                       "workbook.xlsx" "archive.zip" "notes.md"))
