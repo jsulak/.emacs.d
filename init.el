@@ -513,7 +513,8 @@
 
 ;; Font size
 (bind-keys ("C-+" . james/increase-font-size)
-           ("C--" . james/decrease-font-size))
+           ("C--" . james/decrease-font-size)
+           ("<pinch>" . ignore))
 
 ;; Conversion
 (bind-keys ("C-c m" . james/paste-markdown-as-org))

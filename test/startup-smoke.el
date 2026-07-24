@@ -20,6 +20,7 @@
             (error "Expected feature was not loaded: %s" feature)))
         (dolist (binding '(("C-h" . backward-delete-char-untabify)
                            ("<f1>" . help-command)
+                           ("<pinch>" . ignore)
                            ("C-c p" . james/org-agenda-person-view)))
           (unless (eq (key-binding (kbd (car binding))) (cdr binding))
             (error "Unexpected binding for %s" (car binding))))
