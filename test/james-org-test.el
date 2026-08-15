@@ -157,8 +157,10 @@ FUNCTION receives the collection root and the absolute Org filename."
        (should
         (string-match-p
          (regexp-quote
-          (format "[[file:../attachments/projects/alpha/%s]]" target-name))
-         (buffer-string)))
+           (format
+            "[[file:../attachments/projects/alpha/%s][Design Review (Final).PDF]]"
+            target-name))
+          (buffer-string)))
        (should-not (string-match-p ":PROPERTIES:" (buffer-string)))))))
 
 (ert-deftest james/org-attachment-insert-uses-external-root ()
@@ -182,7 +184,7 @@ FUNCTION receives the collection root and the absolute Org filename."
              (should
               (string-match-p
                (regexp-quote
-                (format "[[file:%s]]"
+                (format "[[file:%s][Agenda.PDF]]"
                         (org-link-escape
                          (file-relative-name
                           target (file-name-directory org-file)))))
@@ -232,7 +234,12 @@ FUNCTION receives the collection root and the absolute Org filename."
        (should
         (string-match-p
          (regexp-quote
-          "[[file:../attachments/notes/example/20260718-143522-agenda.pdf]]")
+          "[[file:../attachments/notes/example/20260718-143522-agenda.pdf][Agenda.PDF]]")
+         (buffer-string)))
+       (should
+        (string-match-p
+         (regexp-quote
+          "[[file:../attachments/notes/example/20260718-143522-board-packet.pdf][Board Packet.PDF]]")
          (buffer-string)))))))
 
 (ert-deftest james/org-download-clipboard-uses-clean-name-without-id ()

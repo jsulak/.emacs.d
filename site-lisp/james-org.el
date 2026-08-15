@@ -189,9 +189,11 @@ resolved against `org-directory'."
               (james/org-attachment-file-name source) directory))))
       (unless (file-equal-p source target)
         (copy-file source target nil t nil t))
-      (insert
-       (format "[[file:%s]]\n"
-               (org-link-escape (file-relative-name target))))
+      (insert (org-link-make-string
+               (concat "file:"
+                       (org-link-escape (file-relative-name target)))
+               (file-name-nondirectory source))
+              "\n")
       target)))
 
 (defun james/org-attachment-download (uri)
@@ -207,9 +209,11 @@ resolved against `org-directory'."
            (expand-file-name
             (james/org-attachment-file-name source-name) directory)))
       (url-copy-file uri target nil)
-      (insert
-       (format "[[file:%s]]\n"
-               (org-link-escape (file-relative-name target))))
+      (insert (org-link-make-string
+               (concat "file:"
+                       (org-link-escape (file-relative-name target)))
+               source-name)
+              "\n")
       target)))
 
 (defun james/org-download-dnd-with-attachments (orig-fun uri action)

@@ -163,9 +163,9 @@ moved when the option changes; it affects only files added afterward.
 
 Filenames use `YYYYMMDD-HHMMSS-sanitized-source-name.ext`; collisions receive
 suffixes such as `-2` and `-3`. Links remain relative, ordinary `file:` links
-and do not add Org ID property drawers. Shared migrated attachments can live in
-`attachments/_shared/`, with unreferenced files preserved in
-`attachments/_orphans/`.
+that display the original filename and do not add Org ID property drawers.
+Shared migrated attachments can live in `attachments/_shared/`, with
+unreferenced files preserved in `attachments/_orphans/`.
 
 The Org buffer must already be saved beneath `org-directory`. Renaming an Org
 file does not move existing media, so old links remain valid while newly added
