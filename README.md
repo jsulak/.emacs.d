@@ -140,13 +140,26 @@ for tools that call Emacs through `emacsclient`.
 
 Clipboard images, screenshots, URL downloads, and image drag-and-drop are
 stored below the collection-wide `images/` directory. Other dragged or
-explicitly attached files are copied below `attachments/`. In both cases, the
-Org file's path relative to `org-directory` is mirrored without its extension:
+explicitly attached files are copied below `attachments/` by default. In both
+cases, the Org file's path relative to `org-directory` is mirrored without its
+extension:
 
 ```text
 ~/org/meeting-notes.org  ->  ~/org/images/meeting-notes/
 ~/org/projects/alpha.org ->  ~/org/attachments/projects/alpha/
 ```
+
+Set `james/org-attachment-root` in `local.el` to place non-image attachments
+somewhere else. Relative values are resolved below `org-directory`; absolute
+values can point outside the Org collection:
+
+```elisp
+(setq james/org-attachment-root "~/Documents/org-attachments")
+```
+
+With that setting, attachments for `~/org/projects/alpha.org` are stored in
+`~/Documents/org-attachments/projects/alpha/`. Existing attachments are not
+moved when the option changes; it affects only files added afterward.
 
 Filenames use `YYYYMMDD-HHMMSS-sanitized-source-name.ext`; collisions receive
 suffixes such as `-2` and `-3`. Links remain relative, ordinary `file:` links

@@ -18,6 +18,18 @@
 (defvar james/--capture-file-title nil
   "Title entered while creating a new Org file through capture.")
 
+(defgroup james-org nil
+  "Personal Org mode configuration."
+  :group 'org)
+
+(defcustom james/org-attachment-root "attachments"
+  "Root directory used to store Org attachments.
+Relative paths are resolved against `org-directory'.  Absolute paths may
+place attachments outside the Org collection.  The Org file's collection-
+relative path is mirrored below this directory without its extension."
+  :type 'directory
+  :group 'james-org)
+
 ;; Defaults: Set org directories in local.el
 (setq org-directory "~/org")
 (setq org-agenda-files '("~/org"))
@@ -62,10 +74,12 @@
     "webp")
   "Filename extensions routed through the Org image workflow.")
 
-(defun james/org-storage-directory (kind &optional org-file)
-  "Return the KIND storage directory for ORG-FILE under `org-directory'.
+(defun james/org-storage-directory (kind &optional org-file storage-root)
+  "Return the KIND storage directory for ORG-FILE.
 ORG-FILE defaults to the variable `buffer-file-name'.  Its path relative
-to the Org collection is mirrored below the collection's KIND directory."
+to the Org collection is mirrored below STORAGE-ROOT.  When STORAGE-ROOT
+is nil, use the collection's KIND directory.  Relative storage roots are
+resolved against `org-directory'."
   (let* ((org-file (or org-file buffer-file-name))
          (root (file-name-as-directory (expand-file-name org-directory))))
     (unless org-file
@@ -76,15 +90,17 @@ to the Org collection is mirrored below the collection's KIND directory."
         (user-error "Org file is outside org-directory: %s" org-file))
       (expand-file-name
        (file-name-sans-extension relative)
-       (expand-file-name (file-name-as-directory kind) root)))))
+       (file-name-as-directory
+        (expand-file-name (or storage-root kind) root))))))
 
 (defun james/org-image-directory (&optional org-file)
   "Return the image directory for ORG-FILE under `org-directory'."
   (james/org-storage-directory "images" org-file))
 
 (defun james/org-attachment-directory (&optional org-file)
-  "Return the attachment directory for ORG-FILE under `org-directory'."
-  (james/org-storage-directory "attachments" org-file))
+  "Return the configured attachment directory for ORG-FILE."
+  (james/org-storage-directory
+   "attachments" org-file james/org-attachment-root))
 
 (defun james/org-image--sanitized-name (filename)
   "Return a lowercase, filesystem-friendly image name for FILENAME."

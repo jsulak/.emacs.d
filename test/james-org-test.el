@@ -70,6 +70,27 @@ FUNCTION receives the collection root and the absolute Org filename."
       (equal (james/org-attachment-directory)
              (expand-file-name "attachments/projects/alpha" root))))))
 
+(ert-deftest james/org-attachment-directory-supports-relative-root ()
+  (james-test/call-with-org-file
+   "projects/alpha.org"
+   (lambda (root _org-file)
+     (let ((james/org-attachment-root "files"))
+       (should
+        (equal (james/org-attachment-directory)
+               (expand-file-name "files/projects/alpha" root)))))))
+
+(ert-deftest james/org-attachment-directory-supports-external-root ()
+  (let ((attachment-root (make-temp-file "james-org-attachments-" t)))
+    (unwind-protect
+        (james-test/call-with-org-file
+         "projects/alpha.org"
+         (lambda (_root _org-file)
+           (let ((james/org-attachment-root attachment-root))
+             (should
+              (equal (james/org-attachment-directory)
+                     (expand-file-name "projects/alpha" attachment-root))))))
+      (delete-directory attachment-root t))))
+
 (ert-deftest james/org-image-directory-requires-collection-file ()
   (let ((org-directory (make-temp-file "james-org-root-" t)))
     (unwind-protect
@@ -139,6 +160,34 @@ FUNCTION receives the collection root and the absolute Org filename."
           (format "[[file:../attachments/projects/alpha/%s]]" target-name))
          (buffer-string)))
        (should-not (string-match-p ":PROPERTIES:" (buffer-string)))))))
+
+(ert-deftest james/org-attachment-insert-uses-external-root ()
+  (let ((attachment-root (make-temp-file "james-org-attachments-" t)))
+    (unwind-protect
+        (james-test/call-with-org-file
+         "projects/alpha.org"
+         (lambda (root org-file)
+           (let* ((james/org-attachment-root attachment-root)
+                  (source (expand-file-name "incoming/Agenda.PDF" root))
+                  (target-name "20260718-143522-agenda.pdf")
+                  (target (expand-file-name
+                           (concat "projects/alpha/" target-name)
+                           attachment-root)))
+             (make-directory (file-name-directory source) t)
+             (with-temp-file source (insert "agenda"))
+             (cl-letf (((symbol-function 'format-time-string)
+                        (lambda (&rest _) "20260718-143522-")))
+               (should (equal (james/org-attachment-insert source) target)))
+             (should (file-exists-p target))
+             (should
+              (string-match-p
+               (regexp-quote
+                (format "[[file:%s]]"
+                        (org-link-escape
+                         (file-relative-name
+                          target (file-name-directory org-file)))))
+               (buffer-string))))))
+      (delete-directory attachment-root t))))
 
 (ert-deftest james/org-drag-drop-routes-attachments-and-images ()
   (james-test/call-with-org-file
