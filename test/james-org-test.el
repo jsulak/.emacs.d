@@ -109,6 +109,13 @@ FUNCTION receives the collection root and the absolute Org filename."
   (should (equal (james/org-image--sanitized-name "  !!!.JPG")
                  "image.jpg")))
 
+(ert-deftest james/org-timestamp-prefix-is-compact-to-the-minute ()
+  (cl-letf (((symbol-function 'format-time-string)
+             (lambda (format &rest _)
+               (should (equal format "%Y%m%d%H%M-"))
+               "202608230953-")))
+    (should (equal (james/org--timestamp-prefix) "202608230953-"))))
+
 (ert-deftest james/org-image-filename-adds-collision-suffixes ()
   (james-test/call-with-org-file
    "projects/alpha.org"
@@ -116,22 +123,22 @@ FUNCTION receives the collection root and the absolute Org filename."
      (let ((directory (james/org-image-directory)))
        (make-directory directory t)
        (cl-letf (((symbol-function 'format-time-string)
-                  (lambda (&rest _) "20260718-143522-")))
+                  (lambda (&rest _) "202607181435-")))
          (should
           (equal (james/org-download-file-name "System Architecture.PNG")
-                 "20260718-143522-system-architecture.png"))
+                 "202607181435-system-architecture.png"))
          (with-temp-file
              (expand-file-name
-              "20260718-143522-system-architecture.png" directory))
+              "202607181435-system-architecture.png" directory))
          (should
           (equal (james/org-download-file-name "System Architecture.PNG")
-                 "20260718-143522-system-architecture-2.png"))
+                 "202607181435-system-architecture-2.png"))
          (with-temp-file
              (expand-file-name
-              "20260718-143522-system-architecture-2.png" directory))
+              "202607181435-system-architecture-2.png" directory))
          (should
           (equal (james/org-download-file-name "System Architecture.PNG")
-                 "20260718-143522-system-architecture-3.png")))))))
+                 "202607181435-system-architecture-3.png")))))))
 
 (ert-deftest james/org-attachment-insert-copies-and-links-file ()
   (james-test/call-with-org-file
@@ -142,12 +149,12 @@ FUNCTION receives the collection root and the absolute Org filename."
                                       source-directory))
             (target-directory
              (expand-file-name "attachments/projects/alpha" root))
-            (target-name "20260718-143522-design-review-final.pdf")
+            (target-name "202607181435-design-review-final.pdf")
             (target (expand-file-name target-name target-directory)))
        (make-directory source-directory t)
        (with-temp-file source (insert "pdf data"))
        (cl-letf (((symbol-function 'format-time-string)
-                  (lambda (&rest _) "20260718-143522-")))
+                  (lambda (&rest _) "202607181435-")))
          (should (equal (james/org-attachment-insert source) target)))
        (should (file-exists-p source))
        (should (equal (with-temp-buffer
@@ -171,14 +178,14 @@ FUNCTION receives the collection root and the absolute Org filename."
          (lambda (root org-file)
            (let* ((james/org-attachment-root attachment-root)
                   (source (expand-file-name "incoming/Agenda.PDF" root))
-                  (target-name "20260718-143522-agenda.pdf")
+                  (target-name "202607181435-agenda.pdf")
                   (target (expand-file-name
                            (concat "projects/alpha/" target-name)
                            attachment-root)))
              (make-directory (file-name-directory source) t)
              (with-temp-file source (insert "agenda"))
              (cl-letf (((symbol-function 'format-time-string)
-                        (lambda (&rest _) "20260718-143522-")))
+                        (lambda (&rest _) "202607181435-")))
                (should (equal (james/org-attachment-insert source) target)))
              (should (file-exists-p target))
              (should
@@ -206,7 +213,7 @@ FUNCTION receives the collection root and the absolute Org filename."
                      (push (list uri action) fallback-calls)
                      'fallback))
          (cl-letf (((symbol-function 'format-time-string)
-                    (lambda (&rest _) "20260718-143522-"))
+                    (lambda (&rest _) "202607181435-"))
                    ((symbol-function 'url-copy-file)
                     (lambda (_uri target &optional _ok-if-exists)
                       (with-temp-file target (insert "downloaded")))))
@@ -226,20 +233,20 @@ FUNCTION receives the collection root and the absolute Org filename."
        (should
         (file-exists-p
          (expand-file-name
-          "attachments/notes/example/20260718-143522-agenda.pdf" root)))
+          "attachments/notes/example/202607181435-agenda.pdf" root)))
        (should
         (file-exists-p
          (expand-file-name
-          "attachments/notes/example/20260718-143522-board-packet.pdf" root)))
+          "attachments/notes/example/202607181435-board-packet.pdf" root)))
        (should
         (string-match-p
          (regexp-quote
-          "[[file:../attachments/notes/example/20260718-143522-agenda.pdf][Agenda.PDF]]")
+          "[[file:../attachments/notes/example/202607181435-agenda.pdf][Agenda.PDF]]")
          (buffer-string)))
        (should
         (string-match-p
          (regexp-quote
-          "[[file:../attachments/notes/example/20260718-143522-board-packet.pdf][Board Packet.PDF]]")
+          "[[file:../attachments/notes/example/202607181435-board-packet.pdf][Board Packet.PDF]]")
          (buffer-string)))))))
 
 (ert-deftest james/org-download-clipboard-uses-clean-name-without-id ()
@@ -257,7 +264,7 @@ FUNCTION receives the collection root and the absolute Org filename."
    (lambda (root _org-file)
      (let* ((source-directory (expand-file-name "incoming" root))
             (target-directory (expand-file-name "images/notes/clipboard" root))
-            (target-name "20260718-143522-clipboard.png")
+            (target-name "202607181435-clipboard.png")
             (target (expand-file-name target-name target-directory))
             (org-download-display-inline-images nil)
             (id-calls 0))
@@ -266,7 +273,7 @@ FUNCTION receives the collection root and the absolute Org filename."
        (cl-letf (((symbol-function 'executable-find)
                   (lambda (_) "/usr/local/bin/pngpaste"))
                  ((symbol-function 'format-time-string)
-                  (lambda (&rest _) "20260718-143522-"))
+                  (lambda (&rest _) "202607181435-"))
                  ((symbol-function 'org-id-get-create)
                   (lambda () (setq id-calls (1+ id-calls))))
                  ((symbol-function 'org-download-screenshot)
@@ -293,14 +300,14 @@ FUNCTION receives the collection root and the absolute Org filename."
                                       source-directory))
             (target-directory (expand-file-name "images/projects/alpha" root))
             (target-name
-             "20260718-143522-system-architecture-final.png")
+             "202607181435-system-architecture-final.png")
             (target (expand-file-name target-name target-directory))
             (org-download-display-inline-images nil))
        (make-directory source-directory t)
        (with-temp-file source (insert "image data"))
        (insert "* Diagram\n")
        (cl-letf (((symbol-function 'format-time-string)
-                  (lambda (&rest _) "20260718-143522-")))
+                  (lambda (&rest _) "202607181435-")))
          (org-download-image (concat "file://" source)))
        (should (file-exists-p target))
        (should (equal (with-temp-buffer
@@ -320,7 +327,7 @@ FUNCTION receives the collection root and the absolute Org filename."
    (lambda (root _org-file)
      (let* ((capture-file (expand-file-name "capture/screenshot.png" root))
             (target-directory (expand-file-name "images/notes/screenshots" root))
-            (target-name "20260718-143522-screenshot.png")
+            (target-name "202607181435-screenshot.png")
             (target (expand-file-name target-name target-directory))
             (org-download-display-inline-images nil)
             (org-download-screenshot-file capture-file)
@@ -329,7 +336,7 @@ FUNCTION receives the collection root and the absolute Org filename."
                (with-temp-file filename (insert "screenshot image")))))
        (insert "* Screenshot\n")
        (cl-letf (((symbol-function 'format-time-string)
-                  (lambda (&rest _) "20260718-143522-")))
+                  (lambda (&rest _) "202607181435-")))
          (org-download-screenshot))
        (should (file-exists-p target))
        (should-not (file-exists-p capture-file))
@@ -344,12 +351,12 @@ FUNCTION receives the collection root and the absolute Org filename."
    "notes/example.org"
    (lambda (root _org-file)
      (let* ((target-directory (expand-file-name "images/notes/example" root))
-            (target-name "20260718-143522-image.png")
+            (target-name "202607181435-image.png")
             (target (expand-file-name target-name target-directory))
             (org-download-display-inline-images nil))
        (insert "* Image\n")
        (cl-letf (((symbol-function 'format-time-string)
-                  (lambda (&rest _) "20260718-143522-")))
+                  (lambda (&rest _) "202607181435-")))
          (org-download-dnd-base64
           "data:image/png;base64,aGVsbG8gd29ybGQ=" nil))
        (should (file-exists-p target))

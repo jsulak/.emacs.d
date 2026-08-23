@@ -132,19 +132,21 @@ resolved against `org-directory'."
             (file-exists-p (expand-file-name candidate directory))))
       candidate)))
 
+(defun james/org--timestamp-prefix ()
+  "Return the compact timestamp prefix used for Org file names."
+  (format-time-string "%Y%m%d%H%M-"))
+
 (defun james/org-download-file-name (filename)
   "Format org-download FILENAME using the Org image naming convention."
   (let* ((source (or james/org-download-source-name filename))
          (sanitized (james/org-image--sanitized-name source))
-         (timestamped (concat (format-time-string "%Y%m%d-%H%M%S-")
-                              sanitized)))
+         (timestamped (concat (james/org--timestamp-prefix) sanitized)))
     (james/org-image--unique-name (james/org-image-directory) timestamped)))
 
 (defun james/org-attachment-file-name (filename)
   "Format FILENAME using the Org attachment naming convention."
   (let* ((sanitized (james/org-image--sanitized-name filename))
-         (timestamped (concat (format-time-string "%Y%m%d-%H%M%S-")
-                              sanitized)))
+         (timestamped (concat (james/org--timestamp-prefix) sanitized)))
     (james/org-image--unique-name
      (james/org-attachment-directory) timestamped)))
 
