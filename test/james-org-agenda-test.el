@@ -114,6 +114,47 @@
     (should (equal (buffer-string)
                    "[Example](https://example.test)"))))
 
+(ert-deftest james/markdown-link-yank-adds-document-icons ()
+  (with-temp-buffer
+    (org-mode)
+    (let ((kill-ring
+           (list (concat
+                  "[Slides](https://example.test/slides.pptx) "
+                  "[Draft](draft.docx) [Brief](brief.pdf) "
+                  "[Forecast](forecast.xlsx) "
+                  "[Notes](notes.txt) [Photo](photo.png)"))))
+      (yank))
+    (should
+     (equal
+      (buffer-string)
+      (concat
+       "[[https://example.test/slides.pptx][📊 Slides]] "
+       "[[draft.docx][📄 Draft]] [[brief.pdf][📕 Brief]] "
+       "[[forecast.xlsx][📈 Forecast]] "
+       "[[notes.txt][📎 Notes]] [[photo.png][Photo]]")))))
+
+(ert-deftest james/markdown-link-yank-detects-document-from-description ()
+  (with-temp-buffer
+    (org-mode)
+    (let ((kill-ring
+           (list
+            (concat
+             "[Project Update - August 2026.pptx]("
+             "https://tenant.sharepoint.test/:p:/s/ExampleTeam/"
+             "opaque-document-id?e=example&"
+             "CID=00000000-0000-0000-0000-000000000000&"
+             "previoussessionid=11111111-1111-1111-1111-111111111111)"))))
+      (yank))
+    (should
+     (equal
+      (buffer-string)
+      (concat
+       "[[https://tenant.sharepoint.test/:p:/s/ExampleTeam/"
+       "opaque-document-id?e=example&"
+       "CID=00000000-0000-0000-0000-000000000000&"
+       "previoussessionid=11111111-1111-1111-1111-111111111111]"
+       "[📊 Project Update - August 2026.pptx]]")))))
+
 (ert-deftest james/org-insert-file-link-uses-title-and-fallback ()
   (james-test/with-temporary-directory directory
     (let ((org-directory directory))

@@ -109,6 +109,21 @@ FUNCTION receives the collection root and the absolute Org filename."
   (should (equal (james/org-image--sanitized-name "  !!!.JPG")
                  "image.jpg")))
 
+(ert-deftest james/org-link-description-adds-document-icons ()
+  (dolist (case '(("Quarterly Results.PPTX" "Results" "📊 Results")
+                  ("Proposal.docx" "Proposal" "📄 Proposal")
+                  ("Forecast.XLSX" "Forecast" "📈 Forecast")
+                  ("https://example.test/brief.PDF?download=1"
+                   "Brief" "📕 Brief")
+                  ("notes.txt" "Notes" "📎 Notes")
+                  ("https://example.test" "Example" "Example")
+                  ("photo.png" "Photo" "Photo")))
+    (should (equal (james/org--link-description (nth 0 case) (nth 1 case))
+                   (nth 2 case))))
+  (should (equal (james/org--link-description
+                  "archive.zip" "Archive.zip" t)
+                 "📎 Archive.zip")))
+
 (ert-deftest james/org-timestamp-prefix-is-compact-to-the-minute ()
   (cl-letf (((symbol-function 'format-time-string)
              (lambda (format &rest _)
@@ -165,7 +180,7 @@ FUNCTION receives the collection root and the absolute Org filename."
         (string-match-p
          (regexp-quote
            (format
-            "[[file:../attachments/projects/alpha/%s][Design Review (Final).PDF]]"
+            "[[file:../attachments/projects/alpha/%s][📕 Design Review (Final).PDF]]"
             target-name))
           (buffer-string)))
        (should-not (string-match-p ":PROPERTIES:" (buffer-string)))))))
@@ -191,7 +206,7 @@ FUNCTION receives the collection root and the absolute Org filename."
              (should
               (string-match-p
                (regexp-quote
-                (format "[[file:%s][Agenda.PDF]]"
+                (format "[[file:%s][📕 Agenda.PDF]]"
                         (org-link-escape
                          (file-relative-name
                           target (file-name-directory org-file)))))
@@ -241,12 +256,12 @@ FUNCTION receives the collection root and the absolute Org filename."
        (should
         (string-match-p
          (regexp-quote
-          "[[file:../attachments/notes/example/202607181435-agenda.pdf][Agenda.PDF]]")
+          "[[file:../attachments/notes/example/202607181435-agenda.pdf][📕 Agenda.PDF]]")
          (buffer-string)))
        (should
         (string-match-p
          (regexp-quote
-          "[[file:../attachments/notes/example/202607181435-board-packet.pdf][Board Packet.PDF]]")
+          "[[file:../attachments/notes/example/202607181435-board-packet.pdf][📕 Board Packet.PDF]]")
          (buffer-string)))))))
 
 (ert-deftest james/org-download-clipboard-uses-clean-name-without-id ()

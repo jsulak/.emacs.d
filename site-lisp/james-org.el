@@ -74,6 +74,23 @@ relative path is mirrored below this directory without its extension."
     "webp")
   "Filename extensions routed through the Org image workflow.")
 
+(defconst james/org-powerpoint-extensions
+  '("pot" "potm" "potx" "pps" "ppsm" "ppsx" "ppt" "pptm" "pptx")
+  "Filename extensions recognized as PowerPoint documents.")
+
+(defconst james/org-word-extensions
+  '("doc" "docm" "docx" "dot" "dotm" "dotx")
+  "Filename extensions recognized as Word documents.")
+
+(defconst james/org-excel-extensions
+  '("xla" "xlam" "xls" "xlsb" "xlsm" "xlsx" "xlt" "xltm" "xltx")
+  "Filename extensions recognized as Excel documents.")
+
+(defconst james/org-other-document-extensions
+  '("csv" "epub" "key" "markdown" "md" "numbers" "odp" "ods" "odt"
+    "pages" "rtf" "tex" "txt")
+  "Other document extensions that receive a generic link icon.")
+
 (defun james/org-storage-directory (kind &optional org-file storage-root)
   "Return the KIND storage directory for ORG-FILE.
 ORG-FILE defaults to the variable `buffer-file-name'.  Its path relative
@@ -162,6 +179,35 @@ resolved against `org-directory'."
          (not (james/org-image-file-p filename))
          (not (member extension '("org" "org_archive"))))))
 
+(defun james/org--link-target-extension (target)
+  "Return the lowercase filename extension from link TARGET."
+  (let* ((filename (url-filename (url-generic-parse-url target)))
+         (filename (car (split-string (or filename "") "[?#]"))))
+    (downcase (or (file-name-extension (url-unhex-string filename)) ""))))
+
+(defun james/org--document-link-icon (target &optional attachment)
+  "Return an icon for document TARGET, or nil.
+When ATTACHMENT is non-nil, return the generic attachment icon for any
+target that is not a recognized PowerPoint, Word, Excel, or PDF document."
+  (let ((extension (james/org--link-target-extension target)))
+    (cond
+     ((member extension james/org-powerpoint-extensions) "📊")
+     ((member extension james/org-word-extensions) "📄")
+     ((member extension james/org-excel-extensions) "📈")
+     ((equal extension "pdf") "📕")
+     ((or attachment
+          (member extension james/org-other-document-extensions))
+      "📎"))))
+
+(defun james/org--link-description (target description &optional attachment)
+  "Add TARGET's document icon to DESCRIPTION when appropriate.
+ATTACHMENT has the same meaning as in `james/org--document-link-icon'."
+  (save-match-data
+    (if-let ((icon (or (james/org--document-link-icon target attachment)
+                       (james/org--document-link-icon description))))
+        (format "%s %s" icon description)
+      description)))
+
 (defun james/org-attachment--local-file (uri)
   "Return the local filename represented by URI, or nil."
   (let* ((parsed (url-generic-parse-url uri))
@@ -194,7 +240,8 @@ resolved against `org-directory'."
       (insert (org-link-make-string
                (concat "file:"
                        (org-link-escape (file-relative-name target)))
-               (file-name-nondirectory source))
+               (james/org--link-description
+                source (file-name-nondirectory source) t))
               "\n")
       target)))
 
@@ -214,7 +261,7 @@ resolved against `org-directory'."
       (insert (org-link-make-string
                (concat "file:"
                        (org-link-escape (file-relative-name target)))
-               source-name)
+               (james/org--link-description uri source-name t))
               "\n")
       target)))
 
@@ -343,7 +390,10 @@ resolved against `org-directory'."
           (while (re-search-forward "\\[\\([^]]+\\)](\\([^)]+\\))" nil t)
             (let ((title (match-string 1))
                   (url (match-string 2)))
-              (replace-match (format "[[%s][%s]]" url title) t t))))))))
+              (replace-match
+               (format "[[%s][%s]]"
+                       url (james/org--link-description url title))
+               t t))))))))
 
 (advice-add 'yank :around #'james/markdown-to-org-link-on-yank)
 
