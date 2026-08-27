@@ -370,6 +370,24 @@ ATTACHMENT has the same meaning as in `james/org--document-link-icon'."
       (if (looking-at ".*\\[X\\]") 1 0))
     #'<))
 
+(defun james/org-sort-checkboxes-by-date ()
+  "Sort current Org list by checkbox state, then timestamp.
+Unchecked items come first.  Within each checkbox state, dated items are
+sorted chronologically and undated items are placed last."
+  (interactive)
+  (org-sort-list
+   nil ?f
+   (lambda ()
+     (save-excursion
+       (let ((checked (looking-at-p ".*\\[X\\]"))
+             (end (line-end-position)))
+         (format "%d:%s"
+                 (if checked 1 0)
+                 (if (re-search-forward org-ts-regexp-both end t)
+                     (match-string 0)
+                   "<9999-12-31>")))))
+   #'string<))
+
 (with-eval-after-load 'org-agenda
   (add-to-list 'org-agenda-custom-commands
     '("w" "Waiting/Owed to me"

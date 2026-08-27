@@ -24,6 +24,9 @@
                            ("C-c p" . james/org-agenda-person-view)))
           (unless (eq (key-binding (kbd (car binding))) (cdr binding))
             (error "Unexpected binding for %s" (car binding))))
+        (unless (eq (lookup-key org-mode-map (kbd "C-c t"))
+                    #'james/org-sort-checkboxes-by-date)
+          (error "Unexpected binding for C-c t"))
         (princ "Startup smoke test passed\n"))
     (delete-directory state-directory t)))
 

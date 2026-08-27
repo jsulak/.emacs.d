@@ -17,6 +17,7 @@
 (setq user-emacs-directory james-test/root-directory
       default-directory james-test/root-directory
       package-user-dir (expand-file-name "elpa" james-test/root-directory)
+      load-prefer-newer t
       custom-file (expand-file-name "custom.el" james-test/state-directory)
       bookmark-default-file (expand-file-name "bookmarks" james-test/state-directory)
       recentf-save-file (expand-file-name "recentf" james-test/state-directory)

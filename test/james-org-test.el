@@ -387,4 +387,24 @@ FUNCTION receives the collection root and the absolute Org filename."
     (should (equal (james/org-download-directory (lambda () "/fallback"))
                    "/fallback"))))
 
+(ert-deftest james/org-sort-checkboxes-by-date-sorts-checked-items-last ()
+  (with-temp-buffer
+    (org-mode)
+    (insert "- [X] Checked earlier <2026-08-23 Sun>\n"
+            "- [ ] Later <2026-08-25 Tue>\n"
+            "- [X] Checked without date\n"
+            "- [ ] No date\n"
+            "- [ ] Earlier <2026-08-24 Mon>\n"
+            "- [X] Checked later <2026-08-26 Wed>\n")
+    (goto-char (point-min))
+    (call-interactively #'james/org-sort-checkboxes-by-date)
+    (should
+     (equal (buffer-string)
+            (concat "- [ ] Earlier <2026-08-24 Mon>\n"
+                    "- [ ] Later <2026-08-25 Tue>\n"
+                    "- [ ] No date\n"
+                    "- [X] Checked earlier <2026-08-23 Sun>\n"
+                    "- [X] Checked later <2026-08-26 Wed>\n"
+                    "- [X] Checked without date\n")))))
+
 ;;; james-org-test.el ends here
