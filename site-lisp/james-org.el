@@ -18,6 +18,12 @@
 (defvar james/--capture-file-title nil
   "Title entered while creating a new Org file through capture.")
 
+(defconst james/org-open-loops-filename "todo-tasks.org"
+  "Org file containing the central open-loops checklist.")
+
+(defconst james/org-open-loops-heading "Open Loops"
+  "Heading containing the central open-loops checklist.")
+
 (defgroup james-org nil
   "Personal Org mode configuration."
   :group 'org)
@@ -421,16 +427,18 @@ sorted chronologically and undated items are placed last."
 
 (with-eval-after-load 'org-capture
   (add-to-list 'org-capture-templates
-               '("l" "Open Loop" entry
-                 (file+headline "open-loops.org" "Open Loops")
-                 "* WAITING %^{Who} - %^{What}\nSCHEDULED: %^t\n"
-                 :empty-lines 1))
+               `("l" "Open Loop" plain
+                 (file+function james/org-open-loops-file
+                                james/org-open-loops-goto-heading)
+                 "- [ ] %^{Who} - %^{What}\n"
+                 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               '("L" "Open Loop (deadline)" entry
-                 (file+headline "open-loops.org" "Open Loops")
-                 "* WAITING %^{Who} - %^{What}\nDEADLINE: %^t\n"
-                 :empty-lines 1))
+               `("L" "Open Loop (dated)" plain
+                 (file+function james/org-open-loops-file
+                                james/org-open-loops-goto-heading)
+                 "- [ ] %^{Who} - %^{What} %^t\n"
+                 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
                `("n" "New file" plain
@@ -481,6 +489,38 @@ Uses the file's #+TITLE as the link description, falling back to the filename."
 
 (defvar james/org-agenda-person-full nil
   "Full heading name resolved from `james/org-agenda-person'.")
+
+(defun james/org-open-loops-file ()
+  "Return the path to the central open-loops file."
+  (expand-file-name james/org-open-loops-filename org-directory))
+
+(defun james/org-open-loops--find-heading ()
+  "Return a marker for the open-loops heading, ignoring title case."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((target (downcase james/org-open-loops-heading))
+          marker)
+      (while (and (not marker) (re-search-forward org-heading-regexp nil t))
+        (when (equal (downcase (org-get-heading t t t t)) target)
+          (setq marker (point-marker))))
+      marker)))
+
+(defun james/org-open-loops-goto-heading ()
+  "Move point to the capture position below the open-loops heading."
+  (if-let ((marker (james/org-open-loops--find-heading)))
+      (progn
+        (goto-char marker)
+        (org-end-of-subtree t))
+    (user-error "Open-loops heading not found in %s"
+                (james/org-open-loops-file))))
+
+(defun james/org-agenda--mentions-person-p (text)
+  "Return non-nil when TEXT mentions the current agenda person.
+Matches any word from `james/org-agenda-person', ignoring case."
+  (let ((case-fold-search t))
+    (cl-some (lambda (word)
+               (string-match-p (regexp-quote word) text))
+             (split-string james/org-agenda-person))))
 
 (defun james/org-1on1-people ()
   "Return list of people from org files tagged with :person:."
@@ -535,34 +575,43 @@ Ensures a blank line after the heading, then positions at end of list."
   "Skip entry unless its heading or body mentions the current person.
 Matches any word from the person's name (first or last)."
   (james/org-1on1-ensure-person)
-  (let ((end (save-excursion (org-end-of-subtree t)))
-        (case-fold-search t)
-        (words (split-string james/org-agenda-person)))
-    (save-excursion
-      (if (cl-some (lambda (word)
-                     (save-excursion
-                       (re-search-forward (regexp-quote word) end t)))
-                   words)
-          nil
-        end))))
+  (let ((end (save-excursion (org-end-of-subtree t))))
+    (if (or (and buffer-file-name
+                 (equal (expand-file-name buffer-file-name)
+                        (james/org-open-loops-file))
+                 (equal (downcase (org-get-heading t t t t))
+                        (downcase james/org-open-loops-heading)))
+            (not (james/org-agenda--mentions-person-p
+                  (buffer-substring-no-properties (point) end))))
+        end
+      nil)))
 
-(defun james/org-1on1-agenda-block ()
-  "Custom agenda block showing unchecked items for `james/org-agenda-person'."
+(defun james/org-open-loops--items ()
+  "Return unchecked open loops matching the current agenda person.
+Each result is a cons cell containing the item text and its source marker."
   (james/org-1on1-ensure-person)
-  (let ((inhibit-read-only t)
-        (file (james/org-1on1-person-file james/org-agenda-person-full))
+  (let ((file (james/org-open-loops-file))
         items)
-    (with-current-buffer (find-file-noselect file)
-      (org-with-wide-buffer
-       (goto-char (point-min))
-       (when (re-search-forward "^\\* Topics" nil t)
-         (let ((end (save-excursion (org-end-of-subtree t))))
-           (while (re-search-forward "^\\s-*- \\[ \\] \\(.*\\)" end t)
-             (push (cons (match-string 1)
-                         (copy-marker (match-beginning 0)))
-                   items))))))
-    (setq items (nreverse items))
-    (insert (propertize "1:1 Agenda Items\n" 'face 'org-agenda-structure))
+    (when (file-readable-p file)
+      (with-current-buffer (find-file-noselect file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (when-let ((heading (james/org-open-loops--find-heading)))
+           (goto-char heading)
+           (let ((end (save-excursion (org-end-of-subtree t))))
+             (while (re-search-forward "^\\s-*- \\[ \\] \\(.*\\)" end t)
+               (let ((text (match-string-no-properties 1)))
+                 (when (james/org-agenda--mentions-person-p text)
+                   (push (cons text (copy-marker (match-beginning 0)))
+                         items)))))))))
+    (nreverse items)))
+
+(defun james/org-agenda--insert-checkbox-block (heading items empty-message)
+  "Insert an agenda block named HEADING for checkbox ITEMS.
+EMPTY-MESSAGE is displayed when ITEMS is nil.  Each item must be a cons cell
+containing display text and a source marker."
+  (let ((inhibit-read-only t))
+    (insert (propertize (concat heading "\n") 'face 'org-agenda-structure))
     (if items
         (dolist (item items)
           (let ((line (concat "  [ ] " (car item) "\n")))
@@ -574,13 +623,43 @@ Matches any word from the person's name (first or last)."
                    'help-echo "RET/TAB to jump to item")
              line)
             (insert line)))
-      (insert "  No pending items\n"))
+      (insert (concat "  " empty-message "\n")))
     (insert "\n")))
+
+(defun james/org-1on1-agenda-block ()
+  "Custom agenda block showing unchecked items for `james/org-agenda-person'."
+  (james/org-1on1-ensure-person)
+  (let ((file (james/org-1on1-person-file james/org-agenda-person-full))
+        items)
+    (with-current-buffer (find-file-noselect file)
+      (org-with-wide-buffer
+       (goto-char (point-min))
+       (when (re-search-forward "^\\* Topics" nil t)
+         (let ((end (save-excursion (org-end-of-subtree t))))
+           (while (re-search-forward "^\\s-*- \\[ \\] \\(.*\\)" end t)
+             (push (cons (match-string 1)
+                         (copy-marker (match-beginning 0)))
+                   items))))))
+    (james/org-agenda--insert-checkbox-block
+     "1:1 Agenda Items" (nreverse items) "No pending items")))
+
+(defun james/org-open-loops-agenda-block ()
+  "Insert pending open loops for `james/org-agenda-person' in the agenda."
+  (james/org-agenda--insert-checkbox-block
+   "Open Loops" (james/org-open-loops--items) "No pending open loops"))
+
+(defun james/org-agenda-person-select ()
+  "Prompt for the person used by the custom person agenda."
+  (setq james/org-agenda-person nil
+        james/org-agenda-person-full nil)
+  (james/org-1on1-ensure-person))
 
 (with-eval-after-load 'org-agenda
   (add-to-list 'org-agenda-custom-commands
     '("p" "Person View"
-      ((funcall (lambda () (james/org-1on1-agenda-block)))
+      ((funcall (lambda () (james/org-agenda-person-select)))
+       (funcall (lambda () (james/org-1on1-agenda-block)))
+       (funcall (lambda () (james/org-open-loops-agenda-block)))
        (todo "TODO\\|WAITING"
              ((org-agenda-overriding-header "Tasks")
               (org-agenda-sorting-strategy
@@ -608,9 +687,6 @@ Matches exact, then prefix (first name), then substring."
 (defun james/org-agenda-person-view ()
   "Show agenda filtered to a specific person."
   (interactive)
-  (setq james/org-agenda-person nil
-        james/org-agenda-person-full nil)
-  (james/org-1on1-ensure-person)
   (org-agenda nil "p"))
 
 (defun james/org-1on1-add-item (person item)

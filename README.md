@@ -119,8 +119,8 @@ TODO -> WAITING -> ON HOLD | DONE -> OBE
 
 | Key | Template |
 |-----|----------|
-| `l` | Scheduled open loop in `open-loops.org` |
-| `L` | Open loop with a deadline in `open-loops.org` |
+| `l` | Undated checkbox under `TODO Open Loops` in `todo-tasks.org` |
+| `L` | Dated checkbox under `TODO Open Loops` in `todo-tasks.org` |
 | `n` | New Org file with title, date, and tags |
 | `o` | Unchecked 1:1 topic for a selected person |
 
@@ -129,12 +129,14 @@ Useful agenda commands:
 | Key | View |
 |-----|------|
 | `C-c a w` | All `WAITING` items, ordered by deadline and schedule |
-| `C-c a p` | Prompt for a person, then show their 1:1 topics and related tasks |
+| `C-c a p` | Prompt for a person, then show their 1:1 topics, open loops, and tasks |
 | `C-c p` | Open the person view directly |
 
-Each 1:1 person is represented by an Org file tagged `:person:` with a `Topics`
-heading. `james/org-1on1-add-item` is also available as a non-interactive API
-for tools that call Emacs through `emacsclient`.
+The person view has separate sections for unchecked 1:1 topics, unchecked open
+loops that mention the selected person, and matching Org tasks. Each 1:1 person
+is represented by an Org file tagged `:person:` with a `Topics` heading.
+`james/org-1on1-add-item` is also available as a non-interactive API for tools
+that call Emacs through `emacsclient`.
 
 ### Images and attachments
 

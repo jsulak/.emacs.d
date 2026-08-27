@@ -1,6 +1,51 @@
 ;;; james-org-agenda-test.el --- Tests for Org workflows -*- lexical-binding: t; -*-
 
 (require 'test-helper)
+(require 'org-agenda)
+(require 'org-capture)
+
+(ert-deftest james/org-open-loop-capture-templates-use-central-checklist ()
+  (let ((undated (assoc "l" org-capture-templates))
+        (dated (assoc "L" org-capture-templates)))
+    (should (eq (nth 2 undated) 'plain))
+    (should (equal (nth 3 undated)
+                   '(file+function james/org-open-loops-file
+                                   james/org-open-loops-goto-heading)))
+    (should (equal (nth 4 undated)
+                   "- [ ] %^{Who} - %^{What}\n"))
+    (should (= (plist-get (nthcdr 5 undated) :empty-lines-after) 1))
+    (should (eq (nth 2 dated) 'plain))
+    (should (equal (nth 3 dated)
+                   '(file+function james/org-open-loops-file
+                                   james/org-open-loops-goto-heading)))
+    (should (equal (nth 4 dated)
+                   "- [ ] %^{Who} - %^{What} %^t\n"))
+    (should (= (plist-get (nthcdr 5 dated) :empty-lines-after) 1))))
+
+(ert-deftest james/org-open-loop-capture-leaves-space-before-next-heading ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory))
+           (org-capture-templates
+            '(("x" "Test open loop" plain
+               (file+function james/org-open-loops-file
+                              james/org-open-loops-goto-heading)
+               "- [ ] %i\n"
+               :immediate-finish t
+               :empty-lines-after 1))))
+      (james-test/write-file
+       file
+       "* TODO Open loops\n- [ ] Existing\n* TODO Next Heading\n")
+      (org-capture-string "Alex Rivera - Review proposal" "x")
+      (with-temp-buffer
+        (insert-file-contents file)
+        (should
+         (equal (buffer-string)
+                (concat
+                 "* TODO Open loops\n"
+                 "- [ ] Existing\n"
+                 "- [ ] Alex Rivera - Review proposal\n\n"
+                 "* TODO Next Heading\n")))))))
 
 (ert-deftest james/org-1on1-people-discovers-tagged-files ()
   (james-test/with-temporary-directory directory
@@ -79,6 +124,108 @@
       (re-search-forward "^\\* TODO Other")
       (beginning-of-line)
       (should (integerp (james/org-agenda-skip-unless-person))))))
+
+(ert-deftest james/org-agenda-skip-excludes-central-open-loops-heading ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory))
+           (james/org-agenda-person "Alex")
+           (james/org-agenda-person-full "Alex Rivera"))
+      (james-test/write-file
+       file
+       "* TODO Open Loops\n- [ ] Alex Rivera - Review proposal\n\n* TODO Ask Alex a question\n")
+      (with-current-buffer (find-file-noselect file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (should (integerp (james/org-agenda-skip-unless-person)))
+         (re-search-forward "^\\* TODO Ask Alex")
+         (beginning-of-line)
+         (should-not (james/org-agenda-skip-unless-person)))))))
+
+(ert-deftest james/org-open-loops-items-selects-pending-person-items ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory))
+           (james/org-agenda-person "alex")
+           (james/org-agenda-person-full "Alex Rivera"))
+      (james-test/write-file
+       file
+       (concat
+        "* TODO Open loops\n"
+        "- [ ] Alex Rivera - Review proposal <2026-09-01 Tue>\n"
+        "- [X] Alex Rivera - Finished\n"
+        "- [ ] Casey Jones - Other item\n\n"
+        "* TODO Elsewhere\n"
+        "- [ ] Alex Rivera - Not an open loop\n"))
+      (let ((items (james/org-open-loops--items)))
+        (should (equal (mapcar #'car items)
+                       '("Alex Rivera - Review proposal <2026-09-01 Tue>")))
+        (let ((marker (cdar items)))
+          (should (markerp marker))
+          (should (equal (buffer-file-name (marker-buffer marker)) file)))))))
+
+(ert-deftest james/org-open-loops-agenda-block-handles-missing-file ()
+  (james-test/with-temporary-directory directory
+    (let ((org-directory directory)
+          (james/org-agenda-person "Alex")
+          (james/org-agenda-person-full "Alex Rivera"))
+      (with-temp-buffer
+        (james/org-open-loops-agenda-block)
+        (should (equal (buffer-string)
+                       "Open Loops\n  No pending open loops\n\n")))
+      (should-not (file-exists-p
+                   (expand-file-name "todo-tasks.org" directory))))))
+
+(ert-deftest james/org-open-loops-agenda-block-links-to-source-items ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory))
+           (james/org-agenda-person "Rivera")
+           (james/org-agenda-person-full "Alex Rivera"))
+      (james-test/write-file
+       file
+       "* TODO Open Loops\n- [ ] Alex Rivera - Review proposal\n")
+      (with-temp-buffer
+        (james/org-open-loops-agenda-block)
+        (should (string-match-p
+                 "  \\[ \\] Alex Rivera - Review proposal"
+                 (buffer-string)))
+        (goto-char (point-min))
+        (re-search-forward "Review proposal")
+        (let ((marker (get-text-property (point) 'org-marker)))
+          (should (markerp marker))
+          (should (equal (buffer-file-name (marker-buffer marker)) file)))))))
+
+(ert-deftest james/org-person-agenda-command-prompts-and-renders-all-blocks ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (org-agenda-files (list directory))
+           (james/org-agenda-person "Stale Person")
+           (james/org-agenda-person-full "Stale Person")
+           (prompt-count 0))
+      (james-test/write-file
+       (expand-file-name "Alex Rivera.org" directory)
+       "#+TITLE: Alex Rivera\n#+FILETAGS: :person:\n\n* Topics\n- [ ] Discuss roadmap\n")
+      (james-test/write-file
+       (expand-file-name "todo-tasks.org" directory)
+       "* TODO Open Loops\n- [ ] Alex Rivera - Review proposal\n")
+      (unwind-protect
+          (cl-letf (((symbol-function 'completing-read)
+                     (lambda (&rest _)
+                       (cl-incf prompt-count)
+                       "Alex Rivera")))
+            (org-agenda nil "p")
+            (should (= prompt-count 1))
+            (should (equal james/org-agenda-person "Alex Rivera"))
+            (with-current-buffer "*Org Agenda*"
+              (let ((agenda (buffer-string)))
+                (should (string-match-p "1:1 Agenda Items" agenda))
+                (should (string-match-p "Discuss roadmap" agenda))
+                (should (string-match-p "Open Loops" agenda))
+                (should (string-match-p "Review proposal" agenda))
+                (should (string-match-p "Tasks" agenda)))))
+        (when (get-buffer "*Org Agenda*")
+          (kill-buffer "*Org Agenda*"))))))
 
 (ert-deftest james/org-1on1-agenda-block-lists-only-pending-items ()
   (james-test/with-temporary-directory directory
