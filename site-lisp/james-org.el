@@ -209,8 +209,8 @@ target that is not a recognized PowerPoint, Word, Excel, or PDF document."
   "Add TARGET's document icon to DESCRIPTION when appropriate.
 ATTACHMENT has the same meaning as in `james/org--document-link-icon'."
   (save-match-data
-    (if-let ((icon (or (james/org--document-link-icon target attachment)
-                       (james/org--document-link-icon description))))
+    (if-let* ((icon (or (james/org--document-link-icon target attachment)
+                        (james/org--document-link-icon description))))
         (format "%s %s" icon description)
       description)))
 
@@ -507,7 +507,7 @@ Uses the file's #+TITLE as the link description, falling back to the filename."
 
 (defun james/org-open-loops-goto-heading ()
   "Move point to the capture position below the open-loops heading."
-  (if-let ((marker (james/org-open-loops--find-heading)))
+  (if-let* ((marker (james/org-open-loops--find-heading)))
       (progn
         (goto-char marker)
         (org-end-of-subtree t))
@@ -596,7 +596,7 @@ Each result is a cons cell containing the item text and its source marker."
       (with-current-buffer (find-file-noselect file)
         (org-with-wide-buffer
          (goto-char (point-min))
-         (when-let ((heading (james/org-open-loops--find-heading)))
+         (when-let* ((heading (james/org-open-loops--find-heading)))
            (goto-char heading)
            (let ((end (save-excursion (org-end-of-subtree t))))
              (while (re-search-forward "^\\s-*- \\[ \\] \\(.*\\)" end t)

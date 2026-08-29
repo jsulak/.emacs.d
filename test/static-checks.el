@@ -41,7 +41,7 @@
     (dolist (file source-files)
       (checkdoc-file file)))
   (dolist (file source-files)
-    (when-let ((errors (check-declare-file file)))
+    (when-let* ((errors (check-declare-file file)))
       (push (format "%s: declaration errors: %S"
                     (file-relative-name file root-directory) errors)
             failures)))

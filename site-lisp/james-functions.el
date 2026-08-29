@@ -56,7 +56,7 @@
     (unless (and filename (file-exists-p filename))
       (user-error "Current buffer is not visiting an existing file"))
     (let ((new-name (read-file-name "New name: " filename)))
-      (when-let ((other-buffer (find-buffer-visiting new-name)))
+      (when-let* ((other-buffer (find-buffer-visiting new-name)))
         (unless (eq other-buffer (current-buffer))
           (user-error "File is already visited by buffer %s"
                       (buffer-name other-buffer))))
@@ -73,7 +73,7 @@
     (unless (and filename (file-exists-p filename))
       (user-error "Current buffer is not visiting an existing file"))
     (let ((new-name (expand-file-name (file-name-nondirectory filename) dir)))
-      (when-let ((other-buffer (find-buffer-visiting new-name)))
+      (when-let* ((other-buffer (find-buffer-visiting new-name)))
         (unless (eq other-buffer (current-buffer))
           (user-error "File is already visited by buffer %s"
                       (buffer-name other-buffer))))
@@ -113,7 +113,7 @@
   (interactive)
   (let ((init-file (or user-init-file
                        (expand-file-name "init.el" user-emacs-directory))))
-    (when-let ((init-buffer (find-buffer-visiting init-file)))
+    (when-let* ((init-buffer (find-buffer-visiting init-file)))
       (with-current-buffer init-buffer
         (save-buffer)))
     (load-file init-file)
@@ -299,4 +299,3 @@ Requires pandoc to be installed."
 (provide 'james-functions)
 
 ;;; james-functions.el ends here
-

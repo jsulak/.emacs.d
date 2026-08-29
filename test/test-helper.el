@@ -49,7 +49,7 @@
      (unwind-protect
          (progn ,@body)
        (dolist (buffer (buffer-list))
-         (when-let ((file (buffer-local-value 'buffer-file-name buffer)))
+         (when-let* ((file (buffer-local-value 'buffer-file-name buffer)))
            (when (file-in-directory-p file ,binding)
              (kill-buffer buffer))))
        (delete-directory ,binding t))))

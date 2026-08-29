@@ -1,5 +1,8 @@
 ;;; startup-smoke.el --- Full configuration startup smoke test -*- lexical-binding: t; -*-
 
+(defvar james/load-custom-config)
+(defvar james/load-local-config)
+
 (let* ((test-directory (file-name-directory (or load-file-name buffer-file-name)))
        (root-directory (file-name-directory (directory-file-name test-directory)))
        (state-directory (make-temp-file "james-emacs-smoke-state-" t)))

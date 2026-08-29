@@ -31,7 +31,8 @@
 (defface james/markdown-heading-hide
   '((t :inherit default))
   "Face for hidden leading heading markers in markdown.
-Foreground is set to match the background after theme load.")
+Foreground is set to match the background after theme load."
+  :group 'markdown-faces)
 
 (defun james/markdown-indent--update-heading-hide-face ()
   "Match the hidden Markdown heading marker face to the background."
