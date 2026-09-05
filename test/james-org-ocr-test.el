@@ -49,6 +49,49 @@
           (james/org-ocr--hash (james/org-ocr-job-file job)))
     job))
 
+(ert-deftest james/org-ocr-clean-text-normalizes-whitespace-without-joining-lines ()
+  (let ((clean (james/org-ocr--clean-text
+                " \r\n  Quarterly\t  review \r\n\r\n• Revenue\u00a018  percent\fNext\u202f milestone\u2028* Literal heading\u2029:END:\r ")))
+    (should (equal clean
+                   "Quarterly review\n• Revenue 18 percent\nNext milestone\n* Literal heading\n:END:"))
+    (should (equal clean (james/org-ocr--clean-text clean)))
+    (should (equal "" (james/org-ocr--clean-text "\n\t \f\r")))))
+
+(ert-deftest james/org-ocr-new-results-are-cleaned-and-escaped ()
+  (james-test/with-ocr
+    (should (james/org-ocr--apply (james-test/ocr-job)
+                                "  Slide   title\n\n\t* A  bullet\f:END:\n\n"))
+    (should (string-match-p
+             (regexp-quote ": Slide title\n: * A bullet\n: :END:\n:END:")
+             (buffer-string)))
+    (should (= 1 (length (org-element-map (org-element-parse-buffer) 'drawer #'identity))))))
+
+(ert-deftest james/org-ocr-cleanup-preserves-metadata-other-text-and-undo ()
+  (james-test/with-ocr
+    (erase-buffer)
+    (let* ((metadata ": sha256: abcdef\n: options: (\"-l\" \"eng\")\n")
+           (messy ":   Quarterly   review  \n: \n:  Revenue\t18 percent\n")
+           (tidy ": Quarterly review\n: Revenue 18 percent\n")
+           (other "\n:KEEP:\nKeep    these spaces\n:END:\n:OCR:\nUser's custom drawer\n:END:\n")
+           (before (concat "* Slides\n:OCR:\n" metadata messy ":END:\n"
+                           ":OCR:\n" metadata messy ":END:\n" other))
+           (expected (string-replace messy tidy before)))
+      (insert before)
+      (goto-char (point-max))
+      (let ((position (copy-marker (point))))
+        (james/org-ocr-cleanup-buffer)
+        (should (= (point) position)))
+      (should (equal expected (buffer-string)))
+      (save-excursion
+        (goto-char (point-min))
+        (search-forward "Quarterly review")
+        (should (invisible-p (1- (point)))))
+      (set-buffer-modified-p nil)
+      (james/org-ocr-cleanup-buffer)
+      (should-not (buffer-modified-p))
+      (undo-only 1)
+      (should (equal before (buffer-string))))))
+
 (ert-deftest james/org-ocr-live-buffer-preserves-edits-point-and-saved-file ()
   (james-test/with-ocr
     (james/org-ocr-image-at-point)

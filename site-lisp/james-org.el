@@ -407,6 +407,28 @@ Sparse-text mode suits slides.  Use --psm 3 for automatic page layout."
                                    (car drawer) (cdr drawer)))
                              (james/org-ocr-job-drawer job))))))))))
 
+(defun james/org-ocr--clean-text (text)
+  "Normalize whitespace in recognized TEXT without guessing its reading order.
+Remove empty lines, normalize line endings and page breaks, and collapse
+horizontal whitespace.  Keep nonempty line boundaries and punctuation."
+  (setq text (replace-regexp-in-string
+              (regexp-opt '("\r\n" "\r" "\f" "\u2028" "\u2029")) "\n" text))
+  (string-join
+   (delq nil
+         (mapcar
+          (lambda (line)
+            (let ((clean (string-trim
+                          (replace-regexp-in-string
+                           "[ \t\u00a0\u202f]+" " " line))))
+              (unless (string-empty-p clean) clean)))
+          (split-string text "\n")))
+   "\n"))
+
+(defun james/org-ocr--format-text (text indent)
+  "Clean TEXT and escape its lines for an OCR drawer at INDENT."
+  (mapconcat (lambda (line) (concat indent ": " line "\n"))
+             (split-string (james/org-ocr--clean-text text) "\n" t) ""))
+
 (defun james/org-ocr--apply (job text)
   "Insert TEXT for JOB into its live buffer if the original is intact.
 Return non-nil when applied.  Never save or reload the visiting file."
@@ -435,13 +457,72 @@ Return non-nil when applied.  Never save or reload the visiting file."
                         indent ": options: "
                         (prin1-to-string (james/org-ocr-job-arguments job)) "\n")
                 ;; Fixed-width lines cannot become headings or close drawers.
-                (dolist (line (split-string (string-trim text) "\n"))
-                  (insert indent ": " (string-trim-right line) "\n"))
+                (insert (james/org-ocr--format-text text indent))
                 (insert indent ":END:\n")
                 (goto-char start)
                 (org-fold-hide-drawer-toggle t)))
             (undo-boundary)))))
     t))
+
+(defun james/org-ocr--cleanup-drawer (drawer)
+  "Clean an existing generated OCR DRAWER, preserving its metadata.
+Return `changed', `unchanged', or `skipped' for an unrecognized format."
+  (save-excursion
+    (goto-char (org-element-property :begin drawer))
+    (let ((indent (make-string (current-indentation) ?\s))
+          (end (org-element-property :contents-end drawer)))
+      (forward-line 1)
+      (if (not (and end
+                    (looking-at (concat "[ \t]*: sha256: [0-9a-f]+[ \t]*\n"
+                                        "[ \t]*: options: [^\n]*\n"))))
+          'skipped
+        (goto-char (match-end 0))
+        (let* ((begin (point))
+               (old (buffer-substring-no-properties begin end))
+               (lines (split-string old "\n"))
+               (prefix "\\`[ \t]*:\\(?: \\|\\'\\)")
+               (blank "\\`[ \t]*\\'"))
+          (if (not (cl-every (lambda (line)
+                              (or (string-match-p blank line)
+                                  (string-match-p prefix line)))
+                            lines))
+              'skipped
+            (let ((clean (james/org-ocr--format-text
+                          (mapconcat
+                           (lambda (line) (replace-regexp-in-string prefix "" line))
+                           lines "\n")
+                          indent)))
+              (if (equal old clean)
+                  'unchanged
+                (delete-region begin end)
+                (insert clean)
+                (goto-char (org-element-property :begin drawer))
+                (org-fold-hide-drawer-toggle t)
+                'changed))))))))
+
+(defun james/org-ocr-cleanup-buffer ()
+  "Tidy generated OCR drawers in this buffer without running OCR again.
+Preserve metadata and other note content; leave changes for normal saving.
+Unrecognized drawer formats are skipped.  Respect the current narrowing."
+  (interactive)
+  (unless (derived-mode-p 'org-mode) (user-error "Use this command in Org mode"))
+  (barf-if-buffer-read-only)
+  (let ((changed 0) (skipped 0) drawers)
+    (org-element-map (org-element-parse-buffer) 'drawer
+      (lambda (drawer)
+        (when (equal (org-element-property :drawer-name drawer) "OCR")
+          (push drawer drawers))))
+    (save-excursion
+      (undo-boundary)
+      (atomic-change-group
+        ;; Work backwards so earlier parsed positions remain valid.
+        (dolist (drawer drawers)
+          (pcase (james/org-ocr--cleanup-drawer drawer)
+            ('changed (cl-incf changed))
+            ('skipped (cl-incf skipped)))))
+      (undo-boundary))
+    (message "OCR: cleaned %d drawer(s), skipped %d unrecognized format(s)"
+             changed skipped)))
 
 (defun james/org-ocr-fold-drawers ()
   "Collapse OCR drawers using Org's native, searchable folding."

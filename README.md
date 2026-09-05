@@ -182,6 +182,11 @@ to inspect it. OCR drawers are excluded from Org exports, including rich-text
 copy. Text lines use Org's fixed-width syntax to keep recognized characters
 from becoming headings or drawer delimiters.
 
+OCR text is cleaned before insertion: blank lines are removed, repeated spaces
+and tabs become single spaces, and page breaks/line endings are normalized.
+Nonempty line boundaries, bullet markers, and punctuation remain intact;
+cleanup does not guess how columns or wrapped sentences should be joined.
+
 `C-c r` (`consult-ripgrep`) searches the saved OCR text along with other note
 content; search the Org collection directory to cover all notes. In-buffer
 search can find it before saving. Native Org folding allows search navigation
@@ -191,6 +196,9 @@ so unchanged images can be skipped on subsequent runs.
 - `C-c v o` / `M-x james/org-ocr-image-at-point`: recognize the image link at
   point; a prefix argument forces a refresh of its existing transcription.
 - `M-x james/org-ocr-buffer`: process missing or changed images in this buffer.
+- `M-x james/org-ocr-cleanup-buffer`: tidy existing generated OCR drawers without
+  rerunning recognition. Keeps metadata and other note content, supports undo,
+  and leaves changes for normal saving. Unrecognized drawer formats are skipped.
 - `M-x james/org-ocr-directory`: recursively backfill a selected local directory
   of Org files, reusing visiting buffers and leaving newly opened buffers open.
 - `*Org OCR log*`: completion, skip, and failure messages.
