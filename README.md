@@ -174,6 +174,43 @@ file does not move existing media, so old links remain valid while newly added
 files use the new mirrored path. On macOS, non-Org attachments open in their
 default application; Org links stay in Emacs.
 
+New images inserted through drag-and-drop, clipboard paste, screenshots, or
+`org-download` are recognized locally with Tesseract in the background. The
+extracted text is stored directly below the image in an `:OCR:` drawer, folded
+on insertion and when opening or reverting a note. Press `TAB` on the drawer
+to inspect it. OCR drawers are excluded from Org exports, including rich-text
+copy. Text lines use Org's fixed-width syntax to keep recognized characters
+from becoming headings or drawer delimiters.
+
+`C-c r` (`consult-ripgrep`) searches the saved OCR text along with other note
+content; search the Org collection directory to cover all notes. In-buffer
+search can find it before saving. Native Org folding allows search navigation
+to reveal matches. The drawer includes the image hash and recognition options
+so unchanged images can be skipped on subsequent runs.
+
+- `C-c v o` / `M-x james/org-ocr-image-at-point`: recognize the image link at
+  point; a prefix argument forces a refresh of its existing transcription.
+- `M-x james/org-ocr-buffer`: process missing or changed images in this buffer.
+- `M-x james/org-ocr-directory`: recursively backfill a selected local directory
+  of Org files, reusing visiting buffers and leaving newly opened buffers open.
+- `*Org OCR log*`: completion, skip, and failure messages.
+
+OCR runs one image at a time, with a two-minute timeout per image. Results are
+inserted into the live buffer, preserving point and unrelated edits, and left
+for ordinary save/autosave. No OCR process writes an Org file. If the link,
+existing drawer, or image changes during recognition, or the buffer closes,
+the result is skipped. Backfill likewise preserves unsaved edits in visiting
+buffers. It does not force saves; the existing Org autosave mode still applies.
+
+Tesseract must be on Emacs's `exec-path` (`brew install tesseract` on macOS;
+the Ansible playbook installs it on Debian/Ubuntu). Customize
+`james/org-ocr-enabled` to disable automatic recognition, or
+`james/org-ocr-arguments` to change language/layout. The default is English
+sparse-text mode (`--psm 11`); `--psm 3` is an alternative for dense layouts.
+Recognition quality varies with resolution and slide design. Unsupported
+image formats (such as SVG or HEIC) produce a diagnostic; convert them to PNG
+before recognition. Image insertion remains usable if recognition fails.
+
 ## Keybindings
 
 `C-h` is Backspace in this configuration; Emacs help remains available on

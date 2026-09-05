@@ -312,6 +312,399 @@ ATTACHMENT has the same meaning as in `james/org--document-link-icon'."
   (let ((james/org-download-source-name "image.png"))
     (apply orig-fun args)))
 
+;;; Searchable slide images
+
+(defcustom james/org-ocr-enabled t
+  "Automatically recognize text in newly inserted Org images."
+  :type 'boolean
+  :group 'james-org)
+
+(defcustom james/org-ocr-program "tesseract"
+  "Executable used for local image text recognition."
+  :type 'string
+  :group 'james-org)
+
+(defcustom james/org-ocr-arguments '("-l" "eng" "--psm" "11")
+  "Tesseract arguments following the input file and stdout destination.
+Sparse-text mode suits slides.  Use --psm 3 for automatic page layout."
+  :type '(repeat string)
+  :group 'james-org)
+
+(defcustom james/org-ocr-timeout 120
+  "Maximum number of seconds allowed for a single OCR process."
+  :type 'natnum
+  :group 'james-org)
+
+(cl-defstruct (james/org-ocr-job (:constructor james/org-ocr--make-job))
+  marker anchor link drawer file hash arguments download force)
+
+(defvar james/org-ocr--queue nil "Image recognition jobs awaiting execution.")
+(defvar james/org-ocr--process nil "Currently running image recognition process.")
+(defvar james/org-ocr--downloads (make-hash-table :test #'equal)
+  "Download paths mapped to mutable completion status cells.")
+
+(defun james/org-ocr--log (format-string &rest arguments)
+  "Report FORMAT-STRING with ARGUMENTS and retain it in an OCR log."
+  (let ((text (apply #'format format-string arguments)))
+    (with-current-buffer (get-buffer-create "*Org OCR log*")
+      (goto-char (point-max))
+      (insert text "\n"))
+    (message "OCR: %s" text)))
+
+(defun james/org-ocr--drawer (link-end)
+  "Return the OCR drawer immediately after LINK-END, or nil."
+  (save-excursion
+    (goto-char link-end)
+    (forward-line 1)
+    (when (looking-at "[ \t]*:OCR:[ \t]*$")
+      (let ((element (org-element-at-point)))
+        (when (eq (org-element-type element) 'drawer)
+          (cons (org-element-property :begin element)
+                (save-excursion
+                  (re-search-forward "^[ \t]*:END:[ \t]*$"
+                                     (org-element-property :end element) t)
+                  (min (point-max) (1+ (line-end-position))))))))))
+
+(defun james/org-ocr--hash (file)
+  "Return a SHA256 content hash for local image FILE."
+  (with-temp-buffer
+    (set-buffer-multibyte nil)
+    (insert-file-contents-literally file)
+    (secure-hash 'sha256 (current-buffer))))
+
+(defun james/org-ocr--valid-p (job)
+  "Check that JOB still refers to its original link and drawer."
+  (let* ((marker (james/org-ocr-job-marker job))
+         (buffer (marker-buffer marker)))
+    (and (buffer-live-p buffer)
+         (eq (overlay-buffer (james/org-ocr-job-anchor job)) buffer)
+         (with-current-buffer buffer
+           (save-excursion
+             (save-restriction
+               (widen)
+               (goto-char marker)
+               (let* ((end (+ (point) (length (james/org-ocr-job-link job))))
+                      (drawer (and (<= end (point-max))
+                                   (james/org-ocr--drawer end))))
+                 (and (derived-mode-p 'org-mode)
+                      (not buffer-read-only)
+                      (= (overlay-start (james/org-ocr-job-anchor job)) (point))
+                      (= (overlay-end (james/org-ocr-job-anchor job)) end)
+                      (<= end (point-max))
+                      (equal (buffer-substring-no-properties (point) end)
+                             (james/org-ocr-job-link job))
+                      ;; Do not split a paragraph edited after the link.
+                      (save-excursion
+                        (goto-char end)
+                        (looking-at "[ \t]*$"))
+                      (equal (expand-file-name
+                              (org-link-unescape
+                               (or (org-element-property
+                                    :path (org-element-context)) "")))
+                             (james/org-ocr-job-file job))
+                      (equal (and drawer
+                                  (buffer-substring-no-properties
+                                   (car drawer) (cdr drawer)))
+                             (james/org-ocr-job-drawer job))))))))))
+
+(defun james/org-ocr--apply (job text)
+  "Insert TEXT for JOB into its live buffer if the original is intact.
+Return non-nil when applied.  Never save or reload the visiting file."
+  (when (and (james/org-ocr--valid-p job)
+             (equal (james/org-ocr-job-hash job)
+                    (james/org-ocr--hash (james/org-ocr-job-file job))))
+    (with-current-buffer (marker-buffer (james/org-ocr-job-marker job))
+      (save-excursion
+        (save-restriction
+          (widen)
+          (goto-char (james/org-ocr-job-marker job))
+          (let* ((end (+ (point) (length (james/org-ocr-job-link job))))
+                 (drawer (james/org-ocr--drawer end))
+                 (indent (make-string (current-column) ?\s)))
+            (undo-boundary)
+            (atomic-change-group
+              (if drawer
+                  (progn (goto-char (car drawer))
+                         (delete-region (car drawer) (cdr drawer)))
+                (goto-char end)
+                (end-of-line)
+                (if (eobp) (insert "\n") (forward-char 1)))
+              (let ((start (point)))
+                (insert indent ":OCR:\n"
+                        indent ": sha256: " (james/org-ocr-job-hash job) "\n"
+                        indent ": options: "
+                        (prin1-to-string (james/org-ocr-job-arguments job)) "\n")
+                ;; Fixed-width lines cannot become headings or close drawers.
+                (dolist (line (split-string (string-trim text) "\n"))
+                  (insert indent ": " (string-trim-right line) "\n"))
+                (insert indent ":END:\n")
+                (goto-char start)
+                (org-fold-hide-drawer-toggle t)))
+            (undo-boundary)))))
+    t))
+
+(defun james/org-ocr-fold-drawers ()
+  "Collapse OCR drawers using Org's native, searchable folding."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*:OCR:[ \t]*$" nil t)
+        (org-fold-hide-drawer-toggle t t))))
+  (add-hook 'after-revert-hook #'james/org-ocr-fold-drawers nil t))
+
+(defun james/org-ocr-exclude-from-export (_backend)
+  "Remove OCR drawers from the temporary export buffer for _BACKEND."
+  (let (ranges)
+    (org-element-map (org-element-parse-buffer) 'drawer
+      (lambda (drawer)
+        (when (equal (org-element-property :drawer-name drawer) "OCR")
+          (push (cons (org-element-property :begin drawer)
+                      (org-element-property :end drawer)) ranges))))
+    (dolist (range ranges)
+      (delete-region (car range) (cdr range)))))
+
+(add-hook 'org-mode-hook #'james/org-ocr-fold-drawers)
+
+(defun james/org-ocr-reveal-search-result ()
+  "Reveal an OCR drawer when Consult navigates to one of its lines."
+  (when (derived-mode-p 'org-mode)
+    (let ((drawer (org-element-lineage (org-element-context) '(drawer) t)))
+      (when (equal (org-element-property :drawer-name drawer) "OCR")
+        (org-fold-show-context 'isearch)))))
+
+(with-eval-after-load 'consult
+  (add-hook 'consult-after-jump-hook #'james/org-ocr-reveal-search-result))
+
+(with-eval-after-load 'ox
+  (add-hook 'org-export-before-processing-functions
+            #'james/org-ocr-exclude-from-export))
+
+(defun james/org-ocr--release (job)
+  "Release the buffer anchors retained by JOB."
+  (delete-overlay (james/org-ocr-job-anchor job))
+  (set-marker (james/org-ocr-job-marker job) nil))
+
+(defun james/org-ocr--finish (process _event)
+  "Apply completed OCR PROCESS output; _EVENT is the process notification."
+  (when (and (memq (process-status process) '(exit signal))
+             (not (process-get process 'finished)))
+    (process-put process 'finished t)
+    (let ((job (process-get process 'job))
+          (output (process-buffer process))
+          (errors (process-get process 'errors)))
+      (when-let* ((timer (process-get process 'timer))) (cancel-timer timer))
+      (unwind-protect
+          (condition-case err
+              (if (and (eq (process-status process) 'exit)
+                       (zerop (process-exit-status process)))
+                  (james/org-ocr--log
+                   "%s: %s"
+                   (if (james/org-ocr--apply
+                        job (with-current-buffer output (buffer-string)))
+                       "Updated" "Skipped changed or closed buffer/image")
+                   (james/org-ocr-job-file job))
+                (james/org-ocr--log
+                 "Failed %s: %s" (james/org-ocr-job-file job)
+                 (with-current-buffer errors (string-trim (buffer-string)))))
+            (error (james/org-ocr--log "%s" (error-message-string err))))
+        (james/org-ocr--release job)
+        (kill-buffer output)
+        (kill-buffer errors)
+        (setq james/org-ocr--process nil)
+        (james/org-ocr--pump)))))
+
+(defun james/org-ocr--start (job)
+  "Start a local OCR process for JOB, or return nil if already current."
+  (let* ((file (james/org-ocr-job-file job))
+         (hash (james/org-ocr--hash file))
+         (drawer (james/org-ocr-job-drawer job))
+         (options (prin1-to-string (james/org-ocr-job-arguments job))))
+    (setf (james/org-ocr-job-hash job) hash)
+    (if (and (not (james/org-ocr-job-force job)) drawer
+             (string-match-p (regexp-quote (concat ": sha256: " hash "\n")) drawer)
+             (string-match-p (regexp-quote (concat ": options: " options "\n")) drawer))
+        (progn (james/org-ocr--log "Unchanged: %s" file) nil)
+      (let ((output (generate-new-buffer " *Org OCR output*"))
+            (errors (generate-new-buffer " *Org OCR errors*")))
+        (condition-case err
+            (let* ((default-directory temporary-file-directory)
+                   (process
+                    (make-process
+                     :name "org-ocr" :buffer output :stderr errors
+                     :command (append (list james/org-ocr-program file "stdout")
+                                      (james/org-ocr-job-arguments job))
+                     :coding 'utf-8-unix :connection-type 'pipe :noquery t
+                     :sentinel #'james/org-ocr--finish)))
+              (process-put process 'job job)
+              (process-put process 'errors errors)
+              (process-put process 'timer
+                           (run-at-time james/org-ocr-timeout nil
+                                        (lambda ()
+                                          (when (process-live-p process)
+                                            (james/org-ocr--log "Timed out: %s" file)
+                                            (delete-process process)))))
+              (setq james/org-ocr--process process))
+          (error
+           (kill-buffer output)
+           (kill-buffer errors)
+           (signal (car err) (cdr err))))))))
+
+(defun james/org-ocr--pump ()
+  "Run ready jobs serially, leaving incomplete downloads queued."
+  (let (job)
+    (while (and (not james/org-ocr--process)
+                (setq job
+                      (cl-find-if
+                       (lambda (candidate)
+                         (not (eq (car (james/org-ocr-job-download candidate))
+                                  'pending)))
+                       james/org-ocr--queue)))
+      (setq james/org-ocr--queue (delq job james/org-ocr--queue))
+      (condition-case err
+          (if (or (eq (car (james/org-ocr-job-download job)) 'failed)
+                  (not (james/org-ocr--valid-p job)))
+              (james/org-ocr--log "Skipped changed buffer or failed download: %s"
+                                  (james/org-ocr-job-file job))
+            (james/org-ocr--start job))
+        (error (james/org-ocr--log "Failed %s: %s"
+                                 (james/org-ocr-job-file job)
+                                 (error-message-string err))))
+      (unless james/org-ocr--process
+        (james/org-ocr--release job)))))
+
+(defun james/org-ocr--enqueue (element &optional force)
+  "Queue the image link ELEMENT for recognition.
+With FORCE, rerun even when its stored hash is current."
+  (let* ((path (org-element-property :path element))
+         (file (and path (expand-file-name (org-link-unescape path))))
+         (begin (org-element-property :begin element))
+         (end (- (org-element-property :end element)
+                 (org-element-property :post-blank element))))
+    (when (and (equal (org-element-property :type element) "file")
+               (james/org-image-file-p file))
+      (when (file-remote-p file) (user-error "OCR requires a local image"))
+      (unless (executable-find james/org-ocr-program)
+        (user-error "Cannot find OCR executable: %s" james/org-ocr-program))
+      (unless (save-excursion (goto-char end) (looking-at "[ \t]*$"))
+        (user-error "OCR needs an image link at the end of its line"))
+      (unless (cl-some
+               (lambda (job)
+                 (let ((marker (james/org-ocr-job-marker job)))
+                   (and (eq (marker-buffer marker) (current-buffer))
+                        (equal (marker-position marker) begin))))
+               (append james/org-ocr--queue
+                       (when james/org-ocr--process
+                         (list (process-get james/org-ocr--process 'job)))))
+        (let* ((drawer (james/org-ocr--drawer end))
+               (anchor (make-overlay begin end nil t nil))
+               (job (james/org-ocr--make-job
+                     :marker (copy-marker begin t)
+                     :anchor anchor
+                     :link (buffer-substring-no-properties begin end)
+                     :drawer (and drawer (buffer-substring-no-properties
+                                          (car drawer) (cdr drawer)))
+                     :file file :arguments (copy-sequence james/org-ocr-arguments)
+                     :download (gethash file james/org-ocr--downloads)
+                     :force force)))
+          ;; A deleted link must not be confused with an identical next link.
+          (overlay-put anchor 'evaporate t)
+          (setq james/org-ocr--queue (nconc james/org-ocr--queue (list job)))
+          t)))))
+
+(defun james/org-ocr-image-at-point (&optional force)
+  "Recognize the image at point; with prefix FORCE, refresh its OCR."
+  (interactive "P")
+  (unless (derived-mode-p 'org-mode) (user-error "Use this command in Org mode"))
+  (let ((element (org-element-context)))
+    (unless (and (eq (org-element-type element) 'link)
+                 (james/org-ocr--enqueue element force))
+      (user-error "No new local image job at point")))
+  (james/org-ocr--pump))
+
+(defun james/org-ocr-buffer ()
+  "Recognize missing or changed images in the current Org buffer."
+  (interactive)
+  (unless (derived-mode-p 'org-mode) (user-error "Use this command in Org mode"))
+  (let ((count 0))
+    (org-element-map (org-element-parse-buffer) 'link
+      (lambda (element)
+        (condition-case err
+            (when (james/org-ocr--enqueue element) (cl-incf count))
+          (error (james/org-ocr--log "%s" (error-message-string err))))))
+    (message "OCR: queued %d image(s) in %s" count (buffer-name)))
+  (james/org-ocr--pump))
+
+(defun james/org-ocr-directory (directory)
+  "Backfill Org images recursively beneath local DIRECTORY.
+Reuse visiting buffers, preserve unsaved edits, and leave results unsaved
+for normal save/autosave.  Newly visited buffers remain open for review."
+  (interactive "DBackfill Org directory: ")
+  (when (file-remote-p directory) (user-error "Choose a local directory"))
+  (dolist (file (directory-files-recursively directory "\\.org\\'"))
+    (when (and (file-regular-p file)
+               (not (string-prefix-p ".#" (file-name-nondirectory file))))
+      (condition-case err
+          (with-current-buffer (find-file-noselect file)
+            (james/org-ocr-buffer))
+        (error (james/org-ocr--log "Failed %s: %s" file
+                                 (error-message-string err)))))))
+
+(defun james/org-ocr--insert-link (original link filename)
+  "Call ORIGINAL with LINK and FILENAME, then queue its inserted image."
+  (let ((start (copy-marker (point))))
+    (unwind-protect
+        (prog1 (funcall original link filename)
+          (when (and james/org-ocr-enabled (derived-mode-p 'org-mode))
+            (condition-case err
+                (save-excursion
+                  (let ((end (point)))
+                    (goto-char start)
+                    (when (re-search-forward org-link-bracket-re end t)
+                      (goto-char (match-beginning 0))
+                      (james/org-ocr--enqueue (org-element-context))
+                      (james/org-ocr--pump))))
+              (error (james/org-ocr--log "%s" (error-message-string err))))))
+      (remhash (expand-file-name filename) james/org-ocr--downloads)
+      (set-marker start nil))))
+
+(defun james/org-ocr--track-url (original link filename)
+  "Track ORIGINAL downloading LINK to FILENAME until its callback finishes."
+  (if (not (and james/org-ocr-enabled (derived-mode-p 'org-mode)))
+      (funcall original link filename)
+    (let ((state (list 'pending))
+          (retrieve (symbol-function 'url-retrieve)))
+      (puthash (expand-file-name filename) state james/org-ocr--downloads)
+      (cl-letf (((symbol-function 'url-retrieve)
+                 (lambda (url callback &rest arguments)
+                   (apply retrieve url
+                          (lambda (&rest callback-arguments)
+                            (unwind-protect
+                                (progn
+                                  (setcar state 'failed)
+                                  (apply callback callback-arguments)
+                                  (setcar state 'ready))
+                              (james/org-ocr--pump)))
+                          arguments))))
+        (funcall original link filename)))))
+
+(defun james/org-ocr--track-command (original command link filename)
+  "Track ORIGINAL downloading LINK to FILENAME with COMMAND."
+  (if (not (and james/org-ocr-enabled (derived-mode-p 'org-mode)))
+      (funcall original command link filename)
+    (let ((state (list 'pending))
+          (start (symbol-function 'async-start)))
+      (puthash (expand-file-name filename) state james/org-ocr--downloads)
+      (cl-letf (((symbol-function 'async-start)
+                 (lambda (start-function &optional finish-function)
+                   (funcall start start-function
+                            (lambda (result)
+                              (setcar state (if (eq result 0) 'ready 'failed))
+                              (unwind-protect
+                                  (when finish-function (funcall finish-function result))
+                                (james/org-ocr--pump)))))))
+        (funcall original command link filename)))))
+
 (use-package org-download
   :ensure t
   :after org
@@ -329,6 +722,9 @@ ATTACHMENT has the same meaning as in `james/org--document-link-icon'."
               #'james/org-download-base64-with-image-name)
   (advice-add 'org-download-dnd :around
               #'james/org-download-dnd-with-attachments)
+  (advice-add 'org-download-insert-link :around #'james/org-ocr--insert-link)
+  (advice-add 'org-download--image/url-retrieve :around #'james/org-ocr--track-url)
+  (advice-add 'org-download--image/command :around #'james/org-ocr--track-command)
   ;; Open image files in Preview.app when clicked or via C-c C-o
   (with-eval-after-load 'org
     (dolist (ext '("\\.png\\'" "\\.jpg\\'" "\\.jpeg\\'" "\\.gif\\'" "\\.webp\\'"))

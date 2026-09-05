@@ -534,6 +534,7 @@
            ("C-c v a" . james/org-attachment-insert)
            ("C-c v s" . org-download-screenshot)
            ("C-c v y" . org-download-clipboard)
+           ("C-c v o" . james/org-ocr-image-at-point)
            ("C-c w" . ox-clip-formatted-copy))
 (define-key org-mode-map [double-mouse-1] #'james/org-open-inline-image)
 

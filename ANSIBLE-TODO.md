@@ -25,3 +25,20 @@ workstation provisioning is brought under Ansible:
       - zizmor
     state: present
 ```
+
+## macOS slide OCR
+
+Slide OCR requires Tesseract with English language data. It is installed on
+this machine; provision it on other Macs with `brew install tesseract` and
+ensure the Homebrew bin directory is on Emacs's `exec-path`. Add this task
+when macOS workstation provisioning is brought under Ansible:
+
+```yaml
+- name: Install local slide text recognition
+  community.general.homebrew:
+    name: tesseract
+    state: present
+```
+
+For other OCR languages, install `tesseract-lang` and customize
+`james/org-ocr-arguments` (for example, `("-l" "eng+fra" "--psm" "11")`).

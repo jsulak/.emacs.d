@@ -37,6 +37,10 @@
 (require 'james-functions)
 (require 'james-org)
 
+;; Existing image tests use placeholder image bytes.  OCR integration tests
+;; explicitly enable recognition and supply a controlled process instead.
+(setq james/org-ocr-enabled nil)
+
 (defun james-test/write-file (filename contents)
   "Write CONTENTS to FILENAME, creating its parent directory."
   (make-directory (file-name-directory filename) t)
