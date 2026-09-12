@@ -526,6 +526,7 @@
            ("C-c f" . james/org-insert-file-link)
            ("C-c p" . james/org-agenda-person-view)
            :map org-mode-map
+           ("C-c A" . james/org-archive-completed-checkboxes)
            ("C-c b" . james/org-emphasize-bold)
            ("C-c i" . james/org-emphasize-italic)
            ("C-c u" . james/org-emphasize-underline)

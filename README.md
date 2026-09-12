@@ -92,6 +92,8 @@ than mixed into `init.el`.
 | `init.el` | Package declarations, shared behavior, and centralized keybindings |
 | `site-lisp/james-functions.el` | Editing, navigation, window, and conversion utilities |
 | `site-lisp/james-org.el` | Org capture, agenda, 1:1, image, and attachment workflows |
+| `site-lisp/james-org-readable.el`, `bin/export-org-readable.sh` | Incremental PDFs for phone reading |
+| `bin/backup-org.sh` | macOS Org archives, file mirror, and PDF publication |
 | `site-lisp/james-markdown.el` | Markdown presentation and Zettelkasten helpers |
 | `site-lisp/james-{linux,osx}.el` | Platform-specific setup |
 | `site-lisp/james-{gui,tty}.el` | Display-specific setup |
@@ -112,6 +114,17 @@ TODO -> WAITING -> ON HOLD | DONE -> OBE
 
 `DONE` and `OBE` tasks can be archived together with
 `M-x james/org-archive-done-tasks`.
+
+For the checkbox lists in `todo-tasks.org`, run
+`C-c A` in Org mode or `M-x james/org-archive-completed-checkboxes` from any
+buffer. It moves completed
+top-level items, including their notes and nested lists, into the existing
+`Tasks Archive` heading in `archive.org`. Completed subtasks stay with unfinished
+parents, and checked parents with unfinished children are skipped. The command
+saves both files (including existing buffer edits), saving the archive first,
+and refuses files that have changed on disk. If saving the source fails after
+archiving, its removals remain in the buffer; save that buffer to finish.
+Archiving is manual; no save hook or timer runs it.
 
 ### Capture and agenda
 
@@ -219,6 +232,54 @@ Recognition quality varies with resolution and slide design. Unsupported
 image formats (such as SVG or HEIC) produce a diagnostic; convert them to PNG
 before recognition. Image insertion remains usable if recognition fails.
 
+### OneDrive reading copies
+
+The macOS `com.james.backup-org` LaunchAgent runs `~/bin/backup-org.sh` every
+30 minutes. Its tracked source is `bin/backup-org.sh`; install updates with
+`install -m 755 ~/.emacs.d/bin/backup-org.sh ~/bin/backup-org.sh`.
+
+Inside `~/OneDrive - Raytheon Technologies/org-backups/`:
+
+- `org-latest.zip` and `snapshots/` contain the existing archive backups.
+- `current/` mirrors the active Org tree, including images and attachments.
+  Deletions flow from Org to this folder; phone edits do not flow back.
+- `readable/` contains one PDF per `.org` file, using matching relative names.
+
+PDFs use 12-point TeX Gyre Heros, A6 portrait pages, unnumbered heading
+bookmarks, and clickable external links. PNG/JPEG images are embedded without
+resampling and scaled to fit the page. Tables wrap within columns; tables with
+four or more columns use landscape pages. Lists deeper than three levels
+are flattened while retaining every item. Flags and document emoji become
+printable labels. TODO states, planning dates, lists, checkboxes, and emphasis
+are preserved; drawers, property metadata, and OCR text are omitted.
+Local file links retain descriptions and paths rather than generating links
+that OneDrive's mobile PDF viewer cannot reliably open.
+
+The standalone exporter loads only built-in Emacs libraries, does not execute
+Babel blocks, and does not modify Org files. Content hashes track the note,
+linked PNG/JPEG files, and the exporter template. Each PDF is compiled in a
+temporary directory, then replaced atomically. A failed file keeps its previous
+PDF and is retried next time; other files continue. A full run removes only
+previously generated PDFs whose sources were deleted. Compilation logs and
+the successful-export manifest live under `org-backups/.state/readable/`.
+The existing launchd stdout/stderr logs contain per-file failures and totals.
+Archive work finishes before the mirror and PDF steps run, including on runs
+where the archive fingerprint is unchanged.
+
+Run all exports manually, or name specific files for a partial run:
+
+```sh
+~/.emacs.d/bin/export-org-readable.sh
+~/.emacs.d/bin/export-org-readable.sh 'meeting-notes.org'
+```
+
+`ORG_SOURCE_DIR` and `ORG_BACKUP_DESTINATION` override the source collection
+and parent of `org-backups/`. `ORG_READABLE_EMACS` overrides the Emacs executable;
+`ORG_READABLE_SCRIPT` overrides the exporter called by the backup script.
+The launcher adds `/Library/TeX/texbin` and Homebrew to its PATH for launchd.
+XeLaTeX and TeX Gyre fonts are required; the Ansible playbook supplies them on
+Debian/Ubuntu. macOS provisioning is documented in `ANSIBLE-TODO.md`.
+
 ## Keybindings
 
 `C-h` is Backspace in this configuration; Emacs help remains available on
@@ -290,7 +351,8 @@ make check
 
 This runs full-history secret detection, GitHub Actions security analysis,
 Ansible safety linting, hermetic ERT tests, a full startup smoke test, strict
-byte compilation, built-in static checks, and shell tests for `rich2org.sh`.
+byte compilation, built-in static checks, and shell tests for clipboard conversion and the
+macOS backup/publication pipeline.
 Individual targets are available as `make security`, `make ansible`,
 `make test`, `make smoke`, `make byte-compile`, `make static`, and `make shell`.
 Override the executable when needed, for example

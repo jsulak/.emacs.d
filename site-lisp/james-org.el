@@ -947,6 +947,111 @@ Uses the file's #+TITLE as the link description, falling back to the filename."
     (insert (format "[[file:%s][%s]]" choice title))))
 
 
+(defun james/org-archive--completed-items ()
+  "Return completed outermost checkbox items in the current Org buffer.
+Each entry is (BEGIN END TEXT), in reverse buffer order.  Keep an item
+with its notes and children, and skip it if any child checkbox is unfinished."
+  (let (items)
+    (org-element-map (org-element-parse-buffer) 'item
+      (lambda (item)
+        (when (and (eq (org-element-property :checkbox item) 'on)
+                   (not (org-element-lineage item '(item)))
+                   (not (org-element-map item 'item
+                          (lambda (child)
+                            (memq (org-element-property :checkbox child)
+                                  '(off trans)))
+                          nil t)))
+          (let ((begin (org-element-property :begin item))
+                (end (org-element-property :end item)))
+            ;; Leave separating blank lines in the source file.
+            (save-excursion
+              (goto-char end)
+              (skip-chars-backward " \t\n" begin)
+              (setq end (min end (line-beginning-position 2))))
+            (push (list begin end (buffer-substring-no-properties begin end))
+                  items)))))
+    items))
+
+(defun james/org-archive--check-file ()
+  "Reject an unwritable or externally changed visited file."
+  (unless (and buffer-file-name
+               (file-exists-p buffer-file-name)
+               (file-writable-p buffer-file-name)
+               (not buffer-read-only))
+    (user-error "Archive requires a writable existing file: %s"
+                buffer-file-name))
+  (unless (verify-visited-file-modtime (current-buffer))
+    (user-error "File changed on disk; revert or reconcile it first: %s"
+                buffer-file-name)))
+
+(defun james/org-archive-completed-checkboxes ()
+  "Move completed outermost checkboxes from todo-tasks.org to archive.org.
+Both files live in `org-directory'.  Append to the existing top-level
+Tasks Archive heading, preserving notes and nested lists.  Completed
+children of unfinished items stay in place, as do checked parents with
+unfinished children.  Save the archive before removing source items,
+then save the source, including any existing edits in either buffer.
+This command runs only when invoked explicitly and returns the item count."
+  (interactive)
+  (let* ((source-file (james/org-open-loops-file))
+         (archive-file (expand-file-name "archive.org" org-directory)))
+    (dolist (file (list source-file archive-file))
+      (unless (file-exists-p file)
+        (user-error "Archive requires an existing file: %s" file)))
+    (when (file-equal-p source-file archive-file)
+      (user-error "Source and archive must be different files"))
+    (let ((source (or (get-file-buffer source-file)
+                      (find-file-noselect source-file)))
+          (archive (or (get-file-buffer archive-file)
+                       (find-file-noselect archive-file))))
+      (dolist (buffer (list source archive))
+        (with-current-buffer buffer
+          (james/org-archive--check-file)))
+      (with-current-buffer source
+        (save-excursion
+          (save-restriction
+            (widen)
+            (let ((items (james/org-archive--completed-items)))
+              (when items
+                (with-current-buffer archive
+                  (save-excursion
+                    (save-restriction
+                      (widen)
+                      (goto-char (point-min))
+                      (let (headings)
+                        (while (re-search-forward org-heading-regexp nil t)
+                          (when (and (= (org-outline-level) 1)
+                                     (equal (org-get-heading t t t t)
+                                            "Tasks Archive"))
+                            (push (line-beginning-position) headings)))
+                        (unless (= (length headings) 1)
+                          (user-error "Archive needs one top-level Tasks Archive heading"))
+                        (goto-char (car headings)))
+                      (org-end-of-subtree t t)
+                      (atomic-change-group
+                        (unless (bolp) (insert "\n"))
+                        (unless (save-excursion
+                                  (forward-line -1)
+                                  (looking-at-p "[ \t]*$"))
+                          (insert "\n"))
+                        (dolist (item (reverse items))
+                          (insert (nth 2 item))
+                          (unless (bolp) (insert "\n")))
+                        (insert "\n")
+                        (save-buffer)))))
+                ;; The archive is durable before any source text is removed.
+                (dolist (item items)
+                  (delete-region (nth 0 item) (nth 1 item)))
+                (condition-case err
+                    (save-buffer)
+                  (error
+                   (user-error
+                    "Items archived; save todo-tasks.org to finish: %s"
+                    (error-message-string err)))))
+              (message "Archived %d completed checkbox item%s"
+                       (length items) (if (= (length items) 1) "" "s"))
+              (length items))))))))
+
 (defun james/org-archive-done-tasks ()
   "Archive all tasks with a DONE or OBE state in the current buffer."
   (interactive)

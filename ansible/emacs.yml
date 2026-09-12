@@ -16,6 +16,7 @@
         name:
           - build-essential
           - enchant-2
+          - fonts-texgyre
           - git
           - hunspell
           - hunspell-en-us
@@ -28,6 +29,8 @@
           - shellcheck
           - tesseract-ocr
           - tesseract-ocr-eng
+          - texlive-fonts-recommended
+          - texlive-xetex
         state: present
         update_cache: true
         cache_valid_time: 3600

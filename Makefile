@@ -25,10 +25,11 @@ static:
 	$(EMACS) --batch -Q -l test/static-checks.el
 
 shell:
-	bash -n bin/rich2org.sh test/rich2org-test.sh
+	bash -n bin/*.sh test/*-test.sh
 	bash test/rich2org-test.sh
+	bash test/backup-org-test.sh
 	@if command -v shellcheck >/dev/null 2>&1; then \
-		shellcheck bin/rich2org.sh test/rich2org-test.sh; \
+		shellcheck bin/*.sh test/*-test.sh; \
 	else \
 		printf '%s\n' 'shellcheck not installed; syntax and behavior checks passed'; \
 	fi

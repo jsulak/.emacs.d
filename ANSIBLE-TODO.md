@@ -42,3 +42,21 @@ when macOS workstation provisioning is brought under Ansible:
 
 For other OCR languages, install `tesseract-lang` and customize
 `james/org-ocr-arguments` (for example, `("-l" "eng+fra" "--psm" "11")`).
+
+## macOS Org reading PDFs
+
+The batch PDF exporter uses the installed TeX Live/BasicTeX distribution at
+`/Library/TeX/texbin`, including XeLaTeX, fontspec, geometry, graphicx, longtable,
+array, booktabs, amsmath, amssymb, ulem, xcolor, hyperref, pdflscape, and the TeX
+Gyre Heros/Cursor OpenType fonts. These dependencies are present on this Mac.
+For future macOS provisioning, install MacTeX's complete package set:
+
+```sh
+brew install --cask mactex-no-gui
+install -m 755 ~/.emacs.d/bin/backup-org.sh ~/bin/backup-org.sh
+```
+
+The existing `~/Library/LaunchAgents/com.james.backup-org.plist` invokes that
+script every 1800 seconds. Its readable exporter is invoked from
+`~/.emacs.d/bin/export-org-readable.sh`; no interactive Emacs server is required.
+The LaunchAgent installation itself is still machine-local provisioning.
