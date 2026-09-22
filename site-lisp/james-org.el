@@ -1029,15 +1029,20 @@ This command runs only when invoked explicitly and returns the item count."
                         (goto-char (car headings)))
                       (org-end-of-subtree t t)
                       (atomic-change-group
+                        (let ((end (point)))
+                          ;; Remove blank lines already left at the end of the
+                          ;; archive subtree so newly archived items stay flush
+                          ;; with the preceding content or heading.
+                          (while (and (> (point) (point-min))
+                                      (save-excursion
+                                        (forward-line -1)
+                                        (looking-at-p "[ \t]*$")))
+                            (forward-line -1))
+                          (delete-region (point) end))
                         (unless (bolp) (insert "\n"))
-                        (unless (save-excursion
-                                  (forward-line -1)
-                                  (looking-at-p "[ \t]*$"))
-                          (insert "\n"))
                         (dolist (item (reverse items))
                           (insert (nth 2 item))
                           (unless (bolp) (insert "\n")))
-                        (insert "\n")
                         (save-buffer)))))
                 ;; The archive is durable before any source text is removed.
                 (dolist (item items)

@@ -41,14 +41,14 @@
                       "Example stays" "* TODO Tasks" "* TODO Open loops"))
         (should (string-match-p (regexp-quote text) source)))
       (should-not (string-match-p "Second completion\\|Continuation text" source))
-      (should (string-match-p
-               (regexp-quote
-                (concat "- [X] Old item\n\n"
-                        "- [X] Finished [[file:notes.org][notes]]\n"
-                        "  Continuation text\n\n  Another paragraph\n"
-                        "  - [X] Finished child\n"
-                        "- [X] Second completion\n\n* Other\nKeep\n"))
-               archive))
+       (should (string-match-p
+                (regexp-quote
+                 (concat "- [X] Old item\n"
+                         "- [X] Finished [[file:notes.org][notes]]\n"
+                         "  Continuation text\n\n  Another paragraph\n"
+                         "  - [X] Finished child\n"
+                         "- [X] Second completion\n* Other\nKeep\n"))
+                archive))
       (should (= (james/org-archive-completed-checkboxes) 0))
       (should (equal source (james-test/archive-read source-file)))
       (should (equal archive (james-test/archive-read archive-file))))))
@@ -66,6 +66,13 @@
         (should (< (point) position))
         (should (string-match-p "Unsaved note" (james-test/archive-read source-file)))
         (should-not (buffer-modified-p))))))
+
+(ert-deftest james/org-archive-checkboxes-remove-target-blank-lines-before-insert ()
+  (james-test/with-archive "* TODO Tasks\n- [X] Done\n"
+      "* DONE Tasks Archive\n\n* Other\nKeep\n"
+    (should (= (james/org-archive-completed-checkboxes) 1))
+    (should (equal (james-test/archive-read archive-file)
+                   "* DONE Tasks Archive\n- [X] Done\n* Other\nKeep\n"))))
 
 (ert-deftest james/org-archive-checkboxes-rejects-disk-conflicts ()
   (dolist (target '(source archive))
