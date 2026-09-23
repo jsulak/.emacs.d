@@ -238,7 +238,8 @@ The macOS `com.james.backup-org` LaunchAgent runs `~/bin/backup-org.sh` every
 30 minutes. Its tracked source is `bin/backup-org.sh`; install updates with
 `install -m 755 ~/.emacs.d/bin/backup-org.sh ~/bin/backup-org.sh`.
 
-Inside `~/OneDrive - Raytheon Technologies/org-backups/`:
+Inside `~/OneDrive/org-backups/` (set `ORG_BACKUP_DESTINATION` for a different
+OneDrive folder):
 
 - `org-latest.zip` and `snapshots/` contain the existing archive backups.
 - `current/` mirrors the active Org tree, including images and attachments.
