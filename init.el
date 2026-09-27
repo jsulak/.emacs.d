@@ -349,6 +349,8 @@
 (use-package markdown-mode
   :mode "\\.md\\'"
   :bind (:map markdown-mode-map
+              ("M-_" . james/insert-em-dash)
+              ("C-;" . jinx-correct)
               ("C-c z b" . james/zk-backlinks)
               ("C-c z l" . james/zk-insert-link))
   :config
@@ -424,7 +426,7 @@
   (corfu-auto t)
   (corfu-auto-delay 0.2)
   (corfu-auto-prefix 2)
-  (global-corfu-modes '(not org-mode))
+  (global-corfu-modes '(not org-mode markdown-mode))
   :config
   (global-corfu-mode))
 
@@ -526,6 +528,7 @@
            ("C-c f" . james/org-insert-file-link)
            ("C-c p" . james/org-agenda-person-view)
            :map org-mode-map
+           ("M-_" . james/insert-em-dash)
            ("C-c A" . james/org-archive-completed-checkboxes)
            ("C-c b" . james/org-emphasize-bold)
            ("C-c i" . james/org-emphasize-italic)

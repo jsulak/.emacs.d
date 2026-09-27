@@ -7,6 +7,11 @@
 
 (require 'dired)
 
+(defun james/insert-em-dash ()
+  "Insert an em dash at point."
+  (interactive)
+  (insert "—"))
+
 (defun james/slick-copy-advice (orig-fun &rest args)
   "Call ORIG-FUN with ARGS, copying one line when no region is active."
   (if (or (use-region-p) (not (called-interactively-p 'interactive)))

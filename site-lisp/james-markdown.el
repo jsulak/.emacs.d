@@ -7,6 +7,19 @@
 
 (require 'markdown-mode)
 
+;;; Editing
+
+(defun james/markdown-disable-quote-pairing ()
+  "Prevent automatic double-quote pairing in Markdown buffers."
+  (setq-local electric-pair-pairs
+              (assq-delete-all ?\" (copy-tree electric-pair-pairs)))
+  (setq-local electric-pair-text-pairs
+              (assq-delete-all ?\" (copy-tree electric-pair-text-pairs)))
+  (add-function :before-until (local 'electric-pair-inhibit-predicate)
+                (lambda (char) (eq char ?\"))))
+
+(add-hook 'markdown-mode-hook #'james/markdown-disable-quote-pairing)
+
 ;;; Appearance
 
 (setq markdown-enable-wiki-links t)
