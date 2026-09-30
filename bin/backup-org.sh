@@ -2,8 +2,16 @@
 
 set -euo pipefail
 
-source_dir="${ORG_SOURCE_DIR:-${HOME}/org}"
-destination_root="${ORG_BACKUP_DESTINATION:-${HOME}/OneDrive - Raytheon Technologies}"
+config_file="${ORG_BACKUP_CONFIG:-${HOME}/.emacs.d/local-org.env}"
+if [[ -f "$config_file" ]]; then
+  # shellcheck source=/dev/null
+  source "$config_file"
+fi
+: "${ORG_SOURCE_DIR:?Set ORG_SOURCE_DIR in local-org.env or the environment}"
+: "${ORG_BACKUP_DESTINATION:?Set ORG_BACKUP_DESTINATION in local-org.env or the environment}"
+export ORG_SOURCE_DIR ORG_BACKUP_DESTINATION
+source_dir="$ORG_SOURCE_DIR"
+destination_root="$ORG_BACKUP_DESTINATION"
 backup_dir="${destination_root}/org-backups"
 snapshot_dir="${backup_dir}/snapshots"
 mirror_dir="${backup_dir}/current"

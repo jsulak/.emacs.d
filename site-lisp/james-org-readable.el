@@ -324,11 +324,12 @@ PDFs whose source files no longer exist."
 
 (defun james/org-readable-batch ()
   "Run the exporter using environment paths and optional relative filenames."
-  (let* ((source (or (getenv "ORG_SOURCE_DIR") "~/org"))
+  (let* ((source (or (getenv "ORG_SOURCE_DIR")
+                     (error "Set ORG_SOURCE_DIR before running the batch exporter")))
          (backup (expand-file-name
                   "org-backups"
                   (or (getenv "ORG_BACKUP_DESTINATION")
-                      "~/OneDrive - Raytheon Technologies")))
+                      (error "Set ORG_BACKUP_DESTINATION before running the batch exporter"))))
          (selected (delete "--" command-line-args-left)))
     (setq command-line-args-left nil)
     (kill-emacs

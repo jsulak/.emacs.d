@@ -11,6 +11,13 @@ work_dir=$(mktemp -d)
 trap 'rm -rf "$work_dir"' EXIT
 export ORG_SOURCE_DIR="$work_dir/active org"
 export ORG_BACKUP_DESTINATION="$work_dir/OneDrive folder"
+export ORG_BACKUP_CONFIG="$work_dir/local-org.env"
+cat > "$ORG_BACKUP_CONFIG" <<CONFIG
+export ORG_SOURCE_DIR="\${ORG_SOURCE_DIR:-$ORG_SOURCE_DIR}"
+export ORG_BACKUP_DESTINATION="\${ORG_BACKUP_DESTINATION:-$ORG_BACKUP_DESTINATION}"
+CONFIG
+# The first backup must obtain both paths from the local file.
+export -n ORG_SOURCE_DIR ORG_BACKUP_DESTINATION
 export ORG_READABLE_SCRIPT="$work_dir/exporter.sh"
 export ORG_TEST_EXPORT_LOG="$work_dir/exporter.log"
 export ORG_TEST_EXPORT_FAIL="$work_dir/fail"
@@ -32,6 +39,45 @@ cmp "$ORG_SOURCE_DIR/images/example.png" "$backup_dir/current/images/example.png
 [[ ! -e "$backup_dir/current/#note.org#" ]]
 [[ $(wc -l < "$ORG_TEST_EXPORT_LOG") -eq 1 ]]
 cp "$backup_dir/org-latest.zip" "$work_dir/first.zip"
+
+# Explicit environment paths must override the local file's defaults.
+export ORG_SOURCE_DIR ORG_BACKUP_DESTINATION
+cat > "$ORG_BACKUP_CONFIG" <<CONFIG
+export ORG_SOURCE_DIR="\${ORG_SOURCE_DIR:-$work_dir/unused-source}"
+export ORG_BACKUP_DESTINATION="\${ORG_BACKUP_DESTINATION:-$work_dir/unused-destination}"
+CONFIG
+
+# The standalone PDF launcher also passes local paths to batch Emacs.
+cat > "$work_dir/emacs-stub" <<'STUB'
+#!/bin/bash
+set -euo pipefail
+printf '%s\n' "$ORG_SOURCE_DIR" "$ORG_BACKUP_DESTINATION"
+STUB
+chmod +x "$work_dir/emacs-stub"
+ORG_READABLE_EMACS="$work_dir/emacs-stub" \
+  /bin/bash "$repo_dir/bin/export-org-readable.sh" > "$work_dir/paths"
+printf '%s\n' "$ORG_SOURCE_DIR" "$ORG_BACKUP_DESTINATION" > "$work_dir/expected-paths"
+cmp "$work_dir/expected-paths" "$work_dir/paths"
+(
+  unset ORG_SOURCE_DIR ORG_BACKUP_DESTINATION
+  ORG_READABLE_EMACS="$work_dir/emacs-stub" \
+    /bin/bash "$repo_dir/bin/export-org-readable.sh" > "$work_dir/paths"
+)
+printf '%s\n' "$work_dir/unused-source" "$work_dir/unused-destination" > "$work_dir/expected-paths"
+cmp "$work_dir/expected-paths" "$work_dir/paths"
+
+# Missing configuration fails before creating any backup directories.
+for launcher in backup-org.sh export-org-readable.sh; do
+  if (
+    unset ORG_SOURCE_DIR ORG_BACKUP_DESTINATION
+    ORG_BACKUP_CONFIG="$work_dir/missing.env" \
+      /bin/bash "$repo_dir/bin/$launcher" > "$work_dir/missing-output" 2>&1
+  ); then
+    echo "Expected missing configuration failure: $launcher" >&2
+    exit 1
+  fi
+done
+[[ ! -e "$work_dir/unused-destination" ]]
 
 # Unchanged archives still repair the mirror and invoke the exporter.
 rm "$backup_dir/current/note.org"

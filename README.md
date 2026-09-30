@@ -232,14 +232,27 @@ Recognition quality varies with resolution and slide design. Unsupported
 image formats (such as SVG or HEIC) produce a diagnostic; convert them to PNG
 before recognition. Image insertion remains usable if recognition fails.
 
-### OneDrive reading copies
+### Backup and reading copies
 
 The macOS `com.james.backup-org` LaunchAgent runs `~/bin/backup-org.sh` every
 30 minutes. Its tracked source is `bin/backup-org.sh`; install updates with
 `install -m 755 ~/.emacs.d/bin/backup-org.sh ~/bin/backup-org.sh`.
 
-Inside `~/OneDrive/org-backups/` (set `ORG_BACKUP_DESTINATION` for a different
-OneDrive folder):
+Both shell launchers read the ignored `~/.emacs.d/local-org.env`. Keep the
+machine's Org source and backup destination there, rather than in tracked code:
+
+```sh
+export ORG_SOURCE_DIR="${ORG_SOURCE_DIR:-${HOME}/org}"
+export ORG_BACKUP_DESTINATION="${ORG_BACKUP_DESTINATION:-/path/to/backup/storage}"
+```
+
+The parameter expansions preserve explicit environment overrides. Set
+`ORG_BACKUP_CONFIG` to load a different local configuration file. Both paths
+are required; missing settings stop the scripts before any backup work.
+`local.el` remains the place for interactive Emacs settings, including
+`org-directory` and attachment paths.
+
+Inside `$ORG_BACKUP_DESTINATION/org-backups/`:
 
 - `org-latest.zip` and `snapshots/` contain the existing archive backups.
 - `current/` mirrors the active Org tree, including images and attachments.
@@ -274,7 +287,7 @@ Run all exports manually, or name specific files for a partial run:
 ~/.emacs.d/bin/export-org-readable.sh 'meeting-notes.org'
 ```
 
-`ORG_SOURCE_DIR` and `ORG_BACKUP_DESTINATION` override the source collection
+`ORG_SOURCE_DIR` and `ORG_BACKUP_DESTINATION` configure the source collection
 and parent of `org-backups/`. `ORG_READABLE_EMACS` overrides the Emacs executable;
 `ORG_READABLE_SCRIPT` overrides the exporter called by the backup script.
 The launcher adds `/Library/TeX/texbin` and Homebrew to its PATH for launchd.

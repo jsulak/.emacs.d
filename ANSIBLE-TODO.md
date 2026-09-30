@@ -60,3 +60,6 @@ The existing `~/Library/LaunchAgents/com.james.backup-org.plist` invokes that
 script every 1800 seconds. Its readable exporter is invoked from
 `~/.emacs.d/bin/export-org-readable.sh`; no interactive Emacs server is required.
 The LaunchAgent installation itself is still machine-local provisioning.
+Provision the ignored `~/.emacs.d/local-org.env` with `ORG_SOURCE_DIR` and
+`ORG_BACKUP_DESTINATION` for each machine (see README.md). Install the updated
+backup script with the command above so scheduled runs load that configuration.

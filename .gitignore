@@ -26,4 +26,5 @@ org-persist/
 .org-id-locations
 bookmarks
 transient/
+local-org.env
 network-security.data
