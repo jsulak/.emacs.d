@@ -6,6 +6,7 @@
 ;;; Code:
 
 (require 'markdown-mode)
+(require 'elec-pair)
 
 ;;; Editing
 
