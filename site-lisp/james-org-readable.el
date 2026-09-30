@@ -35,7 +35,7 @@
 \\renewcommand\\subsection{\\@startsection{subsection}{2}{0pt}{1.3ex}{.5ex}{\\normalfont\\large\\bfseries}}
 \\renewcommand\\subsubsection{\\@startsection{subsubsection}{3}{0pt}{1ex}{.4ex}{\\normalfont\\normalsize\\bfseries}}
 \\makeatother
-\\tracinglostchars=3
+\\tracinglostchars=2
 \\setlength{\\leftmargini}{1.2em}
 \\setlength{\\leftmarginii}{1em}
 \\setlength{\\leftmarginiii}{1em}
@@ -55,12 +55,14 @@
     (dolist (pair '(("🚩" . "\\textcolor{red!70!black}{[!]}")
                     ("❓" . "[?]") ("📊" . "[Spreadsheet]")
                     ("📈" . "[Chart]") ("📄" . "[Document]") ("📕" . "[PDF]")
+                    ("✉" . "[Email]")
                     ("○" . "\\(\\circ\\)") ("□" . "\\(\\square\\)")
                     ("→" . "\\(\\rightarrow\\)") ("↓" . "\\(\\downarrow\\)")
+                    ("↳" . "\\(\\hookrightarrow\\)")
                     ("≤" . "\\(\\leq\\)") ("≥" . "\\(\\geq\\)")
                     ("−" . "\\(-\\)") ("➢" . "\\(\\triangleright\\)")
                     ("‑" . "-") ("\u200b" . "") ("\u202f" . " ")
-                    ("\u2002" . " ")))
+                    ("\u2002" . " ") ("\ufe0e" . "") ("\ufe0f" . "")))
       (setq result (string-replace (car pair) (cdr pair) result)))
     ;; Attachment labels often contain long underscore-separated filenames.
     (string-replace "\\_" "\\_\\allowbreak{}" result)))
@@ -203,6 +205,20 @@ and to avoid LaTeX's fixed list nesting limit."
       (push (james/org-readable--file-hash image) parts))
     (secure-hash 'sha256 (prin1-to-string parts))))
 
+(defun james/org-readable--replace-missing-glyphs (document diagnostics)
+  "Replace missing glyphs in DOCUMENT with visible labels from DIAGNOSTICS.
+XeLaTeX reports unavailable Unicode code points in its compilation output."
+  (let ((start 0))
+    (while (string-match "Missing character:[^\n]*\\(?:\n[^\n]*\\)?(U[+]\\([[:xdigit:]]+\\))"
+                         diagnostics start)
+      (let* ((code (string-to-number (match-string 1 diagnostics) 16))
+             (label (or (get-char-code-property code 'name)
+                        (format "U+%04X" code))))
+        (setq start (match-end 0)
+              document (string-replace (char-to-string code)
+                                       (format "[%s]" label) document))))
+    document))
+
 (defun james/org-readable--publish (source output log-file)
   "Compile current Org buffer from SOURCE to OUTPUT, logging to LOG-FILE."
   (let* ((build (make-temp-file "org-readable-build-" t))
@@ -212,15 +228,25 @@ and to avoid LaTeX's fixed list nesting limit."
          temporary-output)
     (unwind-protect
         (progn
-          (let ((document (james/org-readable--latex source)))
-            (with-temp-file tex (insert document)))
-          (let ((default-directory build))
-            (dotimes (_ 2)
-              (unless (zerop (call-process
-                             "xelatex" nil log-buffer nil
-                             "-interaction=nonstopmode" "-halt-on-error"
-                             "-file-line-error" "-no-shell-escape" tex))
-                (error "XeLaTeX failed; see %s" log-file))))
+          (let ((document (james/org-readable--latex source))
+                (default-directory build))
+            (with-temp-file tex (insert document))
+            (cl-labels ((compile-document ()
+                         (unless (zerop (call-process
+                                        "xelatex" nil log-buffer nil
+                                        "-interaction=nonstopmode" "-halt-on-error"
+                                        "-file-line-error" "-no-shell-escape" tex))
+                           (error "XeLaTeX failed; see %s" log-file))))
+              (compile-document)
+              (let ((fallback (james/org-readable--replace-missing-glyphs
+                               document (with-current-buffer log-buffer
+                                          (buffer-string)))))
+                (unless (equal fallback document)
+                  (with-temp-file tex (insert fallback))
+                  (message "Readable: replaced unsupported characters in %s with text labels"
+                           (file-name-nondirectory source))
+                  (compile-document)))
+              (compile-document)))
           (unless (file-regular-p pdf) (error "XeLaTeX produced no PDF"))
           (make-directory (file-name-directory output) t)
           (setq temporary-output

@@ -3,6 +3,31 @@
 (require 'ert)
 (require 'james-org-readable)
 
+(ert-deftest james/org-readable-missing-glyphs-become-visible-labels ()
+  (let ((document "Snow ☃ and rocket 🚀. Keep café unchanged."))
+    (should
+     (equal
+      (james/org-readable--replace-missing-glyphs
+       document
+       "Missing character: There is no ☃ (U+2603) in font example!\nMissing character: There is no 🚀\n (U+1F680) in font example!\n")
+      "Snow [SNOWMAN] and rocket [ROCKET]. Keep café unchanged."))
+    (should (equal document
+                   (james/org-readable--replace-missing-glyphs
+                    document "No missing characters.")))))
+
+(ert-deftest james/org-readable-mail-and-turn-arrow-use-printable-equivalents ()
+  (with-temp-buffer
+    (insert "#+TITLE: ✉️ Tasks\n* ✉ Follow up\n- [ ] ✉️ Send email\n- [ ] ✉︎ Reply\n↳ Next step\n")
+    (delay-mode-hooks (org-mode))
+    (let ((tex (james/org-readable--latex "example.org")))
+      (should (string-search "[Email] Tasks" tex))
+      (should (string-search "[Email] Follow up" tex))
+      (should (string-search "[Email] Send email" tex))
+      (should (string-search "[Email] Reply" tex))
+      (should (string-search "\\(\\hookrightarrow\\) Next step" tex))
+      (dolist (unsupported '("✉" "↳" "\ufe0e" "\ufe0f"))
+        (should-not (string-search unsupported tex))))))
+
 (ert-deftest james/org-readable-preserves-structure-links-and-hides-drawers ()
   (with-temp-buffer
     (insert "#+TITLE: Example\n* TODO 🚩 Heading\n:PROPERTIES:\n:ID: internal-id\n:END:\n:OCR:\nHidden OCR text\n:END:\n:LOGBOOK:\nHidden log text\n:END:\n*bold* and /italic/\n- [ ] Task\n[[https://example.com/path?q=a&b=c][External link]]\n[[file:attachments/report.pdf][Report]]\n")

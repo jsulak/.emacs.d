@@ -264,7 +264,9 @@ bookmarks, and clickable external links. PNG/JPEG images are embedded without
 resampling and scaled to fit the page. Tables wrap within columns; tables with
 four or more columns use landscape pages. Lists deeper than three levels
 are flattened while retaining every item. Flags and document emoji become
-printable labels. TODO states, planning dates, lists, checkboxes, and emphasis
+printable labels. Other characters unavailable in the PDF font fall back to
+visible Unicode-name labels such as `[SNOWMAN]`, with a message in the export
+log. TODO states, planning dates, lists, checkboxes, and emphasis
 are preserved; drawers, property metadata, and OCR text are omitted.
 Local file links retain descriptions and paths rather than generating links
 that OneDrive's mobile PDF viewer cannot reliably open.
