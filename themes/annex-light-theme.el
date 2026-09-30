@@ -116,6 +116,8 @@
    `(org-done                         ((t (:foreground ,success-fg :weight bold))))
    `(org-headline-done                ((t (:foreground ,fg-secondary))))
    `(org-date                         ((t (:foreground ,fg-accent :underline t))))
+   `(james/org-timestamp-overdue       ((t (:inherit org-date :foreground ,error-fg :weight bold))))
+   `(james/org-timestamp-today         ((t (:inherit org-date :foreground ,warning-fg :weight bold))))
    `(org-link                         ((t (:foreground ,fg-accent :underline t))))
    `(org-tag                          ((t (:foreground ,fg-secondary :weight normal :height 0.85))))
    `(org-block                        ((t (:background ,bg-app))))

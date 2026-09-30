@@ -28,6 +28,64 @@
   "Personal Org mode configuration."
   :group 'org)
 
+(defface james/org-timestamp-overdue
+  '((t (:inherit org-date :foreground "firebrick" :weight bold)))
+  "Face for active timestamps before today's calendar date."
+  :group 'james-org)
+
+(defface james/org-timestamp-today
+  '((t (:inherit org-date :foreground "DarkGoldenrod" :weight bold)))
+  "Face for active timestamps on today's calendar date."
+  :group 'james-org)
+
+(defvar-local james/org--timestamp-face nil
+  "Face selected by the active timestamp font-lock matcher.")
+
+(defvar-local james/org--timestamp-fontification-day nil
+  "Calendar date when this buffer's timestamps were last refreshed.")
+
+(defun james/org--match-due-timestamp (limit)
+  "Find an active timestamp due today or earlier before LIMIT.
+Match timestamps anywhere in Org text, including checkbox items, but
+exclude timestamp-like text in source blocks, comments, and inline code.
+Compare calendar dates, ignoring any time of day or repeater suffix."
+  (let ((today (calendar-absolute-from-gregorian (calendar-current-date)))
+        found)
+    (while (and (not found) (re-search-forward org-ts-regexp limit t))
+      (let ((date (save-match-data
+                    (condition-case nil
+                        (org-time-string-to-absolute (match-string-no-properties 0))
+                      (error nil))))
+            (timestamp-p
+             (save-match-data
+               (save-excursion
+                 (goto-char (match-beginning 0))
+                 (eq (org-element-type (org-element-context)) 'timestamp)))))
+        (when (and timestamp-p date (<= date today))
+          (setq james/org--timestamp-face
+                (if (= date today)
+                    'james/org-timestamp-today
+                  'james/org-timestamp-overdue)
+                found t))))
+    found))
+
+(defun james/org--refresh-timestamp-faces ()
+  "Refresh date-sensitive timestamp faces after the calendar date changes."
+  (let ((today (calendar-current-date)))
+    (unless (equal today james/org--timestamp-fontification-day)
+      (setq james/org--timestamp-fontification-day today)
+      (font-lock-flush))))
+
+(defun james/org-highlight-due-timestamps ()
+  "Highlight active timestamps due today or earlier in this Org buffer."
+  (font-lock-add-keywords
+   nil '((james/org--match-due-timestamp
+          (0 james/org--timestamp-face prepend))) 'append)
+  (setq james/org--timestamp-fontification-day (calendar-current-date))
+  (add-hook 'post-command-hook #'james/org--refresh-timestamp-faces nil t))
+
+(add-hook 'org-mode-hook #'james/org-highlight-due-timestamps)
+
 (defcustom james/org-attachment-root "attachments"
   "Root directory used to store Org attachments.
 Relative paths are resolved against `org-directory'.  Absolute paths may

@@ -3,6 +3,67 @@
 (require 'ert)
 (require 'org-download)
 
+(ert-deftest james/org-due-timestamps-fontify-checkboxes-and-headings ()
+  (cl-letf (((symbol-function 'calendar-current-date)
+             (lambda (&rest _) '(9 30 2026))))
+    (with-temp-buffer
+      (insert "* TODO Task <2026-09-29 Tue>\n"
+              "- [ ] Overdue <2026-09-29 Tue 23:59 +1w>\n"
+              "- [ ] Today <2026-09-30 Wed 00:01>\n"
+              "- [-] Partial <2026-09-30 Wed>\n"
+              "- [ ] Future <2026-10-01 Thu>\n"
+              "- [ ] Inactive [2026-09-29 Tue]\n"
+              "SCHEDULED: <2026-09-30 Wed>\n")
+      (org-mode)
+      (font-lock-ensure)
+      (goto-char (point-min))
+      (dolist (expected '(james/org-timestamp-overdue
+                          james/org-timestamp-overdue
+                          james/org-timestamp-today
+                          james/org-timestamp-today
+                          nil nil james/org-timestamp-today))
+        (re-search-forward org-ts-regexp-both)
+        (let* ((face (get-text-property (match-beginning 0) 'face))
+               (faces (if (listp face) face (list face))))
+          (if expected
+              (should (memq expected faces))
+            (should-not (memq 'james/org-timestamp-overdue faces))
+            (should-not (memq 'james/org-timestamp-today faces))))))))
+
+(ert-deftest james/org-due-timestamps-ignore-code-and-comments ()
+  (cl-letf (((symbol-function 'calendar-current-date)
+             (lambda (&rest _) '(9 30 2026))))
+    (with-temp-buffer
+      (insert "#+begin_src text\n<2026-09-29 Tue>\n#+end_src\n"
+              "# <2026-09-29 Tue>\n"
+              "Inline =<2026-09-29 Tue>= and ~<2026-09-29 Tue>~\n")
+      (org-mode)
+      (font-lock-ensure)
+      (goto-char (point-min))
+      (while (re-search-forward org-ts-regexp nil t)
+        (let* ((face (get-text-property (match-beginning 0) 'face))
+               (faces (if (listp face) face (list face))))
+          (should-not (memq 'james/org-timestamp-overdue faces))
+          (should-not (memq 'james/org-timestamp-today faces)))))))
+
+(ert-deftest james/org-due-timestamps-refresh-after-midnight ()
+  (let ((today '(9 30 2026)))
+    (cl-letf (((symbol-function 'calendar-current-date)
+               (lambda (&rest _) today)))
+      (with-temp-buffer
+        (insert "- [ ] Task <2026-09-30 Wed>\n")
+        (org-mode)
+        (font-lock-ensure)
+        (goto-char (point-min))
+        (search-forward "<")
+        (should (memq 'james/org-timestamp-today
+                      (get-text-property (1- (point)) 'face)))
+        (setq today '(10 1 2026))
+        (james/org--refresh-timestamp-faces)
+        (font-lock-ensure)
+        (should (memq 'james/org-timestamp-overdue
+                      (get-text-property (1- (point)) 'face)))))))
+
 (defun james-test/call-with-org-file (relative-path function)
   "Call FUNCTION with a temporary Org collection and RELATIVE-PATH file.
 FUNCTION receives the collection root and the absolute Org filename."
