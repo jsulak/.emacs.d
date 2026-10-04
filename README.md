@@ -81,6 +81,11 @@ Put machine-specific overrides in an untracked `local.el`, which loads last:
 (setq james/zk-directory "~/notes/zettel")
 ```
 
+Markdown files under `james/zk-directory` enable `james/zk-mode` automatically.
+Double-clicking a numeric wiki link such as `[[202402101307]]`, or pressing
+`C-c C-o` on it, opens the note whose filename begins with that ID. Other
+Markdown links keep their usual behavior.
+
 Customize-generated settings are written to the untracked `custom.el` rather
 than mixed into `init.el`.
 

@@ -121,6 +121,50 @@ Removes display=\"\" from heading markers, hides leading #s, keeps last # visibl
 (defvar james/zk-directory "~/Library/Mobile Documents/com~apple~CloudDocs/Research/Zettel"
   "Directory containing zettelkasten markdown notes.")
 
+(define-minor-mode james/zk-mode
+  "Follow numeric wiki links to notes in `james/zk-directory'."
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map [double-mouse-1] #'james/zk-follow-link-on-double-click)
+            map))
+
+(defun james/zk--maybe-enable-mode ()
+  "Enable `james/zk-mode' for Markdown files in the Zettelkasten."
+  (when (and buffer-file-name
+             (stringp james/zk-directory)
+             (file-in-directory-p buffer-file-name
+                                  (expand-file-name james/zk-directory)))
+    (james/zk-mode 1)))
+
+(add-hook 'markdown-mode-hook #'james/zk--maybe-enable-mode)
+
+(defun james/zk--file-for-uid (uid)
+  "Return the Markdown note in `james/zk-directory' matching UID."
+  (let ((matches (directory-files
+                  (expand-file-name james/zk-directory) t
+                  (format "\\`%s\\(?: .*\\)?\\.md\\'" (regexp-quote uid)))))
+    (pcase (length matches)
+      (0 (user-error "No Zettel note found for ID %s" uid))
+      (1 (car matches))
+      (_ (user-error "Multiple Zettel notes found for ID %s" uid)))))
+
+(defun james/zk--follow-wiki-link (original name &optional other)
+  "Follow numeric wiki link NAME, or call ORIGINAL for other links.
+Open in another window when OTHER is non-nil."
+  (if (and james/zk-mode (string-match-p "\\`[0-9]+\\'" name))
+      (let ((file (james/zk--file-for-uid name)))
+        (if other (find-file-other-window file) (find-file file)))
+    (funcall original name other)))
+
+(advice-add 'markdown-follow-wiki-link :around #'james/zk--follow-wiki-link)
+
+(defun james/zk-follow-link-on-double-click (event)
+  "Follow a numeric wiki link at double-click EVENT, or just move point."
+  (interactive "e")
+  (mouse-set-point event)
+  (when (and (markdown-wiki-link-p)
+             (string-match-p "\\`[0-9]+\\'" (markdown-wiki-link-link)))
+    (markdown-follow-wiki-link-at-point)))
+
 (defun james/zk--extract-uid (filename)
   "Extract the leading timestamp UID from FILENAME."
   (when (string-match "\\`\\([0-9]+\\)" (file-name-nondirectory filename))
