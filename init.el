@@ -532,6 +532,7 @@
            ("C-c A" . james/org-archive-completed-checkboxes)
            ("C-c b" . james/org-emphasize-bold)
            ("C-c i" . james/org-emphasize-italic)
+           ("C-c o" . james/org-task-to-open-loop)
            ("C-c u" . james/org-emphasize-underline)
            ("C-c s" . james/org-sort-checkboxes)
            ("C-c t" . james/org-sort-checkboxes-by-date)

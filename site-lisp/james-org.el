@@ -24,6 +24,9 @@
 (defconst james/org-open-loops-heading "Open Loops"
   "Heading containing the central open-loops checklist.")
 
+(defconst james/org-tasks-heading "Tasks"
+  "Heading containing tasks that can become open loops.")
+
 (defgroup james-org nil
   "Personal Org mode configuration."
   :group 'org)
@@ -1319,6 +1322,74 @@ Matches exact, then prefix (first name), then substring."
       (cl-find-if (lambda (p) (string-prefix-p input p t)) people)
       (cl-find-if (lambda (p) (string-match-p (regexp-quote input) p)) people)
       input))
+
+(defun james/org-task-to-open-loop ()
+  "Move the unchecked task at point to the central Open Loops checklist.
+Prompt for an optional person and an optional due date.
+Preserve continuation lines and nested content belonging to the source item."
+  (interactive)
+  (unless (and (derived-mode-p 'org-mode)
+               buffer-file-name
+               (file-equal-p buffer-file-name (james/org-open-loops-file)))
+    (user-error "Run this from %s" (james/org-open-loops-file)))
+  (widen)
+  (let* ((context (org-element-context))
+         (item (org-element-lineage context '(item) t))
+         (heading (and item (org-element-lineage item '(headline) t))))
+    (unless (and item
+                 (eq (org-element-property :checkbox item) 'off)
+                 (not (org-element-lineage item '(item)))
+                 heading
+                 (= (org-element-property :level heading) 1)
+                 (equal (org-element-property :todo-keyword heading) "TODO")
+                 (equal (org-element-property :raw-value heading)
+                        james/org-tasks-heading))
+      (user-error "Point must be in an unchecked top-level item under TODO %s"
+                  james/org-tasks-heading))
+    (unless (james/org-open-loops--find-heading)
+      (user-error "Open-loops heading not found in %s"
+                  (james/org-open-loops-file)))
+    (let* ((begin (org-element-property :begin item))
+           (end (org-element-property :end item))
+           original tail)
+      (save-excursion
+        (goto-char begin)
+        (unless (looking-at "^[ \t]*[-+*][ \t]+\\[ \\][ \t]+\\(.*\\)$")
+          (user-error "Could not read the task at point"))
+        (setq original (match-string-no-properties 1))
+        (let ((body-begin (line-beginning-position 2)))
+          (goto-char end)
+          (skip-chars-backward " \t\n" begin)
+          (setq end (min end (line-beginning-position 2))
+                tail (buffer-substring-no-properties body-begin end))))
+      (let* ((people (james/org-1on1-people))
+             (person-input
+              (string-trim
+               (completing-read "Follow up with (optional): " people nil nil)))
+             (person (unless (string-empty-p person-input)
+                       (james/org-1on1-resolve-person person-input people)))
+             (date (when (y-or-n-p "Add a due date? ")
+                     (format-time-string
+                      "<%Y-%m-%d %a>"
+                      (org-read-date nil t nil "Due date: "))))
+             (new-item
+              (concat "- [ ] "
+                      (if person (concat person " - ") "")
+                      original
+                      (if date (concat " " date) "")
+                      "\n"
+                      tail))
+             destination)
+        (atomic-change-group
+          (delete-region begin end)
+          (james/org-open-loops-goto-heading)
+          (unless (bolp)
+            (when (= (forward-line 1) 1)
+              (insert "\n")))
+          (setq destination (point))
+          (insert new-item))
+        (goto-char destination)
+        (message "Moved task to Open Loops")))))
 
 (defun james/org-1on1-ensure-person ()
   "Ensure `james/org-agenda-person' variables are set, prompting if needed."

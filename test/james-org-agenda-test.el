@@ -47,6 +47,115 @@
                  "- [ ] Alex Rivera - Review proposal\n\n"
                  "* TODO Next Heading\n")))))))
 
+(ert-deftest james/org-task-to-open-loop-preserves-text-and-content ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory))
+           (date (encode-time 0 0 12 18 11 2026)))
+      (james-test/write-file
+       file
+       (concat "* TODO Tasks\n"
+               "- [ ] Get material\n"
+               "  Include the latest draft.\n"
+               "  - [ ] Confirm the scope\n"
+               "- [ ] Keep this task\n\n"
+               "* TODO Open loops\n"
+               "- [ ] Existing loop\n\n"
+               "* Notes\nKeep this heading\n"))
+      (james-test/write-file
+       (expand-file-name "Alex Rivera.org" directory)
+       "#+TITLE: Alex Rivera\n#+FILETAGS: :person:\n")
+      (with-current-buffer (find-file-noselect file)
+        (goto-char (point-min))
+        (search-forward "latest draft")
+        (cl-letf (((symbol-function 'completing-read)
+                   (lambda (&rest _) "Alex"))
+                  ((symbol-function 'y-or-n-p)
+                   (lambda (&rest _) t))
+                  ((symbol-function 'org-read-date)
+                   (lambda (&rest _) date)))
+          (james/org-task-to-open-loop))
+        (should (looking-at-p
+                 "- \\[ \\] Alex Rivera - Get material <2026-11-18 Wed>"))
+        (should
+         (equal
+          (buffer-string)
+          (concat "* TODO Tasks\n"
+                  "- [ ] Keep this task\n\n"
+                  "* TODO Open loops\n"
+                  "- [ ] Existing loop\n"
+                  "- [ ] Alex Rivera - Get material <2026-11-18 Wed>\n"
+                  "  Include the latest draft.\n"
+                  "  - [ ] Confirm the scope\n\n"
+                  "* Notes\nKeep this heading\n")))))))
+
+(ert-deftest james/org-task-to-open-loop-allows-optional-fields ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory)))
+      (james-test/write-file
+       file "* TODO Tasks\n- [ ] Decide next step\n\n* TODO Open loops\n")
+      (with-current-buffer (find-file-noselect file)
+        (goto-char (point-min))
+        (search-forward "Decide")
+        (cl-letf (((symbol-function 'completing-read)
+                   (lambda (&rest _) ""))
+                  ((symbol-function 'y-or-n-p)
+                   (lambda (&rest _) nil)))
+          (james/org-task-to-open-loop))
+        (should (equal (buffer-string)
+                       "* TODO Tasks\n\n* TODO Open loops\n- [ ] Decide next step\n"))))))
+
+(ert-deftest james/org-task-to-open-loop-rejects-ineligible-items ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory)))
+      (james-test/write-file
+       file
+       (concat "* TODO Tasks\n"
+               "- [X] Completed\n"
+               "- [ ] Parent\n"
+               "  - [ ] Nested\n\n"
+               "* TODO Open loops\n"
+               "- [ ] Existing\n"))
+      (with-current-buffer (find-file-noselect file)
+        (dolist (text '("Completed" "Nested" "Existing"))
+          (goto-char (point-min))
+          (search-forward text)
+          (let ((before (buffer-string)))
+            (should-error (james/org-task-to-open-loop) :type 'user-error)
+            (should (equal before (buffer-string)))))))))
+
+(ert-deftest james/org-task-to-open-loop-validates-before-prompting ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory)))
+      (james-test/write-file file "* TODO Tasks\n- [ ] Task\n")
+      (with-current-buffer (find-file-noselect file)
+        (goto-char (point-max))
+        (let ((before (buffer-string)))
+          (should-error (james/org-task-to-open-loop) :type 'user-error)
+          (should (equal before (buffer-string))))))))
+
+(ert-deftest james/org-task-to-open-loop-rolls-back-edit-errors ()
+  (james-test/with-temporary-directory directory
+    (let* ((org-directory directory)
+           (file (expand-file-name "todo-tasks.org" directory)))
+      (james-test/write-file
+       file "* TODO Tasks\n- [ ] Task\n\n* TODO Open loops\n")
+      (with-current-buffer (find-file-noselect file)
+        (goto-char (point-min))
+        (search-forward "Task\n")
+        (let ((before (buffer-string)))
+          (cl-letf (((symbol-function 'completing-read)
+                     (lambda (&rest _) ""))
+                    ((symbol-function 'y-or-n-p)
+                     (lambda (&rest _) nil))
+                    ((symbol-function 'james/org-open-loops-goto-heading)
+                     (lambda () (error "Simulated insertion failure"))))
+            (should-error (james/org-task-to-open-loop)))
+          (should (equal before (buffer-string))))))))
+
 (ert-deftest james/org-1on1-people-discovers-tagged-files ()
   (james-test/with-temporary-directory directory
     (let ((org-directory directory))
