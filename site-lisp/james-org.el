@@ -7,6 +7,7 @@
 
 (require 'cl-lib)
 (require 'dnd)
+(require 'james-org-image)
 (require 'org)
 (require 'org-element)
 (require 'subr-x)
@@ -139,11 +140,6 @@ relative path is mirrored below this directory without its extension."
 (defvar james/org-image-title-from-ocr nil
   "Non-nil while inserting an image whose filename should come from OCR.")
 
-(defconst james/org-image-extensions
-  '("avif" "bmp" "gif" "heic" "jpeg" "jpg" "png" "svg" "tif" "tiff"
-    "webp")
-  "Filename extensions routed through the Org image workflow.")
-
 (defconst james/org-powerpoint-extensions
   '("pot" "potm" "potx" "pps" "ppsm" "ppsx" "ppt" "pptm" "pptx")
   "Filename extensions recognized as PowerPoint documents.")
@@ -189,40 +185,6 @@ resolved against `org-directory'."
   (james/org-storage-directory
    "attachments" org-file james/org-attachment-root))
 
-(defun james/org-image--sanitized-name (filename)
-  "Return a lowercase, filesystem-friendly image name for FILENAME."
-  (let* ((filename (file-name-nondirectory filename))
-         (extension (file-name-extension filename))
-         (stem (downcase (file-name-base filename))))
-    (setq stem (replace-regexp-in-string "[^[:alnum:]]+" "-" stem)
-          stem (string-trim stem "-+" "-+"))
-    (when extension
-      (setq extension
-            (replace-regexp-in-string "[^[:alnum:]]" "" (downcase extension))))
-    (concat (if (string-empty-p stem) "image" stem)
-            (if (and extension (not (string-empty-p extension)))
-                (concat "." extension)
-              ""))))
-
-(defun james/org-image--unique-name (directory filename)
-  "Return an available FILENAME in DIRECTORY, adding a numeric suffix."
-  (if (not (file-exists-p (expand-file-name filename directory)))
-      filename
-    (let* ((extension (file-name-extension filename t))
-           (stem (file-name-sans-extension filename))
-           (suffix 2)
-           candidate)
-      (while
-          (progn
-            (setq candidate (format "%s-%d%s" stem suffix (or extension ""))
-                  suffix (1+ suffix))
-            (file-exists-p (expand-file-name candidate directory))))
-      candidate)))
-
-(defun james/org--timestamp-prefix ()
-  "Return the compact timestamp prefix used for Org file names."
-  (format-time-string "%Y%m%d%H%M-"))
-
 (defun james/org-download-file-name (filename)
   "Format org-download FILENAME using the Org image naming convention."
   (let* ((source (or james/org-download-source-name filename))
@@ -236,11 +198,6 @@ resolved against `org-directory'."
          (timestamped (concat (james/org--timestamp-prefix) sanitized)))
     (james/org-image--unique-name
      (james/org-attachment-directory) timestamped)))
-
-(defun james/org-image-file-p (filename)
-  "Return non-nil when FILENAME has a supported image extension."
-  (member (downcase (or (file-name-extension filename) ""))
-          james/org-image-extensions))
 
 (defun james/org-attachment-file-p (filename)
   "Return non-nil when FILENAME should use the attachment workflow."
@@ -500,12 +457,9 @@ horizontal whitespace.  Keep nonempty line boundaries and punctuation."
   (mapconcat (lambda (line) (concat indent ": " line "\n"))
              (split-string (james/org-ocr--clean-text text) "\n" t) ""))
 
-(defun james/org-ocr--title-filename (text file)
-  "Return a sanitized filename for FILE using the first OCR line in TEXT.
-Return nil when that line contains no letters or numbers."
-  (when-let* ((title (car (split-string (james/org-ocr--clean-text text)
-                                        "\n" t)))
-              ((string-match-p "[[:alnum:]]" title)))
+(defun james/org-ocr--title-filename (title file)
+  "Return a sanitized filename for FILE using layout-derived TITLE."
+  (when (and title (string-match-p "[[:alnum:]]" title))
     (let* ((extension (file-name-extension file))
            (basename (file-name-nondirectory file))
            (prefix (if (string-match "\\`[0-9]\\{12\\}-" basename)
@@ -515,11 +469,11 @@ Return nil when that line contains no letters or numbers."
               (james/org-image--sanitized-name
                (concat title (if extension (concat "." extension) "")))))))
 
-(defun james/org-ocr--rename-from-title (job text)
-  "Rename JOB's image from the first OCR line in TEXT and update its link.
-Return the new filename, or nil when TEXT has no usable title."
+(defun james/org-ocr--rename-from-title (job title)
+  "Rename JOB's image from TITLE and update its link.
+Return the new filename, or nil when TITLE is unusable."
   (when-let* ((filename (james/org-ocr--title-filename
-                         text (james/org-ocr-job-file job))))
+                         title (james/org-ocr-job-file job))))
     (let* ((old-file (james/org-ocr-job-file job))
            (directory (file-name-directory old-file))
            (filename (if (equal filename (file-name-nondirectory old-file))
@@ -561,8 +515,8 @@ Return the new filename, or nil when TEXT has no usable title."
             (ignore-errors (org-redisplay-inline-images)))))
       new-file)))
 
-(defun james/org-ocr--apply (job text)
-  "Insert TEXT for JOB into its live buffer if the original is intact.
+(defun james/org-ocr--apply (job text &optional title)
+  "Insert TEXT and use optional TITLE for JOB if the original is intact.
 Return non-nil when applied.  Never save or reload the visiting file."
   (when (and (james/org-ocr--valid-p job)
              (equal (james/org-ocr-job-hash job)
@@ -595,9 +549,9 @@ Return non-nil when applied.  Never save or reload the visiting file."
                 (org-fold-hide-drawer-toggle t)))
             (when (james/org-ocr-job-rename job)
               (condition-case err
-                  (unless (james/org-ocr--rename-from-title job text)
+                  (unless (james/org-ocr--rename-from-title job title)
                     (james/org-ocr--log
-                     "Kept original filename; OCR found no usable title: %s"
+                     "Kept original filename; no layout title found: %s"
                      (james/org-ocr-job-file job)))
                 (error
                  (james/org-ocr--log
@@ -709,6 +663,74 @@ Unrecognized drawer formats are skipped.  Respect the current narrowing."
   (delete-overlay (james/org-ocr-job-anchor job))
   (set-marker (james/org-ocr-job-marker job) nil))
 
+(defun james/org-ocr--complete (job text &optional title)
+  "Apply TEXT and optional layout TITLE, then complete JOB."
+  (james/org-ocr--log
+   "%s: %s"
+   (if (james/org-ocr--apply job text title)
+       "Updated" "Skipped changed or closed buffer/image")
+   (james/org-ocr-job-file job))
+  (james/org-ocr--release job)
+  (setq james/org-ocr--process nil)
+  (james/org-ocr--pump))
+
+(defun james/org-ocr--finish-title (process _event)
+  "Apply layout title from completed PROCESS; _EVENT is ignored."
+  (when (and (memq (process-status process) '(exit signal))
+             (not (process-get process 'finished)))
+    (process-put process 'finished t)
+    (let ((job (process-get process 'job))
+          (text (process-get process 'text))
+          (output (process-buffer process))
+          (errors (process-get process 'errors))
+          title)
+      (when-let* ((timer (process-get process 'timer))) (cancel-timer timer))
+      (condition-case err
+          (if (and (eq (process-status process) 'exit)
+                   (zerop (process-exit-status process)))
+              (setq title
+                    (plist-get
+                     (james/org-image-title-from-tsv
+                      (with-current-buffer output (buffer-string)))
+                     :title))
+            (james/org-ocr--log
+             "Title OCR failed %s: %s" (james/org-ocr-job-file job)
+             (with-current-buffer errors (string-trim (buffer-string)))))
+        (error (james/org-ocr--log "Title OCR: %s" (error-message-string err))))
+      (kill-buffer output)
+      (kill-buffer errors)
+      (james/org-ocr--complete job text title))))
+
+(defun james/org-ocr--start-title (job text)
+  "Start layout-aware title recognition for JOB, retaining OCR TEXT."
+  (let ((output (generate-new-buffer " *Org OCR title output*"))
+        (errors (generate-new-buffer " *Org OCR title errors*"))
+        (file (james/org-ocr-job-file job)))
+    (condition-case err
+        (let* ((default-directory temporary-file-directory)
+               (process
+                (make-process
+                 :name "org-ocr-title" :buffer output :stderr errors
+                 :command (append (list james/org-ocr-program file "stdout")
+                                  (james/org-ocr-job-arguments job) '("tsv"))
+                 :coding 'utf-8-unix :connection-type 'pipe :noquery t
+                 :sentinel #'james/org-ocr--finish-title)))
+          (process-put process 'job job)
+          (process-put process 'text text)
+          (process-put process 'errors errors)
+          (process-put process 'timer
+                       (run-at-time
+                        james/org-ocr-timeout nil
+                        (lambda ()
+                          (when (process-live-p process)
+                            (james/org-ocr--log "Title timed out: %s" file)
+                            (delete-process process)))))
+          (setq james/org-ocr--process process))
+      (error
+       (kill-buffer output)
+       (kill-buffer errors)
+       (signal (car err) (cdr err))))))
+
 (defun james/org-ocr--finish (process _event)
   "Apply completed OCR PROCESS output; _EVENT is the process notification."
   (when (and (memq (process-status process) '(exit signal))
@@ -718,25 +740,36 @@ Unrecognized drawer formats are skipped.  Respect the current narrowing."
           (output (process-buffer process))
           (errors (process-get process 'errors)))
       (when-let* ((timer (process-get process 'timer))) (cancel-timer timer))
-      (unwind-protect
-          (condition-case err
-              (if (and (eq (process-status process) 'exit)
-                       (zerop (process-exit-status process)))
-                  (james/org-ocr--log
-                   "%s: %s"
-                   (if (james/org-ocr--apply
-                        job (with-current-buffer output (buffer-string)))
-                       "Updated" "Skipped changed or closed buffer/image")
-                   (james/org-ocr-job-file job))
-                (james/org-ocr--log
-                 "Failed %s: %s" (james/org-ocr-job-file job)
-                 (with-current-buffer errors (string-trim (buffer-string)))))
-            (error (james/org-ocr--log "%s" (error-message-string err))))
-        (james/org-ocr--release job)
-        (kill-buffer output)
-        (kill-buffer errors)
-        (setq james/org-ocr--process nil)
-        (james/org-ocr--pump)))))
+      (condition-case err
+          (if (and (eq (process-status process) 'exit)
+                   (zerop (process-exit-status process)))
+              (let ((text (with-current-buffer output (buffer-string))))
+                (kill-buffer output)
+                (kill-buffer errors)
+                (if (james/org-ocr-job-rename job)
+                    (condition-case title-error
+                        (james/org-ocr--start-title job text)
+                      (error
+                       (james/org-ocr--log
+                        "Title OCR failed to start: %s"
+                        (error-message-string title-error))
+                       (james/org-ocr--complete job text)))
+                  (james/org-ocr--complete job text)))
+            (james/org-ocr--log
+             "Failed %s: %s" (james/org-ocr-job-file job)
+             (with-current-buffer errors (string-trim (buffer-string))))
+            (kill-buffer output)
+            (kill-buffer errors)
+            (james/org-ocr--release job)
+            (setq james/org-ocr--process nil)
+            (james/org-ocr--pump))
+        (error
+         (when (buffer-live-p output) (kill-buffer output))
+         (when (buffer-live-p errors) (kill-buffer errors))
+         (james/org-ocr--log "%s" (error-message-string err))
+         (james/org-ocr--release job)
+         (setq james/org-ocr--process nil)
+         (james/org-ocr--pump))))))
 
 (defun james/org-ocr--start (job)
   "Start a local OCR process for JOB, or return nil if already current."

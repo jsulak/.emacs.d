@@ -16,7 +16,16 @@
             (note-file (expand-file-name "note.org" root))
             (org-download-display-inline-images nil))
        (james-test/write-file james/org-ocr-program
-                              "#!/bin/sh\nread -r trigger\nprintf '%s\\n' 'Quarterly revenue 18 percent'\n")
+                              (concat
+                               "#!/bin/sh\n"
+                               "for arg in \"$@\"; do\n"
+                               "  if [ \"$arg\" = tsv ]; then\n"
+                               "    printf '%s\\n' 'level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext' '1\t1\t0\t0\t0\t0\t0\t0\t1600\t900\t-1\t' '5\t1\t1\t1\t1\t1\t100\t50\t300\t70\t96\tQuarterly' '5\t1\t1\t1\t1\t2\t420\t50\t250\t70\t96\trevenue' '5\t1\t1\t1\t1\t3\t690\t50\t100\t70\t96\t18' '5\t1\t1\t1\t1\t4\t810\t50\t220\t70\t96\tpercent'\n"
+                               "    exit 0\n"
+                               "  fi\n"
+                               "done\n"
+                               "read -r trigger\n"
+                               "printf '%s\\n' 'Quarterly revenue 18 percent'\n"))
        (set-file-modes james/org-ocr-program #o700)
        (james-test/write-file image-file "image bytes")
        (james-test/write-file note-file
@@ -57,9 +66,9 @@
     (should (equal clean (james/org-ocr--clean-text clean)))
     (should (equal "" (james/org-ocr--clean-text "\n\t \f\r")))))
 
-(ert-deftest james/org-ocr-title-filename-uses-first-line ()
+(ert-deftest james/org-ocr-title-filename-uses-layout-title ()
   (should (equal (james/org-ocr--title-filename
-                  "\n  Quarterly   Review  \nRevenue"
+                  "Quarterly Review"
                   "202607181435-capture.PNG")
                  "202607181435-quarterly-review.png"))
   (cl-letf (((symbol-function 'format-time-string)
@@ -281,7 +290,16 @@
 (ert-deftest james/org-ocr-title-renaming-keeps-name-without-usable-title ()
   (james-test/with-ocr
     (james-test/write-file james/org-ocr-program
-                           "#!/bin/sh\nread -r trigger\nprintf '%s\\n' '!!!'\n")
+                           (concat
+                            "#!/bin/sh\n"
+                            "for arg in \"$@\"; do\n"
+                            "  if [ \"$arg\" = tsv ]; then\n"
+                            "    printf '%s\\n' 'level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext' '1\t1\t0\t0\t0\t0\t0\t0\t1600\t900\t-1\t'\n"
+                            "    exit 0\n"
+                            "  fi\n"
+                            "done\n"
+                            "read -r trigger\n"
+                            "printf '%s\\n' '!!!'\n"))
     (let ((james/org-image-title-from-ocr t))
       (james/org-ocr-image-at-point))
     (james-test/ocr-complete)
