@@ -136,6 +136,9 @@ relative path is mirrored below this directory without its extension."
 (defvar james/org-download-source-name nil
   "Source name override used while formatting an Org image filename.")
 
+(defvar james/org-image-title-from-ocr nil
+  "Non-nil while inserting an image whose filename should come from OCR.")
+
 (defconst james/org-image-extensions
   '("avif" "bmp" "gif" "heic" "jpeg" "jpg" "png" "svg" "tif" "tiff"
     "webp")
@@ -351,7 +354,8 @@ ATTACHMENT has the same meaning as in `james/org--document-link-icon'."
       (james/org-attachment-download uri)
       action)
      (t
-      (funcall orig-fun uri action)))))
+      (let ((james/org-image-title-from-ocr t))
+        (funcall orig-fun uri action))))))
 
 (defun james/org-download-directory (orig-fun)
   "Use the collection image directory in Org, otherwise call ORIG-FUN."
@@ -369,8 +373,14 @@ ATTACHMENT has the same meaning as in `james/org--document-link-icon'."
       (funcall orig-fun basename))))
 
 (defun james/org-download-base64-with-image-name (orig-fun &rest args)
-  "Call ORIG-FUN with ARGS using image.png as its source filename."
-  (let ((james/org-download-source-name "image.png"))
+  "Call ORIG-FUN with ARGS using image.png pending an OCR-based name."
+  (let ((james/org-download-source-name "image.png")
+        (james/org-image-title-from-ocr t))
+    (apply orig-fun args)))
+
+(defun james/org-download-screenshot-with-ocr-title (orig-fun &rest args)
+  "Call ORIG-FUN with ARGS and mark its image for OCR-based naming."
+  (let ((james/org-image-title-from-ocr t))
     (apply orig-fun args)))
 
 ;;; Searchable slide images
@@ -397,7 +407,7 @@ Sparse-text mode suits slides.  Use --psm 3 for automatic page layout."
   :group 'james-org)
 
 (cl-defstruct (james/org-ocr-job (:constructor james/org-ocr--make-job))
-  marker anchor link drawer file hash arguments download force)
+  marker anchor link drawer file hash arguments download force rename)
 
 (defvar james/org-ocr--queue nil "Image recognition jobs awaiting execution.")
 (defvar james/org-ocr--process nil "Currently running image recognition process.")
@@ -490,6 +500,67 @@ horizontal whitespace.  Keep nonempty line boundaries and punctuation."
   (mapconcat (lambda (line) (concat indent ": " line "\n"))
              (split-string (james/org-ocr--clean-text text) "\n" t) ""))
 
+(defun james/org-ocr--title-filename (text file)
+  "Return a sanitized filename for FILE using the first OCR line in TEXT.
+Return nil when that line contains no letters or numbers."
+  (when-let* ((title (car (split-string (james/org-ocr--clean-text text)
+                                        "\n" t)))
+              ((string-match-p "[[:alnum:]]" title)))
+    (let* ((extension (file-name-extension file))
+           (basename (file-name-nondirectory file))
+           (prefix (if (string-match "\\`[0-9]\\{12\\}-" basename)
+                       (match-string 0 basename)
+                     (james/org--timestamp-prefix))))
+      (concat prefix
+              (james/org-image--sanitized-name
+               (concat title (if extension (concat "." extension) "")))))))
+
+(defun james/org-ocr--rename-from-title (job text)
+  "Rename JOB's image from the first OCR line in TEXT and update its link.
+Return the new filename, or nil when TEXT has no usable title."
+  (when-let* ((filename (james/org-ocr--title-filename
+                         text (james/org-ocr-job-file job))))
+    (let* ((old-file (james/org-ocr-job-file job))
+           (directory (file-name-directory old-file))
+           (filename (if (equal filename (file-name-nondirectory old-file))
+                         filename
+                       (james/org-image--unique-name directory filename)))
+           (new-file (expand-file-name filename directory)))
+      (unless (equal old-file new-file)
+        (let* ((marker (james/org-ocr-job-marker job))
+               (start (marker-position marker))
+               (element (save-excursion
+                          (goto-char start)
+                          (org-element-context)))
+               (description
+                (when-let* ((begin (org-element-property :contents-begin element))
+                            (end (org-element-property :contents-end element)))
+                  (buffer-substring-no-properties begin end)))
+               (new-link
+                (org-link-make-string
+                 (concat "file:"
+                         (org-link-escape (file-relative-name new-file)))
+                 description)))
+          (rename-file old-file new-file)
+          (condition-case err
+              (atomic-change-group
+                (goto-char start)
+                (delete-region start (+ start (length (james/org-ocr-job-link job))))
+                (insert new-link))
+            (error
+             (when (and (file-exists-p new-file)
+                        (not (file-exists-p old-file)))
+               (rename-file new-file old-file))
+             (signal (car err) (cdr err))))
+          (setf (james/org-ocr-job-file job) new-file
+                (james/org-ocr-job-link job) new-link)
+          (when (equal org-download-path-last-file old-file)
+            (setq org-download-path-last-file new-file))
+          (when (and (bound-and-true-p org-inline-image-overlays)
+                     (fboundp 'org-redisplay-inline-images))
+            (ignore-errors (org-redisplay-inline-images)))))
+      new-file)))
+
 (defun james/org-ocr--apply (job text)
   "Insert TEXT for JOB into its live buffer if the original is intact.
 Return non-nil when applied.  Never save or reload the visiting file."
@@ -522,6 +593,17 @@ Return non-nil when applied.  Never save or reload the visiting file."
                 (insert indent ":END:\n")
                 (goto-char start)
                 (org-fold-hide-drawer-toggle t)))
+            (when (james/org-ocr-job-rename job)
+              (condition-case err
+                  (unless (james/org-ocr--rename-from-title job text)
+                    (james/org-ocr--log
+                     "Kept original filename; OCR found no usable title: %s"
+                     (james/org-ocr-job-file job)))
+                (error
+                 (james/org-ocr--log
+                  "Kept original filename; rename failed for %s: %s"
+                  (james/org-ocr-job-file job)
+                  (error-message-string err)))))
             (undo-boundary)))))
     t))
 
@@ -743,12 +825,13 @@ With FORCE, rerun even when its stored hash is current."
                (job (james/org-ocr--make-job
                      :marker (copy-marker begin t)
                      :anchor anchor
-                     :link (buffer-substring-no-properties begin end)
-                     :drawer (and drawer (buffer-substring-no-properties
-                                          (car drawer) (cdr drawer)))
+                      :link (buffer-substring-no-properties begin end)
+                      :drawer (and drawer (buffer-substring-no-properties
+                                           (car drawer) (cdr drawer)))
                      :file file :arguments (copy-sequence james/org-ocr-arguments)
                      :download (gethash file james/org-ocr--downloads)
-                     :force force)))
+                     :force force
+                     :rename james/org-image-title-from-ocr)))
           ;; A deleted link must not be confused with an identical next link.
           (overlay-put anchor 'evaporate t)
           (setq james/org-ocr--queue (nconc james/org-ocr--queue (list job)))
@@ -860,6 +943,8 @@ for normal save/autosave.  Newly visited buffers remain open for review."
   (advice-add 'org-download--dir :around #'james/org-download-directory)
   (advice-add 'org-download-clipboard :around
               #'james/org-download-clipboard-without-id-property)
+  (advice-add 'org-download-screenshot :around
+              #'james/org-download-screenshot-with-ocr-title)
   (advice-add 'org-download-dnd-base64 :around
               #'james/org-download-base64-with-image-name)
   (advice-add 'org-download-dnd :around

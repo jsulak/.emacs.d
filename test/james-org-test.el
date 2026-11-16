@@ -334,6 +334,25 @@ FUNCTION receives the collection root and the absolute Org filename."
     (should (equal received-name "clipboard.png"))
     (should-not id-result)))
 
+(ert-deftest james/org-download-clipboard-marks-image-for-ocr-title ()
+  (let* ((directory (make-temp-file "james-org-clipboard-" t))
+         (org-download-screenshot-file
+          (expand-file-name "screenshot.png" directory))
+         (clipboard-file (expand-file-name "clipboard.png" directory))
+         marked)
+    (unwind-protect
+        (progn
+          (james-test/write-file clipboard-file "clipboard image")
+          (cl-letf (((symbol-function 'executable-find)
+                     (lambda (_) "/fake/pngpaste"))
+                    ((symbol-function 'shell-command-to-string) #'ignore)
+                    ((symbol-function 'org-download-image)
+                     (lambda (_)
+                       (setq marked james/org-image-title-from-ocr))))
+            (org-download-clipboard)
+            (should marked)))
+      (delete-directory directory t))))
+
 (ert-deftest james/org-download-clipboard-copies-and-links-image ()
   (james-test/call-with-org-file
    "notes/clipboard.org"
@@ -439,8 +458,25 @@ FUNCTION receives the collection root and the absolute Org filename."
        (should
         (string-match-p
          (regexp-quote
-          (format "[[file:../images/notes/example/%s]]" target-name))
-         (buffer-string)))))))
+           (format "[[file:../images/notes/example/%s]]" target-name))
+          (buffer-string)))))))
+
+(ert-deftest james/org-download-base64-drag-drop-marks-image-for-ocr-title ()
+  (let ((target (make-temp-file "james-org-base64-" nil ".png"))
+        marked)
+    (unwind-protect
+        (with-temp-buffer
+          (org-mode)
+          (cl-letf (((symbol-function 'org-download--fullname)
+                     (lambda (&rest _) target))
+                    ((symbol-function 'org-download-insert-link)
+                     (lambda (&rest _)
+                       (setq marked james/org-image-title-from-ocr))))
+            (org-download-dnd-base64
+             "data:image/png;base64,aGVsbG8gd29ybGQ=" nil)
+            (should marked)))
+      (when (file-exists-p target)
+        (delete-file target)))))
 
 (ert-deftest james/org-download-directory-preserves-non-org-behavior ()
   (with-temp-buffer

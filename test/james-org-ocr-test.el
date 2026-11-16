@@ -57,6 +57,18 @@
     (should (equal clean (james/org-ocr--clean-text clean)))
     (should (equal "" (james/org-ocr--clean-text "\n\t \f\r")))))
 
+(ert-deftest james/org-ocr-title-filename-uses-first-line ()
+  (should (equal (james/org-ocr--title-filename
+                  "\n  Quarterly   Review  \nRevenue"
+                  "202607181435-capture.PNG")
+                 "202607181435-quarterly-review.png"))
+  (cl-letf (((symbol-function 'format-time-string)
+             (lambda (&rest _) "202608230953-")))
+    (should (equal (james/org-ocr--title-filename
+                    "Quarterly Review" "capture.png")
+                   "202608230953-quarterly-review.png")))
+  (should-not (james/org-ocr--title-filename " \n !!! \n" "capture.png")))
+
 (ert-deftest james/org-ocr-new-results-are-cleaned-and-escaped ()
   (james-test/with-ocr
     (should (james/org-ocr--apply (james-test/ocr-job)
@@ -188,7 +200,94 @@
     (james/org-ocr-buffer)
     (should-not james/org-ocr--queue)
     (james-test/ocr-complete)
-    (should (string-match-p "Quarterly revenue" (buffer-string)))))
+    (should (string-match-p "Quarterly revenue" (buffer-string)))
+    (should (file-exists-p image-file))
+    (should (string-match-p "file:slide.png" (buffer-string)))))
+
+(ert-deftest james/org-ocr-screenshot-renames-image-and-link-from-title ()
+  (james-test/with-ocr
+    (let* ((org-directory root)
+           (org-download-screenshot-file
+            (expand-file-name "capture/screenshot.png" root))
+           (org-download-screenshot-method
+            (lambda (filename)
+              (james-test/write-file filename "screenshot image")))
+           (target-directory (expand-file-name "images/note" root))
+           (target (expand-file-name
+                    "202607181435-quarterly-revenue-18-percent.png"
+                    target-directory)))
+      (erase-buffer)
+      (cl-letf (((symbol-function 'format-time-string)
+                 (lambda (&rest _) "202607181435-")))
+        (org-download-screenshot))
+      (should (james/org-ocr-job-rename
+               (process-get james/org-ocr--process 'job)))
+      (james-test/ocr-complete)
+      (should (file-exists-p target))
+      (should-not (file-exists-p
+                   (expand-file-name "202607181435-screenshot.png"
+                                     target-directory)))
+      (should (string-match-p
+              (regexp-quote
+                "[[file:images/note/202607181435-quarterly-revenue-18-percent.png]]")
+               (buffer-string))))))
+
+(ert-deftest james/org-ocr-drag-drop-renames-image-and-link-from-title ()
+  (james-test/with-ocr
+    (let* ((org-directory root)
+           (target-directory (expand-file-name "images/note" root))
+           (target (expand-file-name
+                    "202607181435-quarterly-revenue-18-percent.png"
+                    target-directory)))
+      (erase-buffer)
+      (cl-letf (((symbol-function 'format-time-string)
+                 (lambda (&rest _) "202607181435-")))
+        (org-download-dnd (concat "file://" image-file) 'copy))
+      (should (james/org-ocr-job-rename
+               (process-get james/org-ocr--process 'job)))
+      (james-test/ocr-complete)
+      (should (file-exists-p image-file))
+      (should (file-exists-p target))
+      (should-not (file-exists-p
+                   (expand-file-name "202607181435-slide.png"
+                                     target-directory)))
+      (should (string-match-p
+              (regexp-quote
+                "[[file:images/note/202607181435-quarterly-revenue-18-percent.png]]")
+               (buffer-string))))))
+
+(ert-deftest james/org-ocr-title-renaming-preserves-description-and-adds-suffix ()
+  (james-test/with-ocr
+    (erase-buffer)
+    (insert "[[file:slide.png][Slide image]]\n")
+    (goto-char (point-min))
+    (james-test/write-file
+     (expand-file-name "202607181435-quarterly-revenue-18-percent.png" root)
+     "existing")
+    (cl-letf (((symbol-function 'format-time-string)
+               (lambda (&rest _) "202607181435-")))
+      (let ((james/org-image-title-from-ocr t))
+        (james/org-ocr-image-at-point))
+      (james-test/ocr-complete))
+    (should-not (file-exists-p image-file))
+    (should (file-exists-p
+             (expand-file-name
+              "202607181435-quarterly-revenue-18-percent-2.png" root)))
+    (should (string-match-p
+             (regexp-quote
+              "[[file:202607181435-quarterly-revenue-18-percent-2.png][Slide image]]")
+             (buffer-string)))))
+
+(ert-deftest james/org-ocr-title-renaming-keeps-name-without-usable-title ()
+  (james-test/with-ocr
+    (james-test/write-file james/org-ocr-program
+                           "#!/bin/sh\nread -r trigger\nprintf '%s\\n' '!!!'\n")
+    (let ((james/org-image-title-from-ocr t))
+      (james/org-ocr-image-at-point))
+    (james-test/ocr-complete)
+    (should (file-exists-p image-file))
+    (should (string-match-p "file:slide.png" (buffer-string)))
+    (should (string-match-p ": !!!" (buffer-string)))))
 
 (ert-deftest james/org-ocr-waits-for-native-download-completion ()
   (james-test/with-ocr
