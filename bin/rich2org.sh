@@ -46,7 +46,14 @@ ORG=$(pandoc -f html -t org --wrap=none "$TMPFILE" \
   | sed '/:PROPERTIES:/,/:END:/d' \
   | sed 's/^\(#+begin_src\) .*/\1/' \
   | sed $'s/\xC2\xA0/ /g' \
-  | awk 'NF{blank=0} !NF{blank++} blank<=1')
+  | sed $'s/^\xE2\x80\xA2[[:space:]]*/- /' \
+  | sed -E 's/^--[[:space:]]+/  - /' \
+  | sed -E '/^[[:space:]]*\*[[:space:]]*\*[[:space:]]*$/d' \
+  | sed -E '/^[[:space:]]*\\\\[[:space:]]*$/d' \
+  | sed -E 's/\*([^*]*[^*[:space:]])[[:space:]]+\*/\*\1\*/g' \
+  | perl -0pe 's{\[\[([^\]\n]+)\]\[([^\]\n]+)\)\]\]_}{[[$1][$2]]_)}g; s{\[\[([^\]\n]+)\]\[([^\]\n]+)\)\]\]}{[[$1][$2]])}g' \
+  | sed -E 's/[[:space:]]+$//' \
+  | awk 'NF { if (seen && blank) print ""; print; seen=1; blank=0 } !NF { if (seen) blank=1 }')
 
 if [[ -n "$OUTPUT_FILE" ]]; then
     printf '%s\n' "$ORG" > "$OUTPUT_FILE"

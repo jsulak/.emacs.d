@@ -45,6 +45,14 @@ converted=$(env \
 assert_equal $'Heading\n\n#+begin_src\nprint(1)' "$converted" \
     'conversion filters metadata and normalizes whitespace'
 
+cleaned=$(env \
+    PATH="$FAKE_BIN:$PATH" \
+    FAKE_HTML='<p>clipboard</p>' \
+    FAKE_PANDOC_OUTPUT=$'* *\n\n*Actions & Next Step: * \n\n• First action.  \n\n• Prepare: \n\n--       Update the profile (job aid _[[https://example.test/job-aid][linked here)]]_.\n\n\\\\  ' \
+    "$SCRIPT")
+assert_equal $'*Actions & Next Step:*\n\n- First action.\n\n- Prepare:\n\n  - Update the profile (job aid _[[https://example.test/job-aid][linked here]]_).' "$cleaned" \
+    'conversion repairs common email formatting artifacts'
+
 output_file="$TEST_DIRECTORY/result.org"
 message=$(env \
     PATH="$FAKE_BIN:$PATH" \
