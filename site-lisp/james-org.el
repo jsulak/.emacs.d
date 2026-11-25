@@ -112,6 +112,8 @@ relative path is mirrored below this directory without its extension."
 (setq org-hide-emphasis-markers t)
 (setq org-pretty-entities t)
 (setq org-use-sub-superscripts nil)
+(setq org-goto-interface 'outline-path-completion
+      org-outline-path-complete-in-steps nil)
 (add-hook 'org-mode-hook 'auto-save-visited-mode)
 (add-hook 'org-mode-hook (lambda () (setq line-spacing 0.3)))
 
