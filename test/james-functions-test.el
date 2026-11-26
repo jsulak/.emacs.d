@@ -45,19 +45,27 @@
        (lambda (&rest args) (setq received args)) 3 8 'region))
     (should (equal received '(3 8 region)))))
 
-(ert-deftest james/rename-file-and-buffer-renames-file-and-visit ()
+(ert-deftest james/rename-file-and-buffer-preserves-unsaved-edits ()
   (james-test/with-temporary-directory directory
     (let* ((old-name (expand-file-name "old.txt" directory))
            (new-name (expand-file-name "new.txt" directory)))
       (with-temp-file old-name (insert "contents"))
       (with-temp-buffer
+        (insert-file-contents old-name)
         (set-visited-file-name old-name)
+        (set-buffer-modified-p nil)
+        (goto-char (point-max))
+        (insert " with edits")
         (cl-letf (((symbol-function 'read-file-name)
                    (lambda (&rest _) new-name)))
           (james/rename-file-and-buffer))
         (should (equal buffer-file-name new-name))
         (should-not (file-exists-p old-name))
-        (should (file-exists-p new-name))))))
+        (should (buffer-modified-p))
+        (should (equal (buffer-string) "contents with edits"))
+        (with-temp-buffer
+          (insert-file-contents new-name)
+          (should (equal (buffer-string) "contents")))))))
 
 (ert-deftest james/move-buffer-file-moves-file-and-visit ()
   (james-test/with-temporary-directory directory
@@ -69,11 +77,24 @@
       (make-directory target-directory)
       (with-temp-file old-name (insert "contents"))
       (with-temp-buffer
+        (insert-file-contents old-name)
         (set-visited-file-name old-name)
+        (set-buffer-modified-p nil)
         (james/move-buffer-file target-directory)
         (should (equal buffer-file-name new-name))
         (should-not (file-exists-p old-name))
-        (should (file-exists-p new-name))))))
+        (should (file-exists-p new-name))
+        (should-not (buffer-modified-p))
+        (goto-char (point-max))
+        (insert " with edits")
+        (james/move-buffer-file source-directory)
+        (should (equal buffer-file-name old-name))
+        (should-not (file-exists-p new-name))
+        (should (buffer-modified-p))
+        (should (equal (buffer-string) "contents with edits"))
+        (with-temp-buffer
+          (insert-file-contents old-name)
+          (should (equal (buffer-string) "contents")))))))
 
 (ert-deftest james/file-rename-requires-an-existing-visited-file ()
   (with-temp-buffer

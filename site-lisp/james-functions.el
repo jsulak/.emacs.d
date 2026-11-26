@@ -67,8 +67,7 @@
                       (buffer-name other-buffer))))
       (unless (file-equal-p filename new-name)
         (rename-file filename new-name 1)
-        (set-visited-file-name new-name nil t)
-        (set-buffer-modified-p nil)))))
+        (set-visited-file-name new-name nil t)))))
 
 
 (defun james/move-buffer-file (dir)
@@ -84,8 +83,7 @@
                       (buffer-name other-buffer))))
       (unless (file-equal-p filename new-name)
         (rename-file filename new-name 1)
-        (set-visited-file-name new-name nil t)
-        (set-buffer-modified-p nil)))))
+        (set-visited-file-name new-name nil t)))))
 
 
 
